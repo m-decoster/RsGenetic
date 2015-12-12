@@ -1,6 +1,6 @@
 [package]
 name = "rsgenetic"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Mathieu De Coster <mth.decoster@gmail.com>"]
 
 [dependencies]

@@ -14,11 +14,17 @@ pub mod seq {
         /// Perform tournament selection with tournament size `size`.
         /// This yields `count * size` parents.
         Tournament {
-            /// Should be larger than 0.
+            /// Indicates the number of tournaments. Should be larger than 0.
             count: u32,
             /// Should be larger than 1.
             size: u32,
         },
+        /// Perform Stochastic Universal Sampling to do the selection.
+        /// Selects `count * 2` parents.
+        Stochastic {
+            /// Should be larger than 0.
+            count: u32
+        }
     }
 
     /// Whether to maximize or to minimize the fitness value
@@ -63,6 +69,7 @@ pub mod seq {
                 let parents = match self.selection_type {
                     SelectionType::Maximize{count: c} => self.selection_maximize(c),
                     SelectionType::Tournament{count: c, size: s} => self.selection_tournament(c, s),
+                    SelectionType::Stochastic{count: c} => self.selection_stochastic(c)
                 };
                 // Create children from the selected parents and mutate them
                 let children: Vec<Box<T>> = parents.iter()
@@ -143,6 +150,22 @@ pub mod seq {
                         result.push((tournament[0].clone(), tournament[1].clone()));
                     }
                 }
+            }
+            result
+        }
+
+        /// Select parents using stochastic universal sampling.
+        fn selection_stochastic(&self, count: u32) -> Vec<(Box<T>, Box<T>)> {
+            let ratio = self.population.len() / (count as usize);
+            let mut result: Vec<(Box<T>, Box<T>)> = Vec::new();
+            let mut i = ::rand::random::<usize>() % self.population.len() as usize;
+            let mut selected = 0;
+            while selected < count {
+                result.push((self.population[i].clone(), self.population[(i + ratio - 1) %
+                            self.population.len()].clone()));
+                i += ratio - 1;
+                i = i % self.population.len();
+                selected += 2;
             }
             result
         }
