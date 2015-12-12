@@ -50,10 +50,11 @@
 //! }
 //! // Create a simulator.
 //! let mut s = sim::seq::Simulator::new(tests, // Population
-//!                                      100, // Iterations
+//!                                      1000, // Iterations
 //!                                      sim::seq::SelectionType::Tournament{
-//!                                         size: 3,
-//!                                         count:5}, // Tournament Selection
+//!                                         count: 3,
+//!                                         num: 5
+//!                                      }, // Tournament Selection
 //!                                      sim::seq::FitnessType::Minimize); // Minimize the fitness
 //! s.run();
 //! assert!((*s.get()).i == 0); // For this simple example, we should always get 0.

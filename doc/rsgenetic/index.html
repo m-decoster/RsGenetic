@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-64' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-67' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p>RsGenetic provides a simple framework for genetic algorithms.
@@ -57,22 +57,22 @@ and this library takes care of the rest.</p>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rsgenetic</span>;
 <span class='kw'>use</span> <span class='ident'>rsgenetic</span>::{<span class='ident'>pheno</span>, <span class='ident'>sim</span>};
- 
+
 <span class='comment'>// Define the structure of your Phenotype</span>
 <span class='kw'>struct</span> <span class='ident'>Test</span> {
     <span class='ident'>i</span>: <span class='ident'>i32</span>,
 }
- 
+
 <span class='comment'>// Implement the Phenotype trait.</span>
 <span class='kw'>impl</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span> <span class='kw'>for</span> <span class='ident'>Test</span> {
     <span class='kw'>fn</span> <span class='ident'>fitness</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>f64</span> {
         (<span class='self'>self</span>.<span class='ident'>i</span> <span class='op'>-</span> <span class='number'>0</span>).<span class='ident'>abs</span>() <span class='kw'>as</span> <span class='ident'>f64</span>
     }
- 
+
     <span class='kw'>fn</span> <span class='ident'>crossover</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>Test</span>) <span class='op'>-&gt;</span> <span class='ident'>Test</span> {
         <span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='self'>self</span>.<span class='ident'>i</span>, <span class='ident'>t</span>.<span class='ident'>i</span>) }
     }
- 
+
     <span class='kw'>fn</span> <span class='ident'>mutate</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>i</span> <span class='op'>&lt;</span> <span class='number'>0</span> {
             <span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='self'>self</span>.<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span> }
@@ -81,14 +81,14 @@ and this library takes care of the rest.</p>
         }
     }
 }
- 
+
 <span class='comment'>// Implement the Clone trait.</span>
 <span class='kw'>impl</span> <span class='ident'>Clone</span> <span class='kw'>for</span> <span class='ident'>Test</span> {
     <span class='kw'>fn</span> <span class='ident'>clone</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='self'>self</span>.<span class='ident'>i</span> }
     }
 }
- 
+
 <span class='comment'>// Generate a random population.</span>
 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tests</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
 <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>100</span> {
@@ -96,8 +96,11 @@ and this library takes care of the rest.</p>
 }
 <span class='comment'>// Create a simulator.</span>
 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>sim</span>::<span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>new</span>(<span class='ident'>tests</span>, <span class='comment'>// Population</span>
-                                     <span class='number'>100</span>, <span class='comment'>// Iterations</span>
-                                     <span class='ident'>sim</span>::<span class='ident'>seq</span>::<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span>{<span class='ident'>size</span>: <span class='number'>3</span>, <span class='ident'>count</span>:<span class='number'>5</span>}, <span class='comment'>// Tournament Selection</span>
+                                     <span class='number'>1000</span>, <span class='comment'>// Iterations</span>
+                                     <span class='ident'>sim</span>::<span class='ident'>seq</span>::<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span>{
+                                        <span class='ident'>count</span>: <span class='number'>3</span>,
+                                        <span class='ident'>num</span>: <span class='number'>5</span>
+                                     }, <span class='comment'>// Tournament Selection</span>
                                      <span class='ident'>sim</span>::<span class='ident'>seq</span>::<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>); <span class='comment'>// Minimize the fitness</span>
 <span class='ident'>s</span>.<span class='ident'>run</span>();
 <span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>); <span class='comment'>// For this simple example, we should always get 0.</span></pre>

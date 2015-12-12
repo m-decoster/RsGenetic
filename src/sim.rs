@@ -11,13 +11,13 @@ pub mod seq {
             /// Should be larger than 0.
             count: u32,
         },
-        /// Perform tournament selection with tournament size `size`.
-        /// This yields `count * size` parents.
+        /// Perform tournament selection with tournament size `count`, running `num` tournaments.
+        /// This yields `num * 2` parents.
         Tournament {
             /// Indicates the number of tournaments. Should be larger than 0.
+            num: u32,
+            /// Should be larger than 0.
             count: u32,
-            /// Should be larger than 1.
-            size: u32,
         },
         /// Perform Stochastic Universal Sampling to do the selection.
         /// Selects `count * 2` parents.
@@ -68,7 +68,7 @@ pub mod seq {
                 // Perform selection
                 let parents = match self.selection_type {
                     SelectionType::Maximize{count: c} => self.selection_maximize(c),
-                    SelectionType::Tournament{count: c, size: s} => self.selection_tournament(c, s),
+                    SelectionType::Tournament{num: n, count: c} => self.selection_tournament(n, c),
                     SelectionType::Stochastic{count: c} => self.selection_stochastic(c),
                 };
                 // Create children from the selected parents and mutate them
@@ -126,15 +126,15 @@ pub mod seq {
         }
 
         /// Select parents using tournament selection.
-        fn selection_tournament(&self, count: u32, size: u32) -> Vec<(Box<T>, Box<T>)> {
-            assert!(size >= 2);
+        fn selection_tournament(&self, num: u32, count: u32) -> Vec<(Box<T>, Box<T>)> {
+            assert!(num > 0);
             assert!(count > 0);
 
             let mut result: Vec<(Box<T>, Box<T>)> = Vec::new();
             let mut rng = ::rand::thread_rng();
-            for _ in 0..count {
-                let mut tournament: Vec<Box<T>> = Vec::with_capacity(size as usize);
-                for _ in 0..size {
+            for _ in 0..num {
+                let mut tournament: Vec<Box<T>> = Vec::with_capacity(count as usize);
+                for _ in 0..count {
                     let index = rng.gen::<usize>() % self.population.len();
                     tournament.push(self.population[index].clone());
                 }
@@ -242,7 +242,7 @@ mod tests {
         let mut s = seq::Simulator::new(tests,
                                         100,
                                         seq::SelectionType::Tournament {
-                                            size: 2,
+                                            num: 2,
                                             count: 0,
                                         },
                                         seq::FitnessType::Minimize);
@@ -251,12 +251,12 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_tournament_size_1() {
+    fn test_tournament_num_0() {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
         let mut s = seq::Simulator::new(tests,
                                         100,
                                         seq::SelectionType::Tournament {
-                                            size: 1,
+                                            num: 0,
                                             count: 1,
                                         },
                                         seq::FitnessType::Minimize);
@@ -291,8 +291,8 @@ mod tests {
         let mut s = seq::Simulator::new(tests,
                                         1000,
                                         seq::SelectionType::Tournament {
-                                            size: 3,
-                                            count: 5,
+                                            count: 3,
+                                            num: 5,
                                         },
                                         seq::FitnessType::Minimize);
         s.run();
