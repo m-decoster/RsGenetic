@@ -1,12 +1,23 @@
 # RsGenetic
 
+## Summary and Features
 RsGenetic is a simple framework for executing a genetic algorithm in Rust.  
-This library is far from complete, but should be usable for some purposes.
+This library is not yet feature-complete. It currently offers a sequential implementation that
+can run genetic algorithms with a limited set of selection algorithms. The goal is
+to provide at least one parallel implementation, to optimize these implementations,
+and to provide more selection algorithms if needed.
 
-I am personally too busy to update this library at a consistent pace at the moment, but feel free
-to contribute. I will look at Pull Requests and Issues.
+## Examples and Documentation
+Open `doc/rsgenetic/index.html` for the documentation of this library. This includes a simple example.  
+Alternatively, take a look at `src/sim/seq.rs` for some tests that also show how to use this library.
 
-I suggest you take a look at the `doc` folder if you want to learn how to use the library.
-Examples are included.
+## License
+This library is available under Apache 2.0.
 
+## Contributing
+Contributions are always welcome. Take a look at the issues for any enhancements that need to be
+done or bugs that need to be fixed. If you encounter any bugs while using the library, feel free to
+open an issue and/or fix the bug, and submit pull requests.
+
+## Notes
 This library has only been tested with Rust stable 1.5.0.
