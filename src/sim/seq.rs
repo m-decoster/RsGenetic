@@ -216,10 +216,7 @@ mod tests {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
         let mut s = seq::Simulator::new(tests,
                                         100,
-                                        SelectionType::Tournament {
-                                            num: 2,
-                                            count: 0,
-                                        },
+                                        SelectionType::Tournament { num: 2, count: 0 },
                                         FitnessType::Minimize);
         s.run();
     }
@@ -230,10 +227,7 @@ mod tests {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
         let mut s = seq::Simulator::new(tests,
                                         100,
-                                        SelectionType::Tournament {
-                                            num: 0,
-                                            count: 1,
-                                        },
+                                        SelectionType::Tournament { num: 0, count: 1 },
                                         FitnessType::Minimize);
         s.run();
     }
@@ -265,10 +259,7 @@ mod tests {
         let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
         let mut s = seq::Simulator::new(tests,
                                         1000,
-                                        SelectionType::Tournament {
-                                            count: 3,
-                                            num: 5,
-                                        },
+                                        SelectionType::Tournament { count: 3, num: 5 },
                                         FitnessType::Minimize);
         s.run();
         assert_eq!((*s.get()).i, 0);
