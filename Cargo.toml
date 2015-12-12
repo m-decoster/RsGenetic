@@ -1,0 +1,7 @@
+[package]
+name = "rsgenetic"
+version = "0.1.0"
+authors = ["Mathieu De Coster <mth.decoster@gmail.com>"]
+
+[dependencies]
+rand = "0.3"
