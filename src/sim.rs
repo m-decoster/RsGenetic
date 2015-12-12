@@ -23,8 +23,8 @@ pub mod seq {
         /// Selects `count * 2` parents.
         Stochastic {
             /// Should be larger than 0.
-            count: u32
-        }
+            count: u32,
+        },
     }
 
     /// Whether to maximize or to minimize the fitness value
@@ -69,7 +69,7 @@ pub mod seq {
                 let parents = match self.selection_type {
                     SelectionType::Maximize{count: c} => self.selection_maximize(c),
                     SelectionType::Tournament{count: c, size: s} => self.selection_tournament(c, s),
-                    SelectionType::Stochastic{count: c} => self.selection_stochastic(c)
+                    SelectionType::Stochastic{count: c} => self.selection_stochastic(c),
                 };
                 // Create children from the selected parents and mutate them
                 let children: Vec<Box<T>> = parents.iter()
@@ -97,7 +97,7 @@ pub mod seq {
             });
             match self.fitness_type {
                 FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
-                FitnessType::Minimize => cloned[0].clone()
+                FitnessType::Minimize => cloned[0].clone(),
             }
         }
 
@@ -156,13 +156,15 @@ pub mod seq {
 
         /// Select parents using stochastic universal sampling.
         fn selection_stochastic(&self, count: u32) -> Vec<(Box<T>, Box<T>)> {
+            assert!(count > 0);
+
             let ratio = self.population.len() / (count as usize);
             let mut result: Vec<(Box<T>, Box<T>)> = Vec::new();
             let mut i = ::rand::random::<usize>() % self.population.len() as usize;
             let mut selected = 0;
             while selected < count {
-                result.push((self.population[i].clone(), self.population[(i + ratio - 1) %
-                            self.population.len()].clone()));
+                result.push((self.population[i].clone(),
+                             self.population[(i + ratio - 1) % self.population.len()].clone()));
                 i += ratio - 1;
                 i = i % self.population.len();
                 selected += 2;
@@ -185,5 +187,126 @@ pub mod seq {
             }
             assert!(self.population.len() == old_len - count);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pheno;
+    use std::cmp;
+
+    struct Test {
+        i: i32,
+    }
+
+    impl pheno::Phenotype for Test {
+        fn fitness(&self) -> f64 {
+            (self.i - 0).abs() as f64
+        }
+
+        fn crossover(&self, t: &Test) -> Test {
+            Test { i: cmp::min(self.i, t.i) }
+        }
+
+        fn mutate(&self) -> Test {
+            if self.i < 0 {
+                Test { i: self.i + 1 }
+            } else {
+                Test { i: self.i - 1 }
+            }
+        }
+    }
+
+    impl Clone for Test {
+        fn clone(&self) -> Self {
+            Test { i: self.i }
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_maximize_count_0() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let mut s = seq::Simulator::new(tests,
+                                        100,
+                                        seq::SelectionType::Maximize { count: 0 },
+                                        seq::FitnessType::Minimize);
+        s.run();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_tournament_count_0() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let mut s = seq::Simulator::new(tests,
+                                        100,
+                                        seq::SelectionType::Tournament {
+                                            size: 2,
+                                            count: 0,
+                                        },
+                                        seq::FitnessType::Minimize);
+        s.run();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_tournament_size_1() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let mut s = seq::Simulator::new(tests,
+                                        100,
+                                        seq::SelectionType::Tournament {
+                                            size: 1,
+                                            count: 1,
+                                        },
+                                        seq::FitnessType::Minimize);
+        s.run();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_stochastic_count_0() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let mut s = seq::Simulator::new(tests,
+                                        100,
+                                        seq::SelectionType::Stochastic { count: 0 },
+                                        seq::FitnessType::Minimize);
+        s.run();
+    }
+
+    #[test]
+    fn simple_convergence_test_maximize() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
+        let mut s = seq::Simulator::new(tests,
+                                        1000,
+                                        seq::SelectionType::Maximize { count: 5 },
+                                        seq::FitnessType::Minimize);
+        s.run();
+        assert_eq!((*s.get()).i, 0);
+    }
+
+    #[test]
+    fn simple_convergence_test_tournament() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
+        let mut s = seq::Simulator::new(tests,
+                                        1000,
+                                        seq::SelectionType::Tournament {
+                                            size: 3,
+                                            count: 5,
+                                        },
+                                        seq::FitnessType::Minimize);
+        s.run();
+        assert_eq!((*s.get()).i, 0);
+    }
+
+    #[test]
+    fn simple_convergence_test_stochastic() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
+        let mut s = seq::Simulator::new(tests,
+                                        1000,
+                                        seq::SelectionType::Stochastic { count: 5 },
+                                        seq::FitnessType::Minimize);
+        s.run();
+        assert_eq!((*s.get()).i, 0);
     }
 }
