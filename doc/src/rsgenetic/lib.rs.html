@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="Source to the Rust file `src/lib.rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang">
+
+    <title>lib.rs.html -- source</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content source"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+</pre><pre class='rust '>
+<span class='doccomment'>//! # RsGenetic</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! RsGenetic provides a simple framework for genetic algorithms.</span>
+<span class='doccomment'>//! You need to provide the definition of a Phenotype (also known as an Individual),</span>
+<span class='doccomment'>//! define how crossover and mutation work, present a fitness function, choose some settings</span>
+<span class='doccomment'>//! and this library takes care of the rest.</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//! # Example usage:</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ```ignore</span>
+<span class='doccomment'>//! use std::cmp;</span>
+<span class='doccomment'>//! extern crate rsgenetic;</span>
+<span class='doccomment'>//! use rsgenetic::{pheno, sim};</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//! // Define the structure of your Phenotype</span>
+<span class='doccomment'>//! struct Test {</span>
+<span class='doccomment'>//!     i: i32,</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//! // Implement the Phenotype trait.</span>
+<span class='doccomment'>//! impl pheno::Phenotype for Test {</span>
+<span class='doccomment'>//!     fn fitness(&amp;self) -&gt; f64 {</span>
+<span class='doccomment'>//!         (self.i - 0).abs() as f64</span>
+<span class='doccomment'>//!     }</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//!     fn crossover(&amp;self, t: &amp;Test) -&gt; Test {</span>
+<span class='doccomment'>//!         Test { i: cmp::min(self.i, t.i) }</span>
+<span class='doccomment'>//!     }</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//!     fn mutate(&amp;self) -&gt; Self {</span>
+<span class='doccomment'>//!         if self.i &lt; 0 {</span>
+<span class='doccomment'>//!             Test { i: self.i + 1 }</span>
+<span class='doccomment'>//!         } else {</span>
+<span class='doccomment'>//!             Test { i: self.i - 1}</span>
+<span class='doccomment'>//!         }</span>
+<span class='doccomment'>//!     }</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//! // Implement the Clone trait.</span>
+<span class='doccomment'>//! impl Clone for Test {</span>
+<span class='doccomment'>//!     fn clone(&amp;self) -&gt; Self {</span>
+<span class='doccomment'>//!         Test { i: self.i }</span>
+<span class='doccomment'>//!     }</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//! </span>
+<span class='doccomment'>//! // Generate a random population.</span>
+<span class='doccomment'>//! let mut tests: Vec&lt;Box&lt;Test&gt;&gt; = Vec::new();</span>
+<span class='doccomment'>//! for i in 0..100 {</span>
+<span class='doccomment'>//!     tests.push(Box::new(Test { i: i + 10 }));</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//! // Create a simulator.</span>
+<span class='doccomment'>//! let mut s = sim::seq::Simulator::new(tests, // Population</span>
+<span class='doccomment'>//!                                      100, // Iterations</span>
+<span class='doccomment'>//!                                      sim::seq::SelectionType::Tournament{size: 3, count:5}, // Tournament Selection</span>
+<span class='doccomment'>//!                                      sim::seq::FitnessType::Minimize); // Minimize the fitness</span>
+<span class='doccomment'>//! s.run();</span>
+<span class='doccomment'>//! assert!((*s.get()).i == 0); // For this simple example, we should always get 0.</span>
+
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
+
+<span class='doccomment'>/// Contains the definition of a Phenotype.</span>
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>pheno</span>;
+<span class='doccomment'>/// Contains implementations of Simulators, which can run genetic algorithms.</span>
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>sim</span>;
+</pre>
+</section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "rsgenetic";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

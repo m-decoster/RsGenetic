@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Phenotype","Defines what a Phenotype is. A Phenotype can breed with other Phenotypes, resulting in a single child. A Phenotype can also be mutated. Finally, a Phenotype has a certain fitness value associated with it."]]});
