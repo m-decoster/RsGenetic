@@ -161,11 +161,11 @@
 <span class='doccomment'>//! // Create a simulator.</span>
 <span class='doccomment'>//! let mut s = sim::seq::Simulator::new(tests, // Population</span>
 <span class='doccomment'>//!                                      1000, // Iterations</span>
-<span class='doccomment'>//!                                      sim::seq::SelectionType::Tournament{</span>
+<span class='doccomment'>//!                                      sim::SelectionType::Tournament{</span>
 <span class='doccomment'>//!                                         count: 3,</span>
 <span class='doccomment'>//!                                         num: 5</span>
 <span class='doccomment'>//!                                      }, // Tournament Selection</span>
-<span class='doccomment'>//!                                      sim::seq::FitnessType::Minimize); // Minimize the fitness</span>
+<span class='doccomment'>//!                                      sim::FitnessType::Minimize); // Minimize the fitness</span>
 <span class='doccomment'>//! s.run();</span>
 <span class='doccomment'>//! assert!((*s.get()).i == 0); // For this simple example, we should always get 0.</span>
 

@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["FitnessType","Whether to maximize or to minimize the fitness value"],["SelectionType","The type of parent selection."]],"struct":[["Simulator","A Simulator can run genetic algorithm simulations."]]});
+initSidebarItems({"struct":[["Simulator","A `Simulator` can run genetic algorithm simulations in a single thread."]]});

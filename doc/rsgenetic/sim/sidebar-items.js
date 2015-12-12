@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["seq","Contains a sequential Simulator implementation."]]});
+initSidebarItems({"enum":[["FitnessType","Whether to maximize or to minimize the fitness value"],["SelectionType","The type of parent selection."]],"mod":[["seq","Contains a sequential `Simulator` implementation."]],"trait":[["Simulation","A `Simulation` is an execution of a genetic algorithm."]]});

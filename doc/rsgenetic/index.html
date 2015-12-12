@@ -97,11 +97,11 @@ and this library takes care of the rest.</p>
 <span class='comment'>// Create a simulator.</span>
 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>sim</span>::<span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>new</span>(<span class='ident'>tests</span>, <span class='comment'>// Population</span>
                                      <span class='number'>1000</span>, <span class='comment'>// Iterations</span>
-                                     <span class='ident'>sim</span>::<span class='ident'>seq</span>::<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span>{
+                                     <span class='ident'>sim</span>::<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span>{
                                         <span class='ident'>count</span>: <span class='number'>3</span>,
                                         <span class='ident'>num</span>: <span class='number'>5</span>
                                      }, <span class='comment'>// Tournament Selection</span>
-                                     <span class='ident'>sim</span>::<span class='ident'>seq</span>::<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>); <span class='comment'>// Minimize the fitness</span>
+                                     <span class='ident'>sim</span>::<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>); <span class='comment'>// Minimize the fitness</span>
 <span class='ident'>s</span>.<span class='ident'>run</span>();
 <span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>); <span class='comment'>// For this simple example, we should always get 0.</span></pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
