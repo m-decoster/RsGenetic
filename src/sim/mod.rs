@@ -5,8 +5,16 @@ pub mod seq;
 /// Contains private information.
 mod shared;
 
+/// A `Builder` can create new `Simulation` instances.
+pub trait Builder<T> {
+    /// Return the result.
+    fn build(self) -> T;
+}
+
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<T: Phenotype> : shared::Selector<T> {
+pub trait Simulation<T: Phenotype, B: Builder<Box<Self>>> : shared::Selector<T> {
+    /// Create a `Builder` to create an instance.
+    fn builder() -> B;
     /// Run the simulation.
     fn run(&mut self);
     /// Get the best performing result of the simulation when it has ended.
