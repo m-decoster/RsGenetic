@@ -5,6 +5,15 @@
 //! define how crossover and mutation work, present a fitness function, choose some settings
 //! and this library takes care of the rest.
 //!
+//! # Installation
+//!
+//! You can use this library by adding the following lines to your `Cargo.toml` file:
+//!
+//!     [dependencies]
+//!     rsgenetic = "0.6"
+//!
+//! and adding `extern crate rsgenetic;` to your crate root.
+//!
 //! # Features
 //! ## Available Simulators
 //!
