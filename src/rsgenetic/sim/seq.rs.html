@@ -358,12 +358,31 @@
 <span id="316">316</span>
 <span id="317">317</span>
 <span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
 <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>Rng</span>;
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>shared</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>time</span>::<span class='ident'>SteadyTime</span>;
 
 <span class='doccomment'>/// A `Simulator` can run genetic algorithm simulations in a single thread.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> {
@@ -375,6 +394,7 @@
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> <span class='ident'>Simulation</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='kw'>for</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Create builder.</span>
     <span class='kw'>fn</span> <span class='ident'>builder</span>(<span class='ident'>pop</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='ident'>SimulatorBuilder</span> {
             <span class='ident'>sim</span>: <span class='ident'>Simulator</span> {
@@ -387,9 +407,9 @@
         }
     }
 
-    <span class='doccomment'>/// Run the simulation, according to the settings</span>
-    <span class='doccomment'>/// chosen in the constructor of the Simulator.</span>
-    <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
+    <span class='doccomment'>/// Run.</span>
+    <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>time_start</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>();
         <span class='kw'>while</span> <span class='self'>self</span>.<span class='ident'>n_iters</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>max_iters</span> {
             <span class='comment'>// Perform selection</span>
             <span class='kw'>let</span> <span class='ident'>parents</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>selection_type</span> {
@@ -413,6 +433,7 @@
 
             <span class='self'>self</span>.<span class='ident'>n_iters</span> <span class='op'>+=</span> <span class='number'>1</span>
         }
+        (<span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>-</span> <span class='ident'>time_start</span>).<span class='ident'>num_nanoseconds</span>()
     }
 
     <span class='doccomment'>/// Get the best performing organism.</span>
@@ -639,6 +660,21 @@
                          .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
         <span class='ident'>s</span>.<span class='ident'>run</span>();
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>test_runtime</span>() {
+        <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+                         .<span class='ident'>set_max_iters</span>(<span class='number'>2000</span>)
+                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Stochastic</span> { <span class='ident'>count</span>: <span class='number'>1</span> })
+                         .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
+                         .<span class='ident'>build</span>();
+        <span class='kw'>let</span> <span class='ident'>run_time</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>s</span>.<span class='ident'>run</span>() {
+            <span class='prelude-val'>Some</span>(<span class='ident'>x</span>) <span class='op'>=&gt;</span> <span class='ident'>x</span>,
+            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='number'>0</span>
+        };
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>run_time</span> <span class='op'>!=</span> <span class='number'>0</span>);
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
