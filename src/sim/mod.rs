@@ -11,14 +11,18 @@ pub trait Builder<T> {
     fn build(self) -> T;
 }
 
+/// Used to make it more clear that run time is defined in nanoseconds.
+pub type NanoSecond = i64;
+
 /// A `Simulation` is an execution of a genetic algorithm.
 pub trait Simulation<T: Phenotype, B: Builder<Box<Self>>> : shared::Selector<T> {
     /// Create a `Builder` to create an instance.
     /// Because the population is a required parameter, you have to pass it here,
     /// instead of using a builder function.
     fn builder(population: Vec<Box<T>>) -> B;
-    /// Run the simulation.
-    fn run(&mut self);
+    /// Run the simulation. Returns the time spent running in ns.
+    /// Should there be an overflow, this function returns `None`.
+    fn run(&mut self) -> Option<NanoSecond>;
     /// Get the best performing result of the simulation when it has ended.
     fn get(&self) -> Box<T>;
 }

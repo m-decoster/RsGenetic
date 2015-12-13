@@ -3,6 +3,7 @@ use std::cmp::Ordering;
 use rand::Rng;
 use super::*;
 use super::shared::*;
+use time::SteadyTime;
 
 /// A `Simulator` can run genetic algorithm simulations in a single thread.
 pub struct Simulator<T: Phenotype> {
@@ -14,6 +15,7 @@ pub struct Simulator<T: Phenotype> {
 }
 
 impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
+    /// Create builder.
     fn builder(pop: Vec<Box<T>>) -> SimulatorBuilder<T> {
         SimulatorBuilder {
             sim: Simulator {
@@ -26,9 +28,9 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
         }
     }
 
-    /// Run the simulation, according to the settings
-    /// chosen in the constructor of the Simulator.
-    fn run(&mut self) {
+    /// Run.
+    fn run(&mut self) -> Option<NanoSecond> {
+        let time_start = SteadyTime::now();
         while self.n_iters < self.max_iters {
             // Perform selection
             let parents = match self.selection_type {
@@ -52,6 +54,7 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
 
             self.n_iters += 1
         }
+        (SteadyTime::now() - time_start).num_nanoseconds()
     }
 
     /// Get the best performing organism.
@@ -278,6 +281,21 @@ mod tests {
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
         s.run();
+    }
+
+    #[test]
+    fn test_runtime() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let mut s = *seq::Simulator::builder(tests)
+                         .set_max_iters(2000)
+                         .set_selection_type(SelectionType::Stochastic { count: 1 })
+                         .set_fitness_type(FitnessType::Minimize)
+                         .build();
+        let run_time = match s.run() {
+            Some(x) => x,
+            None => 0
+        };
+        assert!(run_time != 0);
     }
 
     #[test]

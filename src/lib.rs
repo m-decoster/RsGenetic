@@ -99,6 +99,7 @@
 //! ```
 
 extern crate rand;
+extern crate time;
 
 /// Contains the definition of a Phenotype.
 pub mod pheno;
