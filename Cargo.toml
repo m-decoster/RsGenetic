@@ -7,6 +7,7 @@ repository = "https://github.com/m-decoster/RsGenetic"
 readme = "README.md"
 keywords = ["genetic"]
 license = "Apache-2.0"
+documentation = "http://m-decoster.github.io/RsGenetic"
 
 [dependencies]
 rand = "0.3"
