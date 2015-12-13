@@ -14,10 +14,10 @@ pub struct Simulator<T: Phenotype> {
 }
 
 impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
-    fn builder() -> SimulatorBuilder<T> {
+    fn builder(pop: Vec<Box<T>>) -> SimulatorBuilder<T> {
         SimulatorBuilder {
             sim: Simulator {
-                population: Vec::new(),
+                population: pop,
                 max_iters: 100,
                 n_iters: 0,
                 selection_type: SelectionType::Maximize { count: 5 },
@@ -162,14 +162,6 @@ pub struct SimulatorBuilder<T: Phenotype> {
 }
 
 impl<T: Phenotype> SimulatorBuilder<T> {
-    /// Set the initial population of the resulting `Simulator`.
-    ///
-    /// Returns itself for chaining purposes.
-    pub fn set_population(mut self, pop: Vec<Box<T>>) -> Self {
-        self.sim.population = pop;
-        self
-    }
-
     /// Set the maximum number of iterations of the resulting `Simulator`.
     ///
     /// The `Simulator` will stop running after this number of iterations.
@@ -244,8 +236,7 @@ mod tests {
     #[should_panic]
     fn test_maximize_count_0() {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-        let mut s = *seq::Simulator::builder()
-                         .set_population(tests)
+        let mut s = *seq::Simulator::builder(tests)
                          .set_max_iters(100)
                          .set_selection_type(SelectionType::Maximize { count: 0 })
                          .set_fitness_type(FitnessType::Minimize)
@@ -257,8 +248,7 @@ mod tests {
     #[should_panic]
     fn test_tournament_count_0() {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-        let mut s = *seq::Simulator::builder()
-                         .set_population(tests)
+        let mut s = *seq::Simulator::builder(tests)
                          .set_max_iters(100)
                          .set_selection_type(SelectionType::Tournament { num: 2, count: 0 })
                          .set_fitness_type(FitnessType::Minimize)
@@ -270,8 +260,7 @@ mod tests {
     #[should_panic]
     fn test_tournament_num_0() {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-        let mut s = *seq::Simulator::builder()
-                         .set_population(tests)
+        let mut s = *seq::Simulator::builder(tests)
                          .set_max_iters(100)
                          .set_selection_type(SelectionType::Tournament { num: 0, count: 1 })
                          .set_fitness_type(FitnessType::Minimize)
@@ -283,8 +272,7 @@ mod tests {
     #[should_panic]
     fn test_stochastic_count_0() {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-        let mut s = *seq::Simulator::builder()
-                         .set_population(tests)
+        let mut s = *seq::Simulator::builder(tests)
                          .set_max_iters(100)
                          .set_selection_type(SelectionType::Stochastic { count: 0 })
                          .set_fitness_type(FitnessType::Minimize)
@@ -295,8 +283,7 @@ mod tests {
     #[test]
     fn simple_convergence_test_maximize() {
         let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-        let mut s = *seq::Simulator::builder()
-                         .set_population(tests)
+        let mut s = *seq::Simulator::builder(tests)
                          .set_max_iters(1000)
                          .set_selection_type(SelectionType::Maximize { count: 5 })
                          .set_fitness_type(FitnessType::Minimize)
@@ -308,8 +295,7 @@ mod tests {
     #[test]
     fn simple_convergence_test_tournament() {
         let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-        let mut s = *seq::Simulator::builder()
-                         .set_population(tests)
+        let mut s = *seq::Simulator::builder(tests)
                          .set_max_iters(1000)
                          .set_selection_type(SelectionType::Tournament { count: 3, num: 5 })
                          .set_fitness_type(FitnessType::Minimize)
@@ -321,8 +307,7 @@ mod tests {
     #[test]
     fn simple_convergence_test_stochastic() {
         let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-        let mut s = *seq::Simulator::builder()
-                         .set_population(tests)
+        let mut s = *seq::Simulator::builder(tests)
                          .set_max_iters(1000)
                          .set_selection_type(SelectionType::Stochastic { count: 5 })
                          .set_fitness_type(FitnessType::Minimize)

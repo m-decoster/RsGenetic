@@ -14,7 +14,9 @@ pub trait Builder<T> {
 /// A `Simulation` is an execution of a genetic algorithm.
 pub trait Simulation<T: Phenotype, B: Builder<Box<Self>>> : shared::Selector<T> {
     /// Create a `Builder` to create an instance.
-    fn builder() -> B;
+    /// Because the population is a required parameter, you have to pass it here,
+    /// instead of using a builder function.
+    fn builder(population: Vec<Box<T>>) -> B;
     /// Run the simulation.
     fn run(&mut self);
     /// Get the best performing result of the simulation when it has ended.

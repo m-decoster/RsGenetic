@@ -85,8 +85,7 @@
 //!     tests.push(Box::new(Test { i: i + 10 }));
 //! }
 //! // Create a simulator using a builder.
-//! let mut s = *seq::Simulator::builder()
-//!                   .set_population(tests)
+//! let mut s = *seq::Simulator::builder(tests) // Population is mandatory
 //!                   .set_max_iters(1000)
 //!                   .set_selection_type(sim::SelectionType::Tournament {
 //!                         count: 3,
@@ -94,6 +93,7 @@
 //!                   })
 //!                   .set_fitness_type(sim::FitnessType::Minimize)
 //!                   .build();
+//! // We can now run the simulator.
 //! s.run();
 //! assert!((*s.get()).i == 0); // For this simple example, we should always get 0.
 //! ```
