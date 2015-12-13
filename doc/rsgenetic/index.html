@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-105' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-106' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p>RsGenetic provides a simple framework for genetic algorithms.
@@ -110,6 +110,7 @@ many phenotypes participate in a tournament. The resulting number of parents is 
 }
 
 <span class='comment'>// Implement the Clone trait.</span>
+<span class='comment'>// This is required for the internal workings of the library.</span>
 <span class='kw'>impl</span> <span class='ident'>Clone</span> <span class='kw'>for</span> <span class='ident'>Test</span> {
     <span class='kw'>fn</span> <span class='ident'>clone</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='self'>self</span>.<span class='ident'>i</span> }
@@ -123,8 +124,7 @@ many phenotypes participate in a tournament. The resulting number of parents is 
     <span class='ident'>tests</span>.<span class='ident'>push</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> }));
 }
 <span class='comment'>// Create a simulator using a builder.</span>
-<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
-                  .<span class='ident'>set_population</span>(<span class='ident'>tests</span>)
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>) <span class='comment'>// Population is mandatory</span>
                   .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
                   .<span class='ident'>set_selection_type</span>(<span class='ident'>sim</span>::<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span> {
                         <span class='ident'>count</span>: <span class='number'>3</span>,
@@ -132,6 +132,7 @@ many phenotypes participate in a tournament. The resulting number of parents is 
                   })
                   .<span class='ident'>set_fitness_type</span>(<span class='ident'>sim</span>::<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                   .<span class='ident'>build</span>();
+<span class='comment'>// We can now run the simulator.</span>
 <span class='ident'>s</span>.<span class='ident'>run</span>();
 <span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>); <span class='comment'>// For this simple example, we should always get 0.</span></pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>

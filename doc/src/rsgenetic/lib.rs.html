@@ -145,6 +145,7 @@
 <span id="103">103</span>
 <span id="104">104</span>
 <span id="105">105</span>
+<span id="106">106</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! # RsGenetic</span>
 <span class='doccomment'>//!</span>
@@ -216,6 +217,7 @@
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! // Implement the Clone trait.</span>
+<span class='doccomment'>//! // This is required for the internal workings of the library.</span>
 <span class='doccomment'>//! impl Clone for Test {</span>
 <span class='doccomment'>//!     fn clone(&amp;self) -&gt; Self {</span>
 <span class='doccomment'>//!         Test { i: self.i }</span>
@@ -232,8 +234,7 @@
 <span class='doccomment'>//!     tests.push(Box::new(Test { i: i + 10 }));</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//! // Create a simulator using a builder.</span>
-<span class='doccomment'>//! let mut s = *seq::Simulator::builder()</span>
-<span class='doccomment'>//!                   .set_population(tests)</span>
+<span class='doccomment'>//! let mut s = *seq::Simulator::builder(tests) // Population is mandatory</span>
 <span class='doccomment'>//!                   .set_max_iters(1000)</span>
 <span class='doccomment'>//!                   .set_selection_type(sim::SelectionType::Tournament {</span>
 <span class='doccomment'>//!                         count: 3,</span>
@@ -241,6 +242,7 @@
 <span class='doccomment'>//!                   })</span>
 <span class='doccomment'>//!                   .set_fitness_type(sim::FitnessType::Minimize)</span>
 <span class='doccomment'>//!                   .build();</span>
+<span class='doccomment'>//! // We can now run the simulator.</span>
 <span class='doccomment'>//! s.run();</span>
 <span class='doccomment'>//! assert!((*s.get()).i == 0); // For this simple example, we should always get 0.</span>
 <span class='doccomment'>//! ```</span>

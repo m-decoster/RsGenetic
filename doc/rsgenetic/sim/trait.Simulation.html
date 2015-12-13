@@ -45,16 +45,18 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-147' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#15-22' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-145' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#15-24' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Simulation&lt;T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>, B: <a class='trait' href='../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;Self&gt;&gt;&gt;: Selector&lt;T&gt; {
-    fn <a href='#tymethod.builder' class='fnname'>builder</a>() -&gt; B;
+    fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;&gt;) -&gt; B;
     fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self);
     fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;;
 }</pre><div class='docblock'><p>A <code>Simulation</code> is an execution of a genetic algorithm.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.builder' class='method stab '><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>() -&gt; B</code></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.</p>
+        <h3 id='tymethod.builder' class='method stab '><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;&gt;) -&gt; B</code></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.
+Because the population is a required parameter, you have to pass it here,
+instead of using a builder function.</p>
 </div><h3 id='tymethod.run' class='method stab '><code>fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self)</code></h3><div class='docblock'><p>Run the simulation.</p>
 </div><h3 id='tymethod.get' class='method stab '><code>fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;</code></h3><div class='docblock'><p>Get the best performing result of the simulation when it has ended.</p>
 </div></div>
