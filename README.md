@@ -8,7 +8,7 @@ to provide at least one parallel implementation, to optimize these implementatio
 and to provide more selection algorithms if needed.
 
 ## Examples and Documentation
-Open `doc/rsgenetic/index.html` for the documentation of this library. This includes a simple example.  
+Documentation is available [here](m-decoster.github.io/RsGenetic).  
 Alternatively, take a look at `src/sim/seq.rs` for some tests that also show how to use this library.
 
 ## License
