@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Parents` type in crate `rsgenetic`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Parents">
+    <meta name="description" content="API documentation for the Rust `Builder` trait in crate `rsgenetic`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Builder">
 
-    <title>rsgenetic::sim::Parents - Rust</title>
+    <title>rsgenetic::sim::Builder - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../main.css">
 
@@ -26,7 +26,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a></p><script>window.sidebarCurrent = {name: 'Parents', ty: 'type', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a></p><script>window.sidebarCurrent = {name: 'Builder', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -40,13 +40,26 @@
         </form>
     </nav>
 
-    <section id='main' class="content type">
-<h1 class='fqn'><span class='in-band'><a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a>::<wbr><a class='type' href=''>Parents</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a>::<wbr><a class='trait' href=''>Builder</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-113' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#13' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type Parents&lt;T&gt; = <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;, <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;)</a>&gt;;</pre></section>
+        </span><a id='src-143' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#9-12' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Builder&lt;T&gt; {
+    fn <a href='#tymethod.build' class='fnname'>build</a>(self) -&gt; T;
+}</pre><div class='docblock'><p>A <code>Builder</code> can create new <code>Simulation</code> instances.</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.build' class='method stab '><code>fn <a href='#tymethod.build' class='fnname'>build</a>(self) -&gt; T</code></h3><div class='docblock'><p>Return the result.</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl&lt;T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&gt; <a class='trait' href='../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='struct' href='../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;T&gt;&gt;&gt; for <a class='struct' href='../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;T&gt;</code></li>
+</ul><script type="text/javascript" async
+                              src="../../implementors/rsgenetic/sim/trait.Builder.js">
+                      </script></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
