@@ -74,6 +74,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     /// Select count*2 parents for breeding.
     fn selection_maximize(&self, count: u32) -> Parents<T> {
         assert!(count > 0);
+        assert!(((count * 2) as usize) < self.population.len());
 
         let mut cloned = self.population.clone();
         cloned.sort_by(|x, y| {
@@ -99,6 +100,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     fn selection_tournament(&self, num: u32, count: u32) -> Parents<T> {
         assert!(num > 0);
         assert!(count > 0);
+        assert!(((num * 2) as usize) < self.population.len());
 
         let mut result: Parents<T> = Vec::new();
         let mut rng = ::rand::thread_rng();
@@ -127,6 +129,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     /// Select parents using stochastic universal sampling.
     fn selection_stochastic(&self, count: u32) -> Parents<T> {
         assert!(count > 0);
+        assert!((count as usize) < self.population.len());
 
         let ratio = self.population.len() / (count as usize);
         let mut result: Parents<T> = Vec::new();

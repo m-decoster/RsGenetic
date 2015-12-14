@@ -9,8 +9,10 @@
 //!
 //! You can use this library by adding the following lines to your `Cargo.toml` file:
 //!
-//!     [dependencies]
-//!     rsgenetic = "0.6"
+//! ```ignore
+//! [dependencies]
+//! rsgenetic = "0.6"
+//! ```
 //!
 //! and adding `extern crate rsgenetic;` to your crate root.
 //!
