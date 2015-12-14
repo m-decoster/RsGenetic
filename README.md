@@ -9,7 +9,9 @@ and to provide more selection algorithms if needed.
 
 ## Examples and Documentation
 Documentation is available [here](http://m-decoster.github.io/RsGenetic).  
-Examples on how to use this library are shown below.
+Examples are available as Cargo projects in the `examples` directory. Simply `cd` into
+an example directory and execute `cargo run` to test the library.  
+An additional example is shown below.
 
 ## Implementing Phenotype
 
