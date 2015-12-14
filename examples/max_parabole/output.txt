@@ -1,0 +1,3 @@
+Execution time: 208676 ns.
+Expected result: (-3, 10).
+Result: (-3, 10).
