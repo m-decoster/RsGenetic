@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-164' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#37-57' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-191' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#38-59' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum SelectionType {
     Maximize {
         count: <a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,
@@ -62,18 +62,19 @@
 <table><tr><td id='variant.Maximize'><code>Maximize</code></td><td><div class='docblock'><p>Select only the <code>count * 2</code> best performing parents in terms of fitness.</p>
 </div><h3 class='fields'>Fields</h3>
 
-                                              <table><tr><td id='variant.Maximize.field.count'><code>count</code></td><td><div class='docblock'><p>Should be larger than 0.</p>
+                                              <table><tr><td id='variant.Maximize.field.count'><code>count</code></td><td><div class='docblock'><p>Should be larger than 0 and smaller than half the population size.</p>
 </div></td></tr></table></td></tr><tr><td id='variant.Tournament'><code>Tournament</code></td><td><div class='docblock'><p>Perform tournament selection with tournament size <code>count</code>, running <code>num</code> tournaments.
 This yields <code>num * 2</code> parents.</p>
 </div><h3 class='fields'>Fields</h3>
 
-                                              <table><tr><td id='variant.Tournament.field.num'><code>num</code></td><td><div class='docblock'><p>Indicates the number of tournaments. Should be larger than 0.</p>
-</div></td></tr><tr><td id='variant.Tournament.field.count'><code>count</code></td><td><div class='docblock'><p>Should be larger than 0.</p>
+                                              <table><tr><td id='variant.Tournament.field.num'><code>num</code></td><td><div class='docblock'><p>Indicates the number of tournaments. Should be larger than 0 and smaller than the
+population size.</p>
+</div></td></tr><tr><td id='variant.Tournament.field.count'><code>count</code></td><td><div class='docblock'><p>Should be larger than 0 and smaller than the population size.</p>
 </div></td></tr></table></td></tr><tr><td id='variant.Stochastic'><code>Stochastic</code></td><td><div class='docblock'><p>Perform Stochastic Universal Sampling to do the selection.
-Selects <code>count * 2</code> parents.</p>
+Selects <code>count</code> parents.</p>
 </div><h3 class='fields'>Fields</h3>
 
-                                              <table><tr><td id='variant.Stochastic.field.count'><code>count</code></td><td><div class='docblock'><p>Should be larger than 0.</p>
+                                              <table><tr><td id='variant.Stochastic.field.count'><code>count</code></td><td><div class='docblock'><p>Should be larger than 0 and smaller than the population size.</p>
 </div></td></tr></table></td></tr></table></section>
     <section id='search' class="content hidden"></section>
 

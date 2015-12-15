@@ -103,6 +103,8 @@
 <span id="61">61</span>
 <span id="62">62</span>
 <span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
 
@@ -131,33 +133,35 @@
     <span class='doccomment'>/// or a string containing an error.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// For example: we run with a `SelectionType` with invalid parameters. The returned value</span>
-    <span class='doccomment'>/// will be `Err(String)`. Otherwise, the result will be `Some(NanoSecond)`,</span>
-    <span class='doccomment'>/// or `None` in case of an overflow.</span>
+    <span class='doccomment'>/// will be `Err(String)`. Otherwise, the result will be `Ok(Some(NanoSecond))`,</span>
+    <span class='doccomment'>/// or `Ok(None)` in case of an overflow.</span>
     <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
     <span class='doccomment'>/// Get the best performing result of the simulation when it has ended.</span>
     <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
+    <span class='doccomment'>/// Get the number of iterations the `Simulator` needed to converge.</span>
+    <span class='kw'>fn</span> <span class='ident'>iterations</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span>;
 }
-
 
 <span class='doccomment'>/// The type of parent selection.</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>SelectionType</span> {
     <span class='doccomment'>/// Select only the `count * 2` best performing parents in terms of fitness.</span>
     <span class='ident'>Maximize</span> {
-        <span class='doccomment'>/// Should be larger than 0.</span>
+        <span class='doccomment'>/// Should be larger than 0 and smaller than half the population size.</span>
         <span class='ident'>count</span>: <span class='ident'>u32</span>,
     },
     <span class='doccomment'>/// Perform tournament selection with tournament size `count`, running `num` tournaments.</span>
     <span class='doccomment'>/// This yields `num * 2` parents.</span>
     <span class='ident'>Tournament</span> {
-        <span class='doccomment'>/// Indicates the number of tournaments. Should be larger than 0.</span>
+        <span class='doccomment'>/// Indicates the number of tournaments. Should be larger than 0 and smaller than the</span>
+        <span class='doccomment'>/// population size.</span>
         <span class='ident'>num</span>: <span class='ident'>u32</span>,
-        <span class='doccomment'>/// Should be larger than 0.</span>
+        <span class='doccomment'>/// Should be larger than 0 and smaller than the population size.</span>
         <span class='ident'>count</span>: <span class='ident'>u32</span>,
     },
     <span class='doccomment'>/// Perform Stochastic Universal Sampling to do the selection.</span>
-    <span class='doccomment'>/// Selects `count * 2` parents.</span>
+    <span class='doccomment'>/// Selects `count` parents.</span>
     <span class='ident'>Stochastic</span> {
-        <span class='doccomment'>/// Should be larger than 0.</span>
+        <span class='doccomment'>/// Should be larger than 0 and smaller than the population size.</span>
         <span class='ident'>count</span>: <span class='ident'>u32</span>,
     },
 }
