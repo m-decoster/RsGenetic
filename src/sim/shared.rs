@@ -9,6 +9,7 @@ pub trait Selector<T: Phenotype> {
     fn selection_maximize(&self, count: u32) -> Result<Parents<T>, String>;
     fn selection_tournament(&self, num: u32, count: u32) -> Result<Parents<T>, String>;
     fn selection_stochastic(&self, count: u32) -> Result<Parents<T>, String>;
+    fn selection_roulette(&self, count: u32) -> Result<Parents<T>, String>;
     /// Kill off phenotypes using stochastic universal sampling.
     fn kill_off(&mut self, count: usize) -> Result<(), String>;
 }

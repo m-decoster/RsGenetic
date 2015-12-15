@@ -1,6 +1,7 @@
 use pheno::Phenotype;
 use std::cmp::Ordering;
 use rand::Rng;
+use rand::distributions::{IndependentSample, Range};
 use super::*;
 use super::shared::*;
 use time::SteadyTime;
@@ -79,6 +80,7 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
                 SelectionType::Maximize{count: c} => self.selection_maximize(c),
                 SelectionType::Tournament{num: n, count: c} => self.selection_tournament(n, c),
                 SelectionType::Stochastic{count: c} => self.selection_stochastic(c),
+                SelectionType::Roulette{count: c} => self.selection_roulette(c),
             };
             if parents_tmp.is_err() {
                 return Err(parents_tmp.err().unwrap());
@@ -227,6 +229,44 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
             selected += 2;
         }
         Ok(result)
+    }
+
+    /// Select parents using roulette wheel selection.
+    fn selection_roulette(&self, count: u32) -> Result<Parents<T>, String> {
+        if count <= 0 || (count as usize) >= self.population.len() {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
+                                less than the population size.",
+                               count));
+        }
+
+        let mut results: Parents<T> = Vec::new();
+
+        let mut cloned = self.population.clone();
+        cloned.sort_by(|x, y| {
+            (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
+        });
+        let max_fitness = cloned[cloned.len() - 1].fitness();
+
+        let between = Range::new(0.0, 1.0);
+        let mut rng = ::rand::thread_rng();
+
+        let mut selected = 0;
+        while selected < count {
+            let mut inner_selected: Vec<Box<T>> = Vec::with_capacity(2);
+            while inner_selected.len() < 2 {
+                let i = rng.gen::<usize>() % self.population.len() as usize;
+                let c = between.ind_sample(&mut rng);
+
+                let frac = self.population[i].fitness() / max_fitness;
+                if c <= frac {
+                    inner_selected.push(self.population[i].clone());
+                }
+            }
+            results.push((inner_selected[0].clone(), inner_selected[1].clone()));
+
+            selected += 2;
+        }
+        Ok(results)
     }
 
     /// Kill off phenotypes using stochastic universal sampling.
@@ -451,5 +491,17 @@ mod tests {
                          .build();
         s.run().unwrap();
         assert_eq!((*s.get()).i, 0);
+    }
+
+    #[test]
+    fn simple_convergence_test_roulette() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
+        let mut s = *seq::Simulator::builder(tests)
+                         .set_max_iters(1000)
+                         .set_selection_type(SelectionType::Roulette { count: 4 })
+                         .set_fitness_type(FitnessType::Minimize)
+                         .build();
+        s.run().unwrap();
+        assert!((*s.get()).i == 0);
     }
 }
