@@ -161,6 +161,12 @@
 <span id="119">119</span>
 <span id="120">120</span>
 <span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! # RsGenetic</span>
 <span class='doccomment'>//!</span>
@@ -175,7 +181,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```ignore</span>
 <span class='doccomment'>//! [dependencies]</span>
-<span class='doccomment'>//! rsgenetic = &quot;0.6&quot;</span>
+<span class='doccomment'>//! rsgenetic = &quot;0.7&quot;</span>
 <span class='doccomment'>//! ```</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! and adding `extern crate rsgenetic;` to your crate root.</span>
@@ -212,6 +218,12 @@
 <span class='doccomment'>//! ### Stochastic</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! Stochastic takes 1 parameter: the count. The resulting number of parents is `count`.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ## Early Stopping</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! If you wish, you can stop early if the fitness value of the best performing Phenotype</span>
+<span class='doccomment'>//! doesn&#39;t improve by a large amount for a number of iterations. This can be done by calling the</span>
+<span class='doccomment'>//! `set_early_stop(delta: f64, n_iters: u32)` function on the `SimulatorBuilder`.</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! # Examples</span>
 <span class='doccomment'>//!</span>

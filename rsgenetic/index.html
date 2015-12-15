@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-121' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-127' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p>RsGenetic provides a simple framework for genetic algorithms.
@@ -57,7 +57,7 @@ and this library takes care of the rest.</p>
 <p>You can use this library by adding the following lines to your <code>Cargo.toml</code> file:</p>
 <pre class='rust rust-example-rendered'>
 [<span class='ident'>dependencies</span>]
-<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.6&quot;</span></pre>
+<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.7&quot;</span></pre>
 
 <p>and adding <code>extern crate rsgenetic;</code> to your crate root.</p>
 
@@ -90,6 +90,11 @@ many phenotypes participate in a tournament. The resulting number of parents is 
 
 <h3 id='stochastic' class='section-header'><a href='#stochastic'>Stochastic</a></h3>
 <p>Stochastic takes 1 parameter: the count. The resulting number of parents is <code>count</code>.</p>
+
+<h2 id='early-stopping' class='section-header'><a href='#early-stopping'>Early Stopping</a></h2>
+<p>If you wish, you can stop early if the fitness value of the best performing Phenotype
+doesn&#39;t improve by a large amount for a number of iterations. This can be done by calling the
+<code>set_early_stop(delta: f64, n_iters: u32)</code> function on the <code>SimulatorBuilder</code>.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <h2 id='implementing-phenotype' class='section-header'><a href='#implementing-phenotype'>Implementing Phenotype</a></h2><pre class='rust rust-example-rendered'>
