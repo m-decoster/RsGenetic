@@ -11,7 +11,7 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! rsgenetic = "0.6"
+//! rsgenetic = "0.7"
 //! ```
 //!
 //! and adding `extern crate rsgenetic;` to your crate root.
@@ -48,6 +48,12 @@
 //! ### Stochastic
 //!
 //! Stochastic takes 1 parameter: the count. The resulting number of parents is `count`.
+//!
+//! ## Early Stopping
+//!
+//! If you wish, you can stop early if the fitness value of the best performing Phenotype
+//! doesn't improve by a large amount for a number of iterations. This can be done by calling the
+//! `set_early_stop(delta: f64, n_iters: u32)` function on the `SimulatorBuilder`.
 //!
 //! # Examples
 //!
