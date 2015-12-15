@@ -25,8 +25,8 @@ pub trait Simulation<T: Phenotype, B: Builder<Box<Self>>> : shared::Selector<T> 
     /// or a string containing an error.
     ///
     /// For example: we run with a `SelectionType` with invalid parameters. The returned value
-    /// will be `Err(String)`. Otherwise, the result will be `Some(NanoSecond)`,
-    /// or `None` in case of an overflow.
+    /// will be `Err(String)`. Otherwise, the result will be `Ok(Some(NanoSecond))`,
+    /// or `Ok(None)` in case of an overflow.
     fn run(&mut self) -> Result<Option<NanoSecond>, String>;
     /// Get the best performing result of the simulation when it has ended.
     fn get(&self) -> Box<T>;
