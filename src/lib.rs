@@ -25,7 +25,7 @@
 //! ## Available Selection Types
 //!
 //! There are currently three selection types available:
-//! 
+//!
 //! * Maximize
 //! * Tournament
 //! * Stochastic

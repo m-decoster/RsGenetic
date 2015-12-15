@@ -29,15 +29,19 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
     }
 
     /// Run.
-    fn run(&mut self) -> Option<NanoSecond> {
+    fn run(&mut self) -> Result<Option<NanoSecond>, String> {
         let time_start = SteadyTime::now();
         while self.n_iters < self.max_iters {
             // Perform selection
-            let parents = match self.selection_type {
+            let parents_tmp = match self.selection_type {
                 SelectionType::Maximize{count: c} => self.selection_maximize(c),
                 SelectionType::Tournament{num: n, count: c} => self.selection_tournament(n, c),
                 SelectionType::Stochastic{count: c} => self.selection_stochastic(c),
             };
+            if parents_tmp.is_err() {
+                return Err(parents_tmp.err().unwrap());
+            }
+            let parents = parents_tmp.ok().unwrap();
             // Create children from the selected parents and mutate them
             let children: Vec<Box<T>> = parents.iter()
                                                .map(|pair: &(Box<T>, Box<T>)| {
@@ -46,15 +50,20 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
                                                .map(|c| Box::new(c.mutate()))
                                                .collect();
             // Kill off parts of the population at random to make room for the children
-            self.kill_off(children.len());
-            // Add the newly born children to the population
-            for child in children {
-                self.population.push(child);
-            }
+            match self.kill_off(children.len()) {
+                Ok(_) => {
+                    for child in children {
+                        self.population.push(child);
+                    }
 
-            self.n_iters += 1
+                    self.n_iters += 1;
+                }
+                Err(e) => {
+                    return Err(e);
+                }
+            }
         }
-        (SteadyTime::now() - time_start).num_nanoseconds()
+        Ok((SteadyTime::now() - time_start).num_nanoseconds())
     }
 
     /// Get the best performing organism.
@@ -72,9 +81,12 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
 
 impl<T: Phenotype> Selector<T> for Simulator<T> {
     /// Select count*2 parents for breeding.
-    fn selection_maximize(&self, count: u32) -> Parents<T> {
-        assert!(count > 0);
-        assert!(((count * 2) as usize) < self.population.len());
+    fn selection_maximize(&self, count: u32) -> Result<Parents<T>, String> {
+        if count <= 0 || ((count * 2) as usize) >= self.population.len() {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
+                                less than half the population size.",
+                               count));
+        }
 
         let mut cloned = self.population.clone();
         cloned.sort_by(|x, y| {
@@ -93,14 +105,20 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
             result.push((sorted[index].clone(), sorted[index + 1].clone()));
             index += 2;
         }
-        result
+        Ok(result)
     }
 
     /// Select parents using tournament selection.
-    fn selection_tournament(&self, num: u32, count: u32) -> Parents<T> {
-        assert!(num > 0);
-        assert!(count > 0);
-        assert!(((num * 2) as usize) < self.population.len());
+    fn selection_tournament(&self, num: u32, count: u32) -> Result<Parents<T>, String> {
+        if num <= 0 || ((num * 2) as usize) >= self.population.len() {
+            return Err(format!("Invalid parameter `num`: {}. Should be larger than zero and \
+                                less than half the population size.",
+                               num));
+        }
+        if count <= 0 {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero.",
+                               count));
+        }
 
         let mut result: Parents<T> = Vec::new();
         let mut rng = ::rand::thread_rng();
@@ -123,13 +141,16 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
                 }
             }
         }
-        result
+        Ok(result)
     }
 
     /// Select parents using stochastic universal sampling.
-    fn selection_stochastic(&self, count: u32) -> Parents<T> {
-        assert!(count > 0);
-        assert!((count as usize) < self.population.len());
+    fn selection_stochastic(&self, count: u32) -> Result<Parents<T>, String> {
+        if count <= 0 || (count as usize) >= self.population.len() {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
+                                less than the population size.",
+                               count));
+        }
 
         let ratio = self.population.len() / (count as usize);
         let mut result: Parents<T> = Vec::new();
@@ -142,11 +163,11 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
             i = i % self.population.len();
             selected += 2;
         }
-        result
+        Ok(result)
     }
 
     /// Kill off phenotypes using stochastic universal sampling.
-    fn kill_off(&mut self, count: usize) {
+    fn kill_off(&mut self, count: usize) -> Result<(), String> {
         let old_len = self.population.len();
         let ratio = self.population.len() / count;
         let mut i = ::rand::random::<usize>() % self.population.len() as usize;
@@ -158,7 +179,12 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
 
             selected += 1;
         }
-        assert!(self.population.len() == old_len - count);
+        if self.population.len() == old_len - count {
+            Ok(())
+        } else {
+            Err(format!("Something went wrong during reduction of population. Invalid number of \
+                         results."))
+        }
     }
 }
 
@@ -247,7 +273,7 @@ mod tests {
                          .set_selection_type(SelectionType::Maximize { count: 0 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run();
+        s.run().unwrap();
     }
 
     #[test]
@@ -259,7 +285,7 @@ mod tests {
                          .set_selection_type(SelectionType::Tournament { num: 2, count: 0 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run();
+        s.run().unwrap();
     }
 
     #[test]
@@ -271,7 +297,7 @@ mod tests {
                          .set_selection_type(SelectionType::Tournament { num: 0, count: 1 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run();
+        s.run().unwrap();
     }
 
     #[test]
@@ -283,7 +309,7 @@ mod tests {
                          .set_selection_type(SelectionType::Stochastic { count: 0 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run();
+        s.run().unwrap();
     }
 
     #[test]
@@ -294,11 +320,7 @@ mod tests {
                          .set_selection_type(SelectionType::Stochastic { count: 1 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        let run_time = match s.run() {
-            Some(x) => x,
-            None => 0
-        };
-        assert!(run_time != 0);
+        s.run().unwrap().unwrap();
     }
 
     #[test]
@@ -309,7 +331,7 @@ mod tests {
                          .set_selection_type(SelectionType::Maximize { count: 5 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run();
+        s.run().unwrap();
         assert_eq!((*s.get()).i, 0);
     }
 
@@ -321,7 +343,7 @@ mod tests {
                          .set_selection_type(SelectionType::Tournament { count: 3, num: 5 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run();
+        s.run().unwrap();
         assert_eq!((*s.get()).i, 0);
     }
 
@@ -333,7 +355,7 @@ mod tests {
                          .set_selection_type(SelectionType::Stochastic { count: 5 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run();
+        s.run().unwrap();
         assert_eq!((*s.get()).i, 0);
     }
 }

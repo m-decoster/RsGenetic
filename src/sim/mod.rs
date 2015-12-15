@@ -20,9 +20,14 @@ pub trait Simulation<T: Phenotype, B: Builder<Box<Self>>> : shared::Selector<T> 
     /// Because the population is a required parameter, you have to pass it here,
     /// instead of using a builder function.
     fn builder(population: Vec<Box<T>>) -> B;
-    /// Run the simulation. Returns the time spent running in ns.
-    /// Should there be an overflow, this function returns `None`.
-    fn run(&mut self) -> Option<NanoSecond>;
+    /// Run the simulation. Returns the time spent running in ns on success (unless
+    /// an overflow occurred, then the time will be `None`)
+    /// or a string containing an error.
+    ///
+    /// For example: we run with a `SelectionType` with invalid parameters. The returned value
+    /// will be `Err(String)`. Otherwise, the result will be `Some(NanoSecond)`,
+    /// or `None` in case of an overflow.
+    fn run(&mut self) -> Result<Option<NanoSecond>, String>;
     /// Get the best performing result of the simulation when it has ended.
     fn get(&self) -> Box<T>;
 }
