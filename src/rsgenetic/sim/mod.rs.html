@@ -98,6 +98,11 @@
 <span id="56">56</span>
 <span id="57">57</span>
 <span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
 
@@ -121,9 +126,14 @@
     <span class='doccomment'>/// Because the population is a required parameter, you have to pass it here,</span>
     <span class='doccomment'>/// instead of using a builder function.</span>
     <span class='kw'>fn</span> <span class='ident'>builder</span>(<span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>B</span>;
-    <span class='doccomment'>/// Run the simulation. Returns the time spent running in ns.</span>
-    <span class='doccomment'>/// Should there be an overflow, this function returns `None`.</span>
-    <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span>;
+    <span class='doccomment'>/// Run the simulation. Returns the time spent running in ns on success (unless</span>
+    <span class='doccomment'>/// an overflow occurred, then the time will be `None`)</span>
+    <span class='doccomment'>/// or a string containing an error.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// For example: we run with a `SelectionType` with invalid parameters. The returned value</span>
+    <span class='doccomment'>/// will be `Err(String)`. Otherwise, the result will be `Some(NanoSecond)`,</span>
+    <span class='doccomment'>/// or `None` in case of an overflow.</span>
+    <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
     <span class='doccomment'>/// Get the best performing result of the simulation when it has ended.</span>
     <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 }

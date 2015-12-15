@@ -45,13 +45,21 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-107' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-121' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p>RsGenetic provides a simple framework for genetic algorithms.
 You need to provide the definition of a Phenotype (also known as an Individual),
 define how crossover and mutation work, present a fitness function, choose some settings
 and this library takes care of the rest.</p>
+
+<h1 id='installation' class='section-header'><a href='#installation'>Installation</a></h1>
+<p>You can use this library by adding the following lines to your <code>Cargo.toml</code> file:</p>
+<pre class='rust rust-example-rendered'>
+[<span class='ident'>dependencies</span>]
+<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.6&quot;</span></pre>
+
+<p>and adding <code>extern crate rsgenetic;</code> to your crate root.</p>
 
 <h1 id='features' class='section-header'><a href='#features'>Features</a></h1>
 <h2 id='available-simulators' class='section-header'><a href='#available-simulators'>Available Simulators</a></h2>
@@ -133,8 +141,11 @@ many phenotypes participate in a tournament. The resulting number of parents is 
                   .<span class='ident'>set_fitness_type</span>(<span class='ident'>sim</span>::<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                   .<span class='ident'>build</span>();
 <span class='comment'>// We can now run the simulator.</span>
-<span class='ident'>s</span>.<span class='ident'>run</span>();
-<span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>); <span class='comment'>// For this simple example, we should always get 0.</span></pre>
+<span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>run</span>();
+<span class='comment'>// This will fail if the result was an error:</span>
+<span class='ident'>result</span>.<span class='ident'>unwrap</span>().<span class='ident'>unwrap</span>();
+<span class='comment'>// For this simple example, we should always get 0.</span>
+<span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>);</pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                     <tr class=' module-item'>

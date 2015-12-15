@@ -147,6 +147,20 @@
 <span id="105">105</span>
 <span id="106">106</span>
 <span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! # RsGenetic</span>
 <span class='doccomment'>//!</span>
@@ -154,6 +168,17 @@
 <span class='doccomment'>//! You need to provide the definition of a Phenotype (also known as an Individual),</span>
 <span class='doccomment'>//! define how crossover and mutation work, present a fitness function, choose some settings</span>
 <span class='doccomment'>//! and this library takes care of the rest.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! # Installation</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! You can use this library by adding the following lines to your `Cargo.toml` file:</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ```ignore</span>
+<span class='doccomment'>//! [dependencies]</span>
+<span class='doccomment'>//! rsgenetic = &quot;0.6&quot;</span>
+<span class='doccomment'>//! ```</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! and adding `extern crate rsgenetic;` to your crate root.</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! # Features</span>
 <span class='doccomment'>//! ## Available Simulators</span>
@@ -164,7 +189,7 @@
 <span class='doccomment'>//! ## Available Selection Types</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! There are currently three selection types available:</span>
-<span class='doccomment'>//! </span>
+<span class='doccomment'>//!</span>
 <span class='doccomment'>//! * Maximize</span>
 <span class='doccomment'>//! * Tournament</span>
 <span class='doccomment'>//! * Stochastic</span>
@@ -244,8 +269,11 @@
 <span class='doccomment'>//!                   .set_fitness_type(sim::FitnessType::Minimize)</span>
 <span class='doccomment'>//!                   .build();</span>
 <span class='doccomment'>//! // We can now run the simulator.</span>
-<span class='doccomment'>//! s.run();</span>
-<span class='doccomment'>//! assert!((*s.get()).i == 0); // For this simple example, we should always get 0.</span>
+<span class='doccomment'>//! let result = s.run();</span>
+<span class='doccomment'>//! // This will fail if the result was an error:</span>
+<span class='doccomment'>//! result.unwrap().unwrap();</span>
+<span class='doccomment'>//! // For this simple example, we should always get 0.</span>
+<span class='doccomment'>//! assert!((*s.get()).i == 0);</span>
 <span class='doccomment'>//! ```</span>
 
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
