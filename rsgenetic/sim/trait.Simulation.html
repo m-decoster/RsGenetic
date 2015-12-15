@@ -62,8 +62,8 @@ an overflow occurred, then the time will be <code>None</code>)
 or a string containing an error.</p>
 
 <p>For example: we run with a <code>SelectionType</code> with invalid parameters. The returned value
-will be <code>Err(String)</code>. Otherwise, the result will be <code>Some(NanoSecond)</code>,
-or <code>None</code> in case of an overflow.</p>
+will be <code>Err(String)</code>. Otherwise, the result will be <code>Ok(Some(NanoSecond))</code>,
+or <code>Ok(None)</code> in case of an overflow.</p>
 </div><h3 id='tymethod.get' class='method stab '><code>fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;</code></h3><div class='docblock'><p>Get the best performing result of the simulation when it has ended.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
