@@ -30,28 +30,30 @@ pub trait Simulation<T: Phenotype, B: Builder<Box<Self>>> : shared::Selector<T> 
     fn run(&mut self) -> Result<Option<NanoSecond>, String>;
     /// Get the best performing result of the simulation when it has ended.
     fn get(&self) -> Box<T>;
+    /// Get the number of iterations the `Simulator` needed to converge.
+    fn iterations(&self) -> i32;
 }
-
 
 /// The type of parent selection.
 pub enum SelectionType {
     /// Select only the `count * 2` best performing parents in terms of fitness.
     Maximize {
-        /// Should be larger than 0.
+        /// Should be larger than 0 and smaller than half the population size.
         count: u32,
     },
     /// Perform tournament selection with tournament size `count`, running `num` tournaments.
     /// This yields `num * 2` parents.
     Tournament {
-        /// Indicates the number of tournaments. Should be larger than 0.
+        /// Indicates the number of tournaments. Should be larger than 0 and smaller than the
+        /// population size.
         num: u32,
-        /// Should be larger than 0.
+        /// Should be larger than 0 and smaller than the population size.
         count: u32,
     },
     /// Perform Stochastic Universal Sampling to do the selection.
-    /// Selects `count * 2` parents.
+    /// Selects `count` parents.
     Stochastic {
-        /// Should be larger than 0.
+        /// Should be larger than 0 and smaller than the population size.
         count: u32,
     },
 }

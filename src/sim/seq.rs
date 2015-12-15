@@ -12,6 +12,46 @@ pub struct Simulator<T: Phenotype> {
     n_iters: i32,
     selection_type: SelectionType,
     fitness_type: FitnessType,
+    earlystop: bool,
+    earlystopper: EarlyStopper,
+}
+
+/// Used for early stopping.
+struct EarlyStopper {
+    /// Minimum difference required for early stopping.
+    delta: f64,
+    /// Previously recorded fitness value.
+    previous: f64,
+    /// Maximum number of iterations before early stopping.
+    max_iters: u32,
+    /// Current number of iterations where the difference was smaller than delta.
+    n_iters: u32,
+}
+
+impl EarlyStopper {
+    /// Create a new `EarlyStopper`.
+    fn new(delta: f64, n_iters: u32) -> EarlyStopper {
+        EarlyStopper {
+            delta: delta,
+            previous: 0.0,
+            max_iters: n_iters,
+            n_iters: 0,
+        }
+    }
+
+    /// Update the `EarlyStopper` with a new fitness value.
+    ///
+    /// Returns whether or not the `Simulator` should stop.
+    fn update(&mut self, fitness: f64) -> bool {
+        if (fitness - self.previous).abs() < self.delta {
+            self.previous = fitness;
+            self.n_iters += 1;
+        } else {
+            self.n_iters = 0;
+        }
+
+        self.n_iters >= self.max_iters
+    }
 }
 
 impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
@@ -24,6 +64,8 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
                 n_iters: 0,
                 selection_type: SelectionType::Maximize { count: 5 },
                 fitness_type: FitnessType::Maximize,
+                earlystop: false,
+                earlystopper: EarlyStopper::new(0.0, 0),
             },
         }
     }
@@ -62,6 +104,22 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
                     return Err(e);
                 }
             }
+
+            if self.earlystop {
+                let mut cloned = self.population.clone();
+                cloned.sort_by(|x, y| {
+                    (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
+                });
+                let highest_fitness = match self.fitness_type {
+                                          FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
+                                          FitnessType::Minimize => cloned[0].clone(),
+                                      }
+                                      .fitness();
+
+                if self.earlystopper.update(highest_fitness) {
+                    break;
+                }
+            }
         }
         Ok((SteadyTime::now() - time_start).num_nanoseconds())
     }
@@ -76,6 +134,10 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
             FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
             FitnessType::Minimize => cloned[0].clone(),
         }
+    }
+
+    fn iterations(&self) -> i32 {
+        self.n_iters
     }
 }
 
@@ -115,8 +177,9 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
                                 less than half the population size.",
                                num));
         }
-        if count <= 0 {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero.",
+        if count <= 0 || (count as usize) >= self.population.len() {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
+                                less than half the population size.",
                                count));
         }
 
@@ -221,6 +284,16 @@ impl<T: Phenotype> SimulatorBuilder<T> {
         self.sim.fitness_type = t;
         self
     }
+
+    /// Set early stopping. If for `n_iters` iterations, the change in the highest fitness
+    /// is smaller than `delta`, the simulator will stop running.
+    ///
+    /// Returns itself for chaining purposes.
+    pub fn set_early_stop(mut self, delta: f64, n_iters: u32) -> Self {
+        self.sim.earlystop = true;
+        self.sim.earlystopper = EarlyStopper::new(delta, n_iters);
+        self
+    }
 }
 
 impl<T: Phenotype> Builder<Box<Simulator<T>>> for SimulatorBuilder<T> {
@@ -321,6 +394,27 @@ mod tests {
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
         s.run().unwrap().unwrap();
+    }
+
+    #[test]
+    fn test_earlystop() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let mut s_early = *seq::Simulator::builder(tests)
+                               .set_max_iters(1000)
+                               .set_selection_type(SelectionType::Stochastic { count: 5 })
+                               .set_fitness_type(FitnessType::Minimize)
+                               .set_early_stop(0.1, 5)
+                               .build();
+        let tests2 = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let mut s_no_early = *seq::Simulator::builder(tests2)
+                                  .set_max_iters(1000)
+                                  .set_selection_type(SelectionType::Stochastic { count: 5 })
+                                  .set_fitness_type(FitnessType::Minimize)
+                                  .build();
+        s_early.run().unwrap(); // Both should run without error.
+        s_no_early.run().unwrap(); // Both should run without error.
+
+        assert!(s_early.iterations() <= s_no_early.iterations());
     }
 
     #[test]
