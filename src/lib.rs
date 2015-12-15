@@ -105,8 +105,11 @@
 //!                   .set_fitness_type(sim::FitnessType::Minimize)
 //!                   .build();
 //! // We can now run the simulator.
-//! s.run();
-//! assert!((*s.get()).i == 0); // For this simple example, we should always get 0.
+//! let result = s.run();
+//! // This will fail if the result was an error:
+//! result.unwrap().unwrap();
+//! // For this simple example, we should always get 0.
+//! assert!((*s.get()).i == 0);
 //! ```
 
 extern crate rand;
