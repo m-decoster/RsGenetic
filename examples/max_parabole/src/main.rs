@@ -57,7 +57,7 @@ fn main() {
                             })
                             .build();
     let time = s.run();
-    println!("Execution time: {} ns.", time.unwrap());
+    println!("Execution time: {} ns.", time.unwrap().unwrap());
     println!("Expected result: (-3, 10).");
     let result = *s.get();
     println!("Result: ({}, {}).", result.x, result.fitness());
