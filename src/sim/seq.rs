@@ -165,12 +165,9 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
         cloned.sort_by(|x, y| {
             (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
         });
-        match self.fitness_type {
-            FitnessType::Maximize => {
-                cloned.reverse();
-            }
-            _ => {}
-        };
+        if let FitnessType::Maximize = self.fitness_type {
+            cloned.reverse();
+        }
         let sorted: Vec<&Box<T>> = cloned.iter().take(2 * (count as usize)).collect();
         let mut index = 0;
         let mut result: Parents<T> = Vec::new();
