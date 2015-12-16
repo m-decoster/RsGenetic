@@ -105,6 +105,10 @@
 <span id="63">63</span>
 <span id="64">64</span>
 <span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
 
@@ -128,16 +132,12 @@
     <span class='doccomment'>/// Because the population is a required parameter, you have to pass it here,</span>
     <span class='doccomment'>/// instead of using a builder function.</span>
     <span class='kw'>fn</span> <span class='ident'>builder</span>(<span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>B</span>;
-    <span class='doccomment'>/// Run the simulation. Returns the time spent running in ns on success (unless</span>
-    <span class='doccomment'>/// an overflow occurred, then the time will be `None`)</span>
-    <span class='doccomment'>/// or a string containing an error.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// For example: we run with a `SelectionType` with invalid parameters. The returned value</span>
-    <span class='doccomment'>/// will be `Err(String)`. Otherwise, the result will be `Ok(Some(NanoSecond))`,</span>
-    <span class='doccomment'>/// or `Ok(None)` in case of an overflow.</span>
-    <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
-    <span class='doccomment'>/// Get the best performing result of the simulation when it has ended.</span>
-    <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
+    <span class='doccomment'>/// Run the simulation. Returns the best phenotype</span>
+    <span class='doccomment'>/// or a string containing an error if something went wrong.</span>
+    <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
+    <span class='doccomment'>/// Get the number of nanoseconds spent running, or `None` in case of an overflow,</span>
+    <span class='doccomment'>/// or if the simulation wasn&#39;t run yet.</span>
+    <span class='kw'>fn</span> <span class='ident'>time</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span>;
     <span class='doccomment'>/// Get the number of iterations the `Simulator` needed to converge.</span>
     <span class='kw'>fn</span> <span class='ident'>iterations</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span>;
 }
@@ -161,6 +161,14 @@
     <span class='doccomment'>/// Perform Stochastic Universal Sampling to do the selection.</span>
     <span class='doccomment'>/// Selects `count` parents.</span>
     <span class='ident'>Stochastic</span> {
+        <span class='doccomment'>/// Should be larger than 0 and smaller than the population size.</span>
+        <span class='ident'>count</span>: <span class='ident'>u32</span>,
+    },
+    <span class='doccomment'>/// Perform Roulette Wheel Selection, also known as Fitness Proportionate Selection.</span>
+    <span class='doccomment'>/// Roulette Wheel Selection can only be used when the selected `FitnessType` is</span>
+    <span class='doccomment'>/// `FitnessType::Maximize`.</span>
+    <span class='doccomment'>/// This yields `count` parents.</span>
+    <span class='ident'>Roulette</span> {
         <span class='doccomment'>/// Should be larger than 0 and smaller than the population size.</span>
         <span class='ident'>count</span>: <span class='ident'>u32</span>,
     },

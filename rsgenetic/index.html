@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-127' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-132' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p>RsGenetic provides a simple framework for genetic algorithms.
@@ -57,7 +57,7 @@ and this library takes care of the rest.</p>
 <p>You can use this library by adding the following lines to your <code>Cargo.toml</code> file:</p>
 <pre class='rust rust-example-rendered'>
 [<span class='ident'>dependencies</span>]
-<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.7&quot;</span></pre>
+<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.8&quot;</span></pre>
 
 <p>and adding <code>extern crate rsgenetic;</code> to your crate root.</p>
 
@@ -148,9 +148,14 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
 <span class='comment'>// We can now run the simulator.</span>
 <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>run</span>();
 <span class='comment'>// This will fail if the result was an error:</span>
-<span class='ident'>result</span>.<span class='ident'>unwrap</span>().<span class='ident'>unwrap</span>();
+<span class='kw'>let</span> <span class='ident'>best</span> <span class='op'>=</span> <span class='ident'>result</span>.<span class='ident'>unwrap</span>();
 <span class='comment'>// For this simple example, we should always get 0.</span>
-<span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>);</pre>
+<span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>best</span>).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>);
+<span class='comment'>// We can also get the time spent running:</span>
+<span class='kw'>let</span> <span class='ident'>time</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>s</span>.<span class='ident'>time</span>() {
+    <span class='prelude-val'>Some</span>(<span class='ident'>x</span>) <span class='op'>=&gt;</span> <span class='ident'>x</span>, <span class='comment'>// Contains the time in ns</span>
+    <span class='prelude-val'>None</span>    <span class='op'>=&gt;</span> <span class='op'>-</span><span class='number'>1</span> <span class='comment'>// Overflow occured</span>
+};</pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                     <tr class=' module-item'>

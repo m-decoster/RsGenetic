@@ -167,6 +167,11 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! # RsGenetic</span>
 <span class='doccomment'>//!</span>
@@ -181,7 +186,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```ignore</span>
 <span class='doccomment'>//! [dependencies]</span>
-<span class='doccomment'>//! rsgenetic = &quot;0.7&quot;</span>
+<span class='doccomment'>//! rsgenetic = &quot;0.8&quot;</span>
 <span class='doccomment'>//! ```</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! and adding `extern crate rsgenetic;` to your crate root.</span>
@@ -283,9 +288,14 @@
 <span class='doccomment'>//! // We can now run the simulator.</span>
 <span class='doccomment'>//! let result = s.run();</span>
 <span class='doccomment'>//! // This will fail if the result was an error:</span>
-<span class='doccomment'>//! result.unwrap().unwrap();</span>
+<span class='doccomment'>//! let best = result.unwrap();</span>
 <span class='doccomment'>//! // For this simple example, we should always get 0.</span>
-<span class='doccomment'>//! assert!((*s.get()).i == 0);</span>
+<span class='doccomment'>//! assert!((*best).i == 0);</span>
+<span class='doccomment'>//! // We can also get the time spent running:</span>
+<span class='doccomment'>//! let time = match s.time() {</span>
+<span class='doccomment'>//!     Some(x) =&gt; x, // Contains the time in ns</span>
+<span class='doccomment'>//!     None    =&gt; -1 // Overflow occured</span>
+<span class='doccomment'>//! };</span>
 <span class='doccomment'>//! ```</span>
 
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;

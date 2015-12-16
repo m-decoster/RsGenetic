@@ -54,6 +54,7 @@
 <span id="12">12</span>
 <span id="13">13</span>
 <span id="14">14</span>
+<span id="15">15</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
 
@@ -66,6 +67,7 @@
     <span class='kw'>fn</span> <span class='ident'>selection_maximize</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
     <span class='kw'>fn</span> <span class='ident'>selection_tournament</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>num</span>: <span class='ident'>u32</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
     <span class='kw'>fn</span> <span class='ident'>selection_stochastic</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
+    <span class='kw'>fn</span> <span class='ident'>selection_roulette</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
     <span class='doccomment'>/// Kill off phenotypes using stochastic universal sampling.</span>
     <span class='kw'>fn</span> <span class='ident'>kill_off</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>String</span><span class='op'>&gt;</span>;
 }
