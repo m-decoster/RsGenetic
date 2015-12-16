@@ -67,17 +67,18 @@ and this library takes care of the rest.</p>
 the genetic algorithm on a single thread.</p>
 
 <h2 id='available-selection-types' class='section-header'><a href='#available-selection-types'>Available Selection Types</a></h2>
-<p>There are currently three selection types available:</p>
+<p>There are currently four selection types available:</p>
 
 <ul>
 <li>Maximize</li>
 <li>Tournament</li>
 <li>Stochastic</li>
+<li>Roulette</li>
 </ul>
 
 <p>There is a short explanation for each of these below. Currently, the number of parents
-may vary depending on the chosen selection type. We wish to make this uniform some time in
-the future.</p>
+may vary depending on the chosen selection type. For more information, look at the documentation for the
+<code>SelectionType</code> enum.</p>
 
 <h3 id='maximize' class='section-header'><a href='#maximize'>Maximize</a></h3>
 <p>Maximize takes 1 parameter: the count. This is half the number of parents
@@ -90,6 +91,9 @@ many phenotypes participate in a tournament. The resulting number of parents is 
 
 <h3 id='stochastic' class='section-header'><a href='#stochastic'>Stochastic</a></h3>
 <p>Stochastic takes 1 parameter: the count. The resulting number of parents is <code>count</code>.</p>
+
+<h3 id='roulette' class='section-header'><a href='#roulette'>Roulette</a></h3>
+<p>Roulette takes 1 parameter: the count. The resulting number of parents is <code>count</code>.</p>
 
 <h2 id='early-stopping' class='section-header'><a href='#early-stopping'>Early Stopping</a></h2>
 <p>If you wish, you can stop early if the fitness value of the best performing Phenotype
