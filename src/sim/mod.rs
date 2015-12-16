@@ -53,8 +53,6 @@ pub enum SelectionType {
         count: u32,
     },
     /// Perform Roulette Wheel Selection, also known as Fitness Proportionate Selection.
-    /// Roulette Wheel Selection can only be used when the selected `FitnessType` is
-    /// `FitnessType::Maximize`.
     /// This yields `count` parents.
     Roulette {
         /// Should be larger than 0 and smaller than the population size.
