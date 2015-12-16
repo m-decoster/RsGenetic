@@ -1,3 +1,9 @@
+//! Contains a sequential implementation of `::sim::Simulation`,
+//! called a `Simulator`.
+//!
+//! To use a `Simulator`, you need a `SimulatorBuilder`, which you can
+//! obtain by calling `Simulator::builder(p)`, with `p` your initial population.
+
 use pheno::Phenotype;
 use std::cmp::Ordering;
 use rand::Rng;
@@ -6,7 +12,6 @@ use super::*;
 use super::shared::*;
 use time::SteadyTime;
 
-/// A `Simulator` can run genetic algorithm simulations in a single thread.
 pub struct Simulator<T: Phenotype> {
     population: Vec<Box<T>>,
     max_iters: i32,

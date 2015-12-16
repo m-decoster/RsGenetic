@@ -1,17 +1,17 @@
 use pheno::Phenotype;
 
-/// Contains a sequential `Simulator` implementation.
 pub mod seq;
-/// Contains private information.
+// Contains private information.
 mod shared;
 
-/// A `Builder` can create new `Simulation` instances.
+/// A `Builder` can create new instances of an object.
+/// For this library, only `Simulation` objects use this `Builder`.
 pub trait Builder<T> {
     /// Return the result.
     fn build(self) -> T;
 }
 
-/// Used to make it more clear that run time is defined in nanoseconds.
+/// Simulation run time is defined in nanoseconds.
 pub type NanoSecond = i64;
 
 /// A `Simulation` is an execution of a genetic algorithm.
@@ -62,8 +62,10 @@ pub enum SelectionType {
     },
 }
 
-/// Whether to maximize or to minimize the fitness value
+/// Whether to maximize or to minimize the fitness value.
 pub enum FitnessType {
+    /// The `Simulation` will try to increase the fitness value of phenotypes.
     Maximize,
+    /// The `Simulation` will try to decrease the fitness value of phenotypes.
     Minimize,
 }
