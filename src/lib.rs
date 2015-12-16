@@ -24,15 +24,17 @@
 //!
 //! ## Available Selection Types
 //!
-//! There are currently three selection types available:
+//! There are currently four selection types available:
 //!
 //! * Maximize
 //! * Tournament
 //! * Stochastic
+//! * Roulette
 //!
 //! There is a short explanation for each of these below. Currently, the number of parents
-//! may vary depending on the chosen selection type. We wish to make this uniform some time in
-//! the future.
+//! may vary depending on the chosen selection type. For more information, look at the
+//! documentation
+//! for the `SelectionType` enum.
 //!
 //! ### Maximize
 //!
@@ -48,6 +50,10 @@
 //! ### Stochastic
 //!
 //! Stochastic takes 1 parameter: the count. The resulting number of parents is `count`.
+//!
+//! ### Roulette
+//!
+//! Roulette takes 1 parameter: the count. The resulting number of parents is `count`.
 //!
 //! ## Early Stopping
 //!
