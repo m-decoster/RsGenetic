@@ -15,6 +15,7 @@ pub struct Simulator<T: Phenotype> {
     fitness_type: FitnessType,
     earlystop: bool,
     earlystopper: EarlyStopper,
+    duration: Option<NanoSecond>
 }
 
 /// Used for early stopping.
@@ -55,6 +56,20 @@ impl EarlyStopper {
     }
 }
 
+impl<T: Phenotype> Simulator<T> {
+    /// Get the best performing organism.
+    fn get(&self) -> Box<T> {
+        let mut cloned = self.population.clone();
+        cloned.sort_by(|x, y| {
+            (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
+        });
+        match self.fitness_type {
+            FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
+            FitnessType::Minimize => cloned[0].clone(),
+        }
+    }
+}
+
 impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
     /// Create builder.
     fn builder(pop: Vec<Box<T>>) -> SimulatorBuilder<T> {
@@ -67,12 +82,13 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
                 fitness_type: FitnessType::Maximize,
                 earlystop: false,
                 earlystopper: EarlyStopper::new(0.0, 0),
+                duration: None
             },
         }
     }
 
     /// Run.
-    fn run(&mut self) -> Result<Option<NanoSecond>, String> {
+    fn run(&mut self) -> Result<Box<T>, String> {
         let time_start = SteadyTime::now();
         while self.n_iters < self.max_iters {
             // Perform selection
@@ -123,23 +139,16 @@ impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
                 }
             }
         }
-        Ok((SteadyTime::now() - time_start).num_nanoseconds())
-    }
-
-    /// Get the best performing organism.
-    fn get(&self) -> Box<T> {
-        let mut cloned = self.population.clone();
-        cloned.sort_by(|x, y| {
-            (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
-        });
-        match self.fitness_type {
-            FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
-            FitnessType::Minimize => cloned[0].clone(),
-        }
+        self.duration = (SteadyTime::now() - time_start).num_nanoseconds();
+        Ok(self.get())
     }
 
     fn iterations(&self) -> i32 {
         self.n_iters
+    }
+
+    fn time(&self) -> Option<NanoSecond> {
+        self.duration
     }
 }
 
@@ -433,7 +442,17 @@ mod tests {
                          .set_selection_type(SelectionType::Stochastic { count: 1 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        s.run().unwrap().unwrap();
+        s.run().unwrap();
+        s.time().unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_norun() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
+        let s = *seq::Simulator::builder(tests)
+                         .build();
+        s.time().unwrap();
     }
 
     #[test]

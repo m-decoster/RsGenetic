@@ -11,7 +11,7 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! rsgenetic = "0.7"
+//! rsgenetic = "0.8"
 //! ```
 //!
 //! and adding `extern crate rsgenetic;` to your crate root.
@@ -113,9 +113,14 @@
 //! // We can now run the simulator.
 //! let result = s.run();
 //! // This will fail if the result was an error:
-//! result.unwrap().unwrap();
+//! let best = result.unwrap();
 //! // For this simple example, we should always get 0.
-//! assert!((*s.get()).i == 0);
+//! assert!((*best).i == 0);
+//! // We can also get the time spent running:
+//! let time = match s.time() {
+//!     Some(x) => x, // Contains the time in ns
+//!     None    => -1 // Overflow occured
+//! };
 //! ```
 
 extern crate rand;
