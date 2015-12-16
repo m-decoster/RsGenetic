@@ -22,7 +22,7 @@ const CAPACITY: i32 = 10;
 const PACKAGES: &'static [i32] = &[3, 8, 2, 7, 6, 1, 3];
 
 struct LoadingScheme {
-    scheme: Scheme
+    scheme: Scheme,
 }
 
 impl Phenotype for LoadingScheme {
@@ -56,8 +56,8 @@ impl Phenotype for LoadingScheme {
     fn crossover(&self, other: &LoadingScheme) -> LoadingScheme {
         // 2-way crossover
         let mut rng = ::rand::thread_rng();
-        let crossover_indices = (rng.gen::<usize>() % PACKAGES.len(), rng.gen::<usize>() %
-                               PACKAGES.len());
+        let crossover_indices = (rng.gen::<usize>() % PACKAGES.len(),
+                                 rng.gen::<usize>() % PACKAGES.len());
         let mut crossed_over: Scheme = vec![(0, 0); PACKAGES.len()];
         for i in 0..crossover_indices.0 {
             crossed_over[i] = self.scheme[i];
@@ -68,27 +68,26 @@ impl Phenotype for LoadingScheme {
         for i in crossover_indices.1..PACKAGES.len() {
             crossed_over[i] = self.scheme[i];
         }
-        LoadingScheme {
-            scheme: crossed_over
-        }
+        LoadingScheme { scheme: crossed_over }
     }
 
     fn mutate(&self) -> LoadingScheme {
         // Put some stuff on other trucks
         let mut rng = ::rand::thread_rng();
         LoadingScheme {
-            scheme: self.scheme.iter().map(|pair: &(TruckIndex, PackageSize)| {
-                        (rng.gen::<usize>() % NUM_TRUCKS, pair.1)
-                    }).collect()
+            scheme: self.scheme
+                        .iter()
+                        .map(|pair: &(TruckIndex, PackageSize)| {
+                            (rng.gen::<usize>() % NUM_TRUCKS, pair.1)
+                        })
+                        .collect(),
         }
     }
 }
 
 impl Clone for LoadingScheme {
     fn clone(&self) -> LoadingScheme {
-        LoadingScheme {
-            scheme: self.scheme.clone()
-        }
+        LoadingScheme { scheme: self.scheme.clone() }
     }
 }
 
@@ -101,17 +100,17 @@ fn main() {
             let index = rng.gen::<usize>() % NUM_TRUCKS;
             pheno.push((index, PACKAGES[j]));
         }
-        population.push(Box::new(LoadingScheme {scheme: pheno}));
+        population.push(Box::new(LoadingScheme { scheme: pheno }));
     }
     let mut s = *Simulator::builder(population)
-                            .set_max_iters(50)
-                            .set_selection_type(SelectionType::Stochastic {
-                                count: 10
-                            })
-                            .set_fitness_type(FitnessType::Minimize)
-                            .build();
+                     .set_max_iters(50)
+                     .set_selection_type(SelectionType::Stochastic { count: 10 })
+                     .set_fitness_type(FitnessType::Minimize)
+                     .build();
     let time = s.run();
     println!("Execution time: {} ns.", time.unwrap().unwrap());
     let result = *s.get();
-    println!("Result: {:?} | Fitness: {}", result.scheme, result.fitness());
+    println!("Result: {:?} | Fitness: {}",
+             result.scheme,
+             result.fitness());
 }
