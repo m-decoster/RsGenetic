@@ -15,11 +15,13 @@ pub trait Builder<T> {
 pub type NanoSecond = i64;
 
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<T: Phenotype, B: Builder<Box<Self>>> : shared::Selector<T> {
+pub trait Simulation<T: Phenotype> : shared::Selector<T> {
+    type B: Builder<Box<Self>>;
+
     /// Create a `Builder` to create an instance.
     /// Because the population is a required parameter, you have to pass it here,
     /// instead of using a builder function.
-    fn builder(population: Vec<Box<T>>) -> B;
+    fn builder(population: Vec<Box<T>>) -> Self::B;
     /// Run the simulation. Returns the best phenotype
     /// or a string containing an error if something went wrong.
     fn run(&mut self) -> Result<Box<T>, String>;

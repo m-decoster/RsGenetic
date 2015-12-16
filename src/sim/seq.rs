@@ -70,7 +70,9 @@ impl<T: Phenotype> Simulator<T> {
     }
 }
 
-impl<T: Phenotype> Simulation<T, SimulatorBuilder<T>> for Simulator<T> {
+impl<T: Phenotype> Simulation<T> for Simulator<T> {
+    type B = SimulatorBuilder<T>;
+
     /// Create builder.
     fn builder(pop: Vec<Box<T>>) -> SimulatorBuilder<T> {
         SimulatorBuilder {
