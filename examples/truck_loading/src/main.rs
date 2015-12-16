@@ -110,7 +110,12 @@ fn main() {
     let time = s.run();
     println!("Execution time: {} ns.", time.unwrap().unwrap());
     let result = *s.get();
-    println!("Result: {:?} | Fitness: {}",
+    println!("Result: {:?} | Fitness: {}.",
              result.scheme,
              result.fitness());
+    let mut trucks: Vec<_> = vec![0; NUM_TRUCKS];
+    for placement in result.scheme {
+        trucks[placement.0] += placement.1;
+    }
+    println!("Load per truck: {:?}.", trucks);
 }
