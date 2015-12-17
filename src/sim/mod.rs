@@ -21,7 +21,7 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     /// Create a `Builder` to create an instance.
     /// Because the population is a required parameter, you have to pass it here,
     /// instead of using a builder function.
-    fn builder(population: Vec<Box<T>>) -> Self::B;
+    fn builder(population: &Vec<Box<T>>) -> Self::B;
     /// Run the simulation. Returns the best phenotype
     /// or a string containing an error if something went wrong.
     fn run(&mut self) -> Result<Box<T>, String>;
