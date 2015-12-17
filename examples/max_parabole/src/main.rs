@@ -50,7 +50,7 @@ impl Clone for MyData {
 
 fn main() {
     let population = (-300..300).map(|i| Box::new(MyData{ x: i as f64 })).collect();
-    let mut s = *Simulator::builder(population)
+    let mut s = *Simulator::builder(&population)
                             .set_max_iters(50)
                             .set_selection_type(SelectionType::Stochastic {
                                 count: 10

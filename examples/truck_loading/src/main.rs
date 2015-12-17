@@ -102,9 +102,9 @@ fn main() {
         }
         population.push(Box::new(LoadingScheme { scheme: pheno }));
     }
-    let mut s = *Simulator::builder(population)
+    let mut s = *Simulator::builder(&population)
                      .set_max_iters(50)
-                     .set_selection_type(SelectionType::Stochastic { count: 10 })
+                     .set_selection_type(SelectionType::Roulette { count: 10 })
                      .set_fitness_type(FitnessType::Minimize)
                      .build();
     let result = *s.run().unwrap();
