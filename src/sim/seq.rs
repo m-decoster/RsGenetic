@@ -271,7 +271,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
                 let c = between.ind_sample(&mut rng);
 
                 let result = cloned.iter().find(|ref p| c >= p.fitness());
-                if result.is_none() { // This should never be true, but we wish to avoid panicing.
+                if result.is_none() { // This should never be true, but we wish to avoid panicking.
                     return Err(format!("Could not complete Roulette Selection. This most likely \
                                         indicates a bug in rsgenetic."));
                 }
