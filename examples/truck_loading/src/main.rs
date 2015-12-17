@@ -107,9 +107,9 @@ fn main() {
                      .set_selection_type(SelectionType::Stochastic { count: 10 })
                      .set_fitness_type(FitnessType::Minimize)
                      .build();
-    let time = s.run();
-    println!("Execution time: {} ns.", time.unwrap().unwrap());
-    let result = *s.get();
+    let result = *s.run().unwrap();
+    let time = s.time();
+    println!("Execution time: {} ns.", time.unwrap());
     println!("Result: {:?} | Fitness: {}.",
              result.scheme,
              result.fitness());
