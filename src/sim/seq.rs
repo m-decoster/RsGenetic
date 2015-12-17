@@ -258,22 +258,24 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
         cloned.sort_by(|x, y| {
             (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
         });
-        let max_fitness = cloned[cloned.len() - 1].fitness();
+        // Calculate cumulative fitness
+        let cum_fitness: Vec<_> = cloned.iter().scan(0.0, |state, ref x| { *state = *state + x.fitness(); Some(*state) }).collect();
 
-        let between = Range::new(0.0, 1.0);
+        let between = Range::new(cum_fitness[0], cum_fitness[cum_fitness.len() - 1]);
         let mut rng = ::rand::thread_rng();
 
         let mut selected = 0;
         while selected < count {
             let mut inner_selected: Vec<Box<T>> = Vec::with_capacity(2);
             while inner_selected.len() < 2 {
-                let i = rng.gen::<usize>() % self.population.len() as usize;
                 let c = between.ind_sample(&mut rng);
 
-                let frac = self.population[i].fitness() / max_fitness;
-                if c <= frac {
-                    inner_selected.push(self.population[i].clone());
+                let result = cloned.iter().find(|ref p| c >= p.fitness());
+                if result.is_none() { // This should never be true, but we wish to avoid panicing.
+                    return Err(format!("Could not complete Roulette Selection. This most likely \
+                                        indicates a bug in rsgenetic."));
                 }
+                inner_selected.push(result.unwrap().clone());
             }
             results.push((inner_selected[0].clone(), inner_selected[1].clone()));
 
