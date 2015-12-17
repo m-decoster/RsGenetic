@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-16' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#1-69' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-16' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#1-71' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Contains implementations of Simulators, which can run genetic algorithms.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
@@ -53,7 +53,8 @@
                         <td><a class='mod' href='seq/index.html'
                                title='rsgenetic::sim::seq'>seq</a></td>
                         <td class='docblock short'>
-                             <p>Contains a sequential <code>Simulator</code> implementation.</p>
+                             <p>Contains a sequential implementation of <code>::sim::Simulation</code>,
+called a <code>Simulator</code>.</p>
 
                         </td>
                     </tr>
@@ -63,7 +64,7 @@
                         <td><a class='enum' href='enum.FitnessType.html'
                                title='rsgenetic::sim::FitnessType'>FitnessType</a></td>
                         <td class='docblock short'>
-                             <p>Whether to maximize or to minimize the fitness value</p>
+                             <p>Whether to maximize or to minimize the fitness value.</p>
 
                         </td>
                     </tr>
@@ -82,7 +83,8 @@
                         <td><a class='trait' href='trait.Builder.html'
                                title='rsgenetic::sim::Builder'>Builder</a></td>
                         <td class='docblock short'>
-                             <p>A <code>Builder</code> can create new <code>Simulation</code> instances.</p>
+                             <p>A <code>Builder</code> can create new instances of an object.
+For this library, only <code>Simulation</code> objects use this <code>Builder</code>.</p>
 
                         </td>
                     </tr>
@@ -101,7 +103,7 @@
                         <td><a class='type' href='type.NanoSecond.html'
                                title='rsgenetic::sim::NanoSecond'>NanoSecond</a></td>
                         <td class='docblock short'>
-                             <p>Used to make it more clear that run time is defined in nanoseconds.</p>
+                             <p>Simulation run time is defined in nanoseconds.</p>
 
                         </td>
                     </tr>

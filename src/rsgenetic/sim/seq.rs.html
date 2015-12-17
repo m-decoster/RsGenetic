@@ -566,7 +566,48 @@
 <span id="524">524</span>
 <span id="525">525</span>
 <span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
 </pre><pre class='rust '>
+<span class='doccomment'>//! Contains a sequential implementation of `::sim::Simulation`,</span>
+<span class='doccomment'>//! called a `Simulator`.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! To use a `Simulator`, you need a `SimulatorBuilder`, which you can</span>
+<span class='doccomment'>//! obtain by calling `Simulator::builder(p)`, with `p` your initial population.</span>
+
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
 <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>Rng</span>;
@@ -575,7 +616,6 @@
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>shared</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='ident'>time</span>::<span class='ident'>SteadyTime</span>;
 
-<span class='doccomment'>/// A `Simulator` can run genetic algorithm simulations in a single thread.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> {
     <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>,
     <span class='ident'>max_iters</span>: <span class='ident'>i32</span>,
@@ -639,12 +679,14 @@
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> <span class='ident'>Simulation</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='kw'>for</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> <span class='ident'>Simulation</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='kw'>type</span> <span class='ident'>B</span> <span class='op'>=</span> <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
+
     <span class='doccomment'>/// Create builder.</span>
-    <span class='kw'>fn</span> <span class='ident'>builder</span>(<span class='ident'>pop</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>builder</span>(<span class='ident'>pop</span>: <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='ident'>SimulatorBuilder</span> {
             <span class='ident'>sim</span>: <span class='ident'>Simulator</span> {
-                <span class='ident'>population</span>: <span class='ident'>pop</span>,
+                <span class='ident'>population</span>: <span class='ident'>pop</span>.<span class='ident'>clone</span>(),
                 <span class='ident'>max_iters</span>: <span class='number'>100</span>,
                 <span class='ident'>n_iters</span>: <span class='number'>0</span>,
                 <span class='ident'>selection_type</span>: <span class='ident'>SelectionType</span>::<span class='ident'>Maximize</span> { <span class='ident'>count</span>: <span class='number'>5</span> },
@@ -734,12 +776,9 @@
         <span class='ident'>cloned</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>x</span>, <span class='ident'>y</span><span class='op'>|</span> {
             (<span class='op'>*</span><span class='ident'>x</span>).<span class='ident'>fitness</span>().<span class='ident'>partial_cmp</span>(<span class='kw-2'>&amp;</span>(<span class='op'>*</span><span class='ident'>y</span>).<span class='ident'>fitness</span>()).<span class='ident'>unwrap_or</span>(<span class='ident'>Ordering</span>::<span class='ident'>Equal</span>)
         });
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>fitness_type</span> {
-            <span class='ident'>FitnessType</span>::<span class='ident'>Maximize</span> <span class='op'>=&gt;</span> {
-                <span class='ident'>cloned</span>.<span class='ident'>reverse</span>();
-            }
-            _ <span class='op'>=&gt;</span> {}
-        };
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>FitnessType</span>::<span class='ident'>Maximize</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>fitness_type</span> {
+            <span class='ident'>cloned</span>.<span class='ident'>reverse</span>();
+        }
         <span class='kw'>let</span> <span class='ident'>sorted</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>cloned</span>.<span class='ident'>iter</span>().<span class='ident'>take</span>(<span class='number'>2</span> <span class='op'>*</span> (<span class='ident'>count</span> <span class='kw'>as</span> <span class='ident'>usize</span>)).<span class='ident'>collect</span>();
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>index</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span>: <span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
@@ -823,22 +862,24 @@
         <span class='ident'>cloned</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>x</span>, <span class='ident'>y</span><span class='op'>|</span> {
             (<span class='op'>*</span><span class='ident'>x</span>).<span class='ident'>fitness</span>().<span class='ident'>partial_cmp</span>(<span class='kw-2'>&amp;</span>(<span class='op'>*</span><span class='ident'>y</span>).<span class='ident'>fitness</span>()).<span class='ident'>unwrap_or</span>(<span class='ident'>Ordering</span>::<span class='ident'>Equal</span>)
         });
-        <span class='kw'>let</span> <span class='ident'>max_fitness</span> <span class='op'>=</span> <span class='ident'>cloned</span>[<span class='ident'>cloned</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>].<span class='ident'>fitness</span>();
+        <span class='comment'>// Calculate cumulative fitness</span>
+        <span class='kw'>let</span> <span class='ident'>cum_fitness</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>cloned</span>.<span class='ident'>iter</span>().<span class='ident'>scan</span>(<span class='number'>0.0</span>, <span class='op'>|</span><span class='ident'>state</span>, <span class='kw-2'>ref</span> <span class='ident'>x</span><span class='op'>|</span> { <span class='op'>*</span><span class='ident'>state</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>state</span> <span class='op'>+</span> <span class='ident'>x</span>.<span class='ident'>fitness</span>(); <span class='prelude-val'>Some</span>(<span class='op'>*</span><span class='ident'>state</span>) }).<span class='ident'>collect</span>();
 
-        <span class='kw'>let</span> <span class='ident'>between</span> <span class='op'>=</span> <span class='ident'>Range</span>::<span class='ident'>new</span>(<span class='number'>0.0</span>, <span class='number'>1.0</span>);
+        <span class='kw'>let</span> <span class='ident'>between</span> <span class='op'>=</span> <span class='ident'>Range</span>::<span class='ident'>new</span>(<span class='ident'>cum_fitness</span>[<span class='number'>0</span>], <span class='ident'>cum_fitness</span>[<span class='ident'>cum_fitness</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>]);
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng</span> <span class='op'>=</span> ::<span class='ident'>rand</span>::<span class='ident'>thread_rng</span>();
 
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>selected</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>while</span> <span class='ident'>selected</span> <span class='op'>&lt;</span> <span class='ident'>count</span> {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>inner_selected</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='number'>2</span>);
             <span class='kw'>while</span> <span class='ident'>inner_selected</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='number'>2</span> {
-                <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='ident'>rng</span>.<span class='ident'>gen</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>() <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>usize</span>;
                 <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>between</span>.<span class='ident'>ind_sample</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>rng</span>);
 
-                <span class='kw'>let</span> <span class='ident'>frac</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>population</span>[<span class='ident'>i</span>].<span class='ident'>fitness</span>() <span class='op'>/</span> <span class='ident'>max_fitness</span>;
-                <span class='kw'>if</span> <span class='ident'>c</span> <span class='op'>&lt;=</span> <span class='ident'>frac</span> {
-                    <span class='ident'>inner_selected</span>.<span class='ident'>push</span>(<span class='self'>self</span>.<span class='ident'>population</span>[<span class='ident'>i</span>].<span class='ident'>clone</span>());
+                <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>cloned</span>.<span class='ident'>iter</span>().<span class='ident'>find</span>(<span class='op'>|</span><span class='kw-2'>ref</span> <span class='ident'>p</span><span class='op'>|</span> <span class='ident'>c</span> <span class='op'>&gt;=</span> <span class='ident'>p</span>.<span class='ident'>fitness</span>());
+                <span class='kw'>if</span> <span class='ident'>result</span>.<span class='ident'>is_none</span>() { <span class='comment'>// This should never be true, but we wish to avoid panicing.</span>
+                    <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Could not complete Roulette Selection. This most likely \
+                                        indicates a bug in rsgenetic.&quot;</span>));
                 }
+                <span class='ident'>inner_selected</span>.<span class='ident'>push</span>(<span class='ident'>result</span>.<span class='ident'>unwrap</span>().<span class='ident'>clone</span>());
             }
             <span class='ident'>results</span>.<span class='ident'>push</span>((<span class='ident'>inner_selected</span>[<span class='number'>0</span>].<span class='ident'>clone</span>(), <span class='ident'>inner_selected</span>[<span class='number'>1</span>].<span class='ident'>clone</span>()));
 
@@ -956,141 +997,170 @@
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_maximize_count_0</span>() {
+    <span class='kw'>fn</span> <span class='ident'>test_maximize_invalid</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
-                         .<span class='ident'>set_max_iters</span>(<span class='number'>100</span>)
+        <span class='comment'>// count 0</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Maximize</span> { <span class='ident'>count</span>: <span class='number'>0</span> })
-                         .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
+
+        <span class='comment'>// count 101</span>
+        <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
+                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Maximize</span> { <span class='ident'>count</span>: <span class='number'>101</span> })
+                         .<span class='ident'>build</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_tournament_count_0</span>() {
+    <span class='kw'>fn</span> <span class='ident'>test_tournament_invalid</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
-                         .<span class='ident'>set_max_iters</span>(<span class='number'>100</span>)
+        <span class='comment'>// count 0</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span> { <span class='ident'>num</span>: <span class='number'>2</span>, <span class='ident'>count</span>: <span class='number'>0</span> })
-                         .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
-    }
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_tournament_num_0</span>() {
-        <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
-                         .<span class='ident'>set_max_iters</span>(<span class='number'>100</span>)
+        <span class='comment'>// num 0</span>
+        <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span> { <span class='ident'>num</span>: <span class='number'>0</span>, <span class='ident'>count</span>: <span class='number'>1</span> })
-                         .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
+
+        <span class='comment'>// num 51</span>
+        <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
+                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span> { <span class='ident'>num</span>: <span class='number'>51</span>, <span class='ident'>count</span>: <span class='number'>1</span> })
+                         .<span class='ident'>build</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_stochastic_count_0</span>() {
+    <span class='kw'>fn</span> <span class='ident'>test_stochastic_invalid</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
-                         .<span class='ident'>set_max_iters</span>(<span class='number'>100</span>)
+        <span class='comment'>// count 0</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Stochastic</span> { <span class='ident'>count</span>: <span class='number'>0</span> })
-                         .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
+
+        <span class='comment'>// count 101</span>
+        <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
+                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Stochastic</span> { <span class='ident'>count</span>: <span class='number'>101</span> })
+                         .<span class='ident'>build</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>test_roulette_invalid</span>() {
+        <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
+        
+        <span class='comment'>// count 0</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
+                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Roulette</span> { <span class='ident'>count</span>: <span class='number'>0</span> })
+                         .<span class='ident'>build</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
+
+        <span class='comment'>// count 101</span>
+        <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
+                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Roulette</span> { <span class='ident'>count</span>: <span class='number'>101</span> })
+                         .<span class='ident'>build</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_err</span>());
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_runtime</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_max_iters</span>(<span class='number'>2000</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Stochastic</span> { <span class='ident'>count</span>: <span class='number'>1</span> })
                          .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
-        <span class='ident'>s</span>.<span class='ident'>time</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>is_ok</span>()); <span class='comment'>// The algorithm should not fail.</span>
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>time</span>().<span class='ident'>is_some</span>()); <span class='comment'>// The run time should not overflow for this example.</span>
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_time_norun</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>time</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s</span>.<span class='ident'>time</span>().<span class='ident'>is_none</span>()); <span class='comment'>// We did not run, so there is no time.</span>
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_earlystop</span>() {
+        <span class='comment'>// Run two tests: one with early stopping, one without.</span>
+        <span class='comment'>// The one with early stopping should have less iterations.</span>
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s_early</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s_early</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                                .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
                                .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Stochastic</span> { <span class='ident'>count</span>: <span class='number'>5</span> })
                                .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                                .<span class='ident'>set_early_stop</span>(<span class='number'>0.1</span>, <span class='number'>5</span>)
                                .<span class='ident'>build</span>();
-        <span class='kw'>let</span> <span class='ident'>tests2</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s_no_early</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests2</span>)
+
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s_no_early</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                                   .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
                                   .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Stochastic</span> { <span class='ident'>count</span>: <span class='number'>5</span> })
                                   .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                                   .<span class='ident'>build</span>();
-        <span class='ident'>s_early</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>(); <span class='comment'>// Both should run without error.</span>
-        <span class='ident'>s_no_early</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>(); <span class='comment'>// Both should run without error.</span>
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s_early</span>.<span class='ident'>iterations</span>() <span class='op'>&lt;=</span> <span class='ident'>s_no_early</span>.<span class='ident'>iterations</span>());
+        <span class='comment'>// Both should run without error.</span>
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s_early</span>.<span class='ident'>run</span>().<span class='ident'>is_ok</span>());
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s_no_early</span>.<span class='ident'>run</span>().<span class='ident'>is_ok</span>());
+
+        <span class='comment'>// The one with early stopping should have less iterations.</span>
+        <span class='comment'>// It is impossible to have more, because the maximum is 1000 and without early stopping</span>
+        <span class='comment'>// we will always go to 1000.</span>
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>s_early</span>.<span class='ident'>iterations</span>() <span class='op'>&lt;</span> <span class='ident'>s_no_early</span>.<span class='ident'>iterations</span>());
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>simple_convergence_test_maximize</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Maximize</span> { <span class='ident'>count</span>: <span class='number'>5</span> })
                          .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span>, <span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>result</span>.<span class='ident'>i</span>, <span class='number'>0</span>);
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>simple_convergence_test_tournament</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span> { <span class='ident'>count</span>: <span class='number'>3</span>, <span class='ident'>num</span>: <span class='number'>5</span> })
                          .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span>, <span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>result</span>.<span class='ident'>i</span>, <span class='number'>0</span>);
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>simple_convergence_test_stochastic</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
                          .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Stochastic</span> { <span class='ident'>count</span>: <span class='number'>5</span> })
                          .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span>, <span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>result</span>.<span class='ident'>i</span>, <span class='number'>0</span>);
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>simple_convergence_test_roulette</span>() {
         <span class='kw'>let</span> <span class='ident'>tests</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>)
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
                          .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
-                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Roulette</span> { <span class='ident'>count</span>: <span class='number'>4</span> })
+                         .<span class='ident'>set_selection_type</span>(<span class='ident'>SelectionType</span>::<span class='ident'>Roulette</span> { <span class='ident'>count</span>: <span class='number'>5</span> })
                          .<span class='ident'>set_fitness_type</span>(<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                          .<span class='ident'>build</span>();
-        <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
-        <span class='macro'>assert</span><span class='macro'>!</span>((<span class='op'>*</span><span class='ident'>s</span>.<span class='ident'>get</span>()).<span class='ident'>i</span> <span class='op'>==</span> <span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>run</span>().<span class='ident'>unwrap</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>result</span>.<span class='ident'>i</span>, <span class='number'>0</span>);
     }
 }
 </pre>

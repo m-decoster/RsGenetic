@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Simulator","A `Simulator` can run genetic algorithm simulations in a single thread."],["SimulatorBuilder","A `Builder` for the `Simulator` type."]]});
+initSidebarItems({"struct":[["Simulator",""],["SimulatorBuilder","A `Builder` for the `Simulator` type."]]});
