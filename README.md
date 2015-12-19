@@ -1,4 +1,6 @@
 # RsGenetic
+[![Build Status](https://travis-ci.org/m-decoster/RsGenetic.svg?branch=master)](https://travis-ci.org/m-decoster/RsGenetic)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 
 ## Summary and Features
 RsGenetic is a simple framework for executing a genetic algorithm in Rust.  
