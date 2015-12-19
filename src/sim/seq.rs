@@ -109,7 +109,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 return Err(parents_tmp.err().unwrap());
             }
             let parents = parents_tmp.ok().unwrap();
-            // Create children from the selected parents and mutate them
+            // Create children from the selected parents and mutate them.
             let children: Vec<Box<T>> = parents.iter()
                                                .map(|pair: &(Box<T>, Box<T>)| {
                                                    pair.0.crossover(&*(pair.1))
