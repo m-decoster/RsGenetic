@@ -18,8 +18,7 @@ pub struct Simulator<T: Phenotype> {
     n_iters: i32,
     selection_type: SelectionType,
     fitness_type: FitnessType,
-    earlystop: bool,
-    earlystopper: EarlyStopper,
+    earlystopper: Option<EarlyStopper>,
     duration: Option<NanoSecond>
 }
 
@@ -87,8 +86,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 n_iters: 0,
                 selection_type: SelectionType::Maximize { count: 5 },
                 fitness_type: FitnessType::Maximize,
-                earlystop: false,
-                earlystopper: EarlyStopper::new(0.0, 0),
+                earlystopper: None,
                 duration: None
             },
         }
@@ -130,7 +128,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 }
             }
 
-            if self.earlystop {
+            if let Some(ref mut stopper) = self.earlystopper {
                 let mut cloned = self.population.clone();
                 cloned.sort_by(|x, y| {
                     (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
@@ -141,7 +139,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                                       }
                                       .fitness();
 
-                if self.earlystopper.update(highest_fitness) {
+                if stopper.update(highest_fitness) {
                     break;
                 }
             }
@@ -345,8 +343,7 @@ impl<T: Phenotype> SimulatorBuilder<T> {
     ///
     /// Returns itself for chaining purposes.
     pub fn set_early_stop(mut self, delta: f64, n_iters: u32) -> Self {
-        self.sim.earlystop = true;
-        self.sim.earlystopper = EarlyStopper::new(delta, n_iters);
+        self.sim.earlystopper = Some(EarlyStopper::new(delta, n_iters));
         self
     }
 }
