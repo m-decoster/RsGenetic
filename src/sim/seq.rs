@@ -12,6 +12,8 @@ use super::*;
 use super::shared::*;
 use time::SteadyTime;
 
+/// A sequential implementation of `::sim::Simulation`.
+/// The genetic algorithm is run in a single thread.
 pub struct Simulator<T: Phenotype> {
     population: Vec<Box<T>>,
     iter_limit: IterLimit,
