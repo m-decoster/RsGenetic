@@ -14,8 +14,7 @@ use time::SteadyTime;
 
 pub struct Simulator<T: Phenotype> {
     population: Vec<Box<T>>,
-    max_iters: i32,
-    n_iters: i32,
+    iter_limit: IterLimit,
     selection_type: SelectionType,
     fitness_type: FitnessType,
     earlystopper: Option<EarlyStopper>,
@@ -28,20 +27,17 @@ struct EarlyStopper {
     delta: f64,
     /// Previously recorded fitness value.
     previous: f64,
-    /// Maximum number of iterations before early stopping.
-    max_iters: u32,
-    /// Current number of iterations where the difference was smaller than delta.
-    n_iters: u32,
+    /// The number of iterations before stopping early.
+    iter_limit: IterLimit,
 }
 
 impl EarlyStopper {
     /// Create a new `EarlyStopper`.
-    fn new(delta: f64, n_iters: u32) -> EarlyStopper {
+    fn new(delta: f64, n_iters: u64) -> EarlyStopper {
         EarlyStopper {
             delta: delta,
             previous: 0.0,
-            max_iters: n_iters,
-            n_iters: 0,
+            iter_limit: IterLimit::new(n_iters)
         }
     }
 
@@ -51,12 +47,12 @@ impl EarlyStopper {
     fn update(&mut self, fitness: f64) -> bool {
         if (fitness - self.previous).abs() < self.delta {
             self.previous = fitness;
-            self.n_iters += 1;
+            self.iter_limit.inc();
         } else {
-            self.n_iters = 0;
+            self.iter_limit.reset();
         }
 
-        self.n_iters >= self.max_iters
+        self.iter_limit.reached()
     }
 }
 
@@ -82,8 +78,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
         SimulatorBuilder {
             sim: Simulator {
                 population: pop.clone(),
-                max_iters: 100,
-                n_iters: 0,
+                iter_limit: IterLimit::new(100),
                 selection_type: SelectionType::Maximize { count: 5 },
                 fitness_type: FitnessType::Maximize,
                 earlystopper: None,
@@ -95,7 +90,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
     /// Run.
     fn run(&mut self) -> Result<Box<T>, String> {
         let time_start = SteadyTime::now();
-        while self.n_iters < self.max_iters {
+        while !self.iter_limit.reached() {
             // Perform selection
             let parents_tmp = match self.selection_type {
                 SelectionType::Maximize{count: c} => self.selection_maximize(c),
@@ -120,8 +115,6 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                     for child in children {
                         self.population.push(child);
                     }
-
-                    self.n_iters += 1;
                 }
                 Err(e) => {
                     return Err(e);
@@ -143,13 +136,15 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                     break;
                 }
             }
+
+            self.iter_limit.inc();
         }
         self.duration = (SteadyTime::now() - time_start).num_nanoseconds();
         Ok(self.get())
     }
 
-    fn iterations(&self) -> i32 {
-        self.n_iters
+    fn iterations(&self) -> u64 {
+        self.iter_limit.get()
     }
 
     fn time(&self) -> Option<NanoSecond> {
@@ -315,8 +310,8 @@ impl<T: Phenotype> SimulatorBuilder<T> {
     /// The `Simulator` will stop running after this number of iterations.
     ///
     /// Returns itself for chaining purposes.
-    pub fn set_max_iters(mut self, i: i32) -> Self {
-        self.sim.max_iters = i;
+    pub fn set_max_iters(mut self, i: u64) -> Self {
+        self.sim.iter_limit = IterLimit::new(i);
         self
     }
 
@@ -342,7 +337,7 @@ impl<T: Phenotype> SimulatorBuilder<T> {
     /// is smaller than `delta`, the simulator will stop running.
     ///
     /// Returns itself for chaining purposes.
-    pub fn set_early_stop(mut self, delta: f64, n_iters: u32) -> Self {
+    pub fn set_early_stop(mut self, delta: f64, n_iters: u64) -> Self {
         self.sim.earlystopper = Some(EarlyStopper::new(delta, n_iters));
         self
     }

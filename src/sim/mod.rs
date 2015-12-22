@@ -29,7 +29,7 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     /// or if the simulation wasn't run yet.
     fn time(&self) -> Option<NanoSecond>;
     /// Get the number of iterations the `Simulator` needed to converge.
-    fn iterations(&self) -> i32;
+    fn iterations(&self) -> u64;
 }
 
 /// The type of parent selection.
