@@ -1,5 +1,6 @@
 # RsGenetic
 [![Build Status](https://travis-ci.org/m-decoster/RsGenetic.svg?branch=master)](https://travis-ci.org/m-decoster/RsGenetic)
+[![Crates Version](https://img.shields.io/crates/v/rsgenetic.svg)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 
 ## Summary and Features
