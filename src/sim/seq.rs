@@ -103,7 +103,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             }
             let parents = parents_tmp.ok().unwrap();
             // Create children from the selected parents and mutate them.
-            let children: Vec<Box<T>> = parents.iter()
+            let mut children: Vec<Box<T>> = parents.iter()
                                                .map(|pair: &(Box<T>, Box<T>)| {
                                                    pair.0.crossover(&*(pair.1))
                                                })
@@ -112,9 +112,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             // Kill off parts of the population at random to make room for the children
             match self.kill_off(children.len()) {
                 Ok(_) => {
-                    for child in children {
-                        self.population.push(child);
-                    }
+                    self.population.append(&mut children);
                 }
                 Err(e) => {
                     return Err(e);
