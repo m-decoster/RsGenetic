@@ -152,8 +152,8 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
 
 impl<T: Phenotype> Selector<T> for Simulator<T> {
     /// Select count*2 parents for breeding.
-    fn selection_maximize(&self, count: u32) -> Result<Parents<T>, String> {
-        if count <= 0 || ((count * 2) as usize) >= self.population.len() {
+    fn selection_maximize(&self, count: usize) -> Result<Parents<T>, String> {
+        if count <= 0 || count * 2 >= self.population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than half the population size.",
                                count));
@@ -166,7 +166,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
         if let FitnessType::Maximize = self.fitness_type {
             cloned.reverse();
         }
-        let sorted: Vec<&Box<T>> = cloned.iter().take(2 * (count as usize)).collect();
+        let sorted: Vec<&Box<T>> = cloned.iter().take(2 * count).collect();
         let mut index = 0;
         let mut result: Parents<T> = Vec::new();
         while index < sorted.len() {
@@ -177,13 +177,13 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     }
 
     /// Select parents using tournament selection.
-    fn selection_tournament(&self, num: u32, count: u32) -> Result<Parents<T>, String> {
-        if num <= 0 || ((num * 2) as usize) >= self.population.len() {
+    fn selection_tournament(&self, num: usize, count: usize) -> Result<Parents<T>, String> {
+        if num <= 0 || num * 2 >= self.population.len() {
             return Err(format!("Invalid parameter `num`: {}. Should be larger than zero and \
                                 less than half the population size.",
                                num));
         }
-        if count <= 0 || (count as usize) >= self.population.len() {
+        if count <= 0 || count >= self.population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than half the population size.",
                                count));
@@ -192,7 +192,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
         let mut result: Parents<T> = Vec::new();
         let mut rng = ::rand::thread_rng();
         for _ in 0..num {
-            let mut tournament: Vec<Box<T>> = Vec::with_capacity(count as usize);
+            let mut tournament: Vec<Box<T>> = Vec::with_capacity(count);
             for _ in 0..count {
                 let index = rng.gen::<usize>() % self.population.len();
                 tournament.push(self.population[index].clone());
@@ -214,16 +214,16 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     }
 
     /// Select parents using stochastic universal sampling.
-    fn selection_stochastic(&self, count: u32) -> Result<Parents<T>, String> {
-        if count <= 0 || (count as usize) >= self.population.len() {
+    fn selection_stochastic(&self, count: usize) -> Result<Parents<T>, String> {
+        if count <= 0 || count >= self.population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than the population size.",
                                count));
         }
 
-        let ratio = self.population.len() / (count as usize);
+        let ratio = self.population.len() / count;
         let mut result: Parents<T> = Vec::new();
-        let mut i = ::rand::random::<usize>() % self.population.len() as usize;
+        let mut i = ::rand::random::<usize>() % self.population.len();
         let mut selected = 0;
         while selected < count {
             result.push((self.population[i].clone(),
@@ -236,8 +236,8 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     }
 
     /// Select parents using roulette wheel selection.
-    fn selection_roulette(&self, count: u32) -> Result<Parents<T>, String> {
-        if count <= 0 || (count as usize) >= self.population.len() {
+    fn selection_roulette(&self, count: usize) -> Result<Parents<T>, String> {
+        if count <= 0 || count >= self.population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than the population size.",
                                count));
@@ -261,7 +261,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
             while inner_selected.len() < 2 {
                 let c = between.ind_sample(&mut rng);
 
-                let result = cloned.iter().find(|ref p| c >= p.fitness());
+                let result = cloned.iter().find(|p| c >= p.fitness());
                 if result.is_none() { // This should never be true, but we wish to avoid panicking.
                     return Err(format!("Could not complete Roulette Selection. This most likely \
                                         indicates a bug in rsgenetic."));
@@ -279,7 +279,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     fn kill_off(&mut self, count: usize) -> Result<(), String> {
         let old_len = self.population.len();
         let ratio = self.population.len() / count;
-        let mut i = ::rand::random::<usize>() % self.population.len() as usize;
+        let mut i = ::rand::random::<usize>() % self.population.len();
         let mut selected = 0;
         while selected < count {
             self.population.remove(i);

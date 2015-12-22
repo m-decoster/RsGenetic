@@ -37,28 +37,28 @@ pub enum SelectionType {
     /// Select only the `count * 2` best performing parents in terms of fitness.
     Maximize {
         /// Should be larger than 0 and smaller than half the population size.
-        count: u32,
+        count: usize,
     },
     /// Perform tournament selection with tournament size `count`, running `num` tournaments.
     /// This yields `num * 2` parents.
     Tournament {
         /// Indicates the number of tournaments. Should be larger than 0 and smaller than the
         /// population size.
-        num: u32,
+        num: usize,
         /// Should be larger than 0 and smaller than the population size.
-        count: u32,
+        count: usize,
     },
     /// Perform Stochastic Universal Sampling to do the selection.
     /// Selects `count` parents.
     Stochastic {
         /// Should be larger than 0 and smaller than the population size.
-        count: u32,
+        count: usize,
     },
     /// Perform Roulette Wheel Selection, also known as Fitness Proportionate Selection.
     /// This yields `count` parents.
     Roulette {
         /// Should be larger than 0 and smaller than the population size.
-        count: u32,
+        count: usize,
     },
 }
 
