@@ -591,16 +591,6 @@
 <span id="549">549</span>
 <span id="550">550</span>
 <span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Contains a sequential implementation of `::sim::Simulation`,</span>
 <span class='doccomment'>//! called a `Simulator`.</span>
@@ -618,12 +608,10 @@
 
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> {
     <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>,
-    <span class='ident'>max_iters</span>: <span class='ident'>i32</span>,
-    <span class='ident'>n_iters</span>: <span class='ident'>i32</span>,
+    <span class='ident'>iter_limit</span>: <span class='ident'>IterLimit</span>,
     <span class='ident'>selection_type</span>: <span class='ident'>SelectionType</span>,
     <span class='ident'>fitness_type</span>: <span class='ident'>FitnessType</span>,
-    <span class='ident'>earlystop</span>: <span class='ident'>bool</span>,
-    <span class='ident'>earlystopper</span>: <span class='ident'>EarlyStopper</span>,
+    <span class='ident'>earlystopper</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>EarlyStopper</span><span class='op'>&gt;</span>,
     <span class='ident'>duration</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span>
 }
 
@@ -633,20 +621,17 @@
     <span class='ident'>delta</span>: <span class='ident'>f64</span>,
     <span class='doccomment'>/// Previously recorded fitness value.</span>
     <span class='ident'>previous</span>: <span class='ident'>f64</span>,
-    <span class='doccomment'>/// Maximum number of iterations before early stopping.</span>
-    <span class='ident'>max_iters</span>: <span class='ident'>u32</span>,
-    <span class='doccomment'>/// Current number of iterations where the difference was smaller than delta.</span>
-    <span class='ident'>n_iters</span>: <span class='ident'>u32</span>,
+    <span class='doccomment'>/// The number of iterations before stopping early.</span>
+    <span class='ident'>iter_limit</span>: <span class='ident'>IterLimit</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>EarlyStopper</span> {
     <span class='doccomment'>/// Create a new `EarlyStopper`.</span>
-    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>delta</span>: <span class='ident'>f64</span>, <span class='ident'>n_iters</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>EarlyStopper</span> {
+    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>delta</span>: <span class='ident'>f64</span>, <span class='ident'>n_iters</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='ident'>EarlyStopper</span> {
         <span class='ident'>EarlyStopper</span> {
             <span class='ident'>delta</span>: <span class='ident'>delta</span>,
             <span class='ident'>previous</span>: <span class='number'>0.0</span>,
-            <span class='ident'>max_iters</span>: <span class='ident'>n_iters</span>,
-            <span class='ident'>n_iters</span>: <span class='number'>0</span>,
+            <span class='ident'>iter_limit</span>: <span class='ident'>IterLimit</span>::<span class='ident'>new</span>(<span class='ident'>n_iters</span>)
         }
     }
 
@@ -656,12 +641,12 @@
     <span class='kw'>fn</span> <span class='ident'>update</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>fitness</span>: <span class='ident'>f64</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>if</span> (<span class='ident'>fitness</span> <span class='op'>-</span> <span class='self'>self</span>.<span class='ident'>previous</span>).<span class='ident'>abs</span>() <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>delta</span> {
             <span class='self'>self</span>.<span class='ident'>previous</span> <span class='op'>=</span> <span class='ident'>fitness</span>;
-            <span class='self'>self</span>.<span class='ident'>n_iters</span> <span class='op'>+=</span> <span class='number'>1</span>;
+            <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>inc</span>();
         } <span class='kw'>else</span> {
-            <span class='self'>self</span>.<span class='ident'>n_iters</span> <span class='op'>=</span> <span class='number'>0</span>;
+            <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>reset</span>();
         }
 
-        <span class='self'>self</span>.<span class='ident'>n_iters</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>max_iters</span>
+        <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>reached</span>()
     }
 }
 
@@ -687,12 +672,10 @@
         <span class='ident'>SimulatorBuilder</span> {
             <span class='ident'>sim</span>: <span class='ident'>Simulator</span> {
                 <span class='ident'>population</span>: <span class='ident'>pop</span>.<span class='ident'>clone</span>(),
-                <span class='ident'>max_iters</span>: <span class='number'>100</span>,
-                <span class='ident'>n_iters</span>: <span class='number'>0</span>,
+                <span class='ident'>iter_limit</span>: <span class='ident'>IterLimit</span>::<span class='ident'>new</span>(<span class='number'>100</span>),
                 <span class='ident'>selection_type</span>: <span class='ident'>SelectionType</span>::<span class='ident'>Maximize</span> { <span class='ident'>count</span>: <span class='number'>5</span> },
                 <span class='ident'>fitness_type</span>: <span class='ident'>FitnessType</span>::<span class='ident'>Maximize</span>,
-                <span class='ident'>earlystop</span>: <span class='boolval'>false</span>,
-                <span class='ident'>earlystopper</span>: <span class='ident'>EarlyStopper</span>::<span class='ident'>new</span>(<span class='number'>0.0</span>, <span class='number'>0</span>),
+                <span class='ident'>earlystopper</span>: <span class='prelude-val'>None</span>,
                 <span class='ident'>duration</span>: <span class='prelude-val'>None</span>
             },
         }
@@ -701,7 +684,7 @@
     <span class='doccomment'>/// Run.</span>
     <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>time_start</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>();
-        <span class='kw'>while</span> <span class='self'>self</span>.<span class='ident'>n_iters</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>max_iters</span> {
+        <span class='kw'>while</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>reached</span>() {
             <span class='comment'>// Perform selection</span>
             <span class='kw'>let</span> <span class='ident'>parents_tmp</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>selection_type</span> {
                 <span class='ident'>SelectionType</span>::<span class='ident'>Maximize</span>{<span class='ident'>count</span>: <span class='ident'>c</span>} <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>selection_maximize</span>(<span class='ident'>c</span>),
@@ -713,8 +696,8 @@
                 <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>parents_tmp</span>.<span class='ident'>err</span>().<span class='ident'>unwrap</span>());
             }
             <span class='kw'>let</span> <span class='ident'>parents</span> <span class='op'>=</span> <span class='ident'>parents_tmp</span>.<span class='ident'>ok</span>().<span class='ident'>unwrap</span>();
-            <span class='comment'>// Create children from the selected parents and mutate them</span>
-            <span class='kw'>let</span> <span class='ident'>children</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>parents</span>.<span class='ident'>iter</span>()
+            <span class='comment'>// Create children from the selected parents and mutate them.</span>
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>children</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>parents</span>.<span class='ident'>iter</span>()
                                                .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>pair</span>: <span class='kw-2'>&amp;</span>(<span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>)<span class='op'>|</span> {
                                                    <span class='ident'>pair</span>.<span class='number'>0</span>.<span class='ident'>crossover</span>(<span class='kw-2'>&amp;</span><span class='op'>*</span>(<span class='ident'>pair</span>.<span class='number'>1</span>))
                                                })
@@ -723,18 +706,14 @@
             <span class='comment'>// Kill off parts of the population at random to make room for the children</span>
             <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>kill_off</span>(<span class='ident'>children</span>.<span class='ident'>len</span>()) {
                 <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> {
-                    <span class='kw'>for</span> <span class='ident'>child</span> <span class='kw'>in</span> <span class='ident'>children</span> {
-                        <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>push</span>(<span class='ident'>child</span>);
-                    }
-
-                    <span class='self'>self</span>.<span class='ident'>n_iters</span> <span class='op'>+=</span> <span class='number'>1</span>;
+                    <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>append</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>children</span>);
                 }
                 <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> {
                     <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>e</span>);
                 }
             }
 
-            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>earlystop</span> {
+            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>stopper</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>earlystopper</span> {
                 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cloned</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>clone</span>();
                 <span class='ident'>cloned</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>x</span>, <span class='ident'>y</span><span class='op'>|</span> {
                     (<span class='op'>*</span><span class='ident'>x</span>).<span class='ident'>fitness</span>().<span class='ident'>partial_cmp</span>(<span class='kw-2'>&amp;</span>(<span class='op'>*</span><span class='ident'>y</span>).<span class='ident'>fitness</span>()).<span class='ident'>unwrap_or</span>(<span class='ident'>Ordering</span>::<span class='ident'>Equal</span>)
@@ -745,17 +724,19 @@
                                       }
                                       .<span class='ident'>fitness</span>();
 
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>earlystopper</span>.<span class='ident'>update</span>(<span class='ident'>highest_fitness</span>) {
+                <span class='kw'>if</span> <span class='ident'>stopper</span>.<span class='ident'>update</span>(<span class='ident'>highest_fitness</span>) {
                     <span class='kw'>break</span>;
                 }
             }
+
+            <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>inc</span>();
         }
         <span class='self'>self</span>.<span class='ident'>duration</span> <span class='op'>=</span> (<span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>-</span> <span class='ident'>time_start</span>).<span class='ident'>num_nanoseconds</span>();
         <span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>get</span>())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>iterations</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
-        <span class='self'>self</span>.<span class='ident'>n_iters</span>
+    <span class='kw'>fn</span> <span class='ident'>iterations</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span> {
+        <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>get</span>()
     }
 
     <span class='kw'>fn</span> <span class='ident'>time</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span> {
@@ -765,8 +746,8 @@
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> <span class='ident'>Selector</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Select count*2 parents for breeding.</span>
-    <span class='kw'>fn</span> <span class='ident'>selection_maximize</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> ((<span class='ident'>count</span> <span class='op'>*</span> <span class='number'>2</span>) <span class='kw'>as</span> <span class='ident'>usize</span>) <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
+    <span class='kw'>fn</span> <span class='ident'>selection_maximize</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> <span class='ident'>count</span> <span class='op'>*</span> <span class='number'>2</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than half the population size.&quot;</span>,
                                <span class='ident'>count</span>));
@@ -779,7 +760,7 @@
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>FitnessType</span>::<span class='ident'>Maximize</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>fitness_type</span> {
             <span class='ident'>cloned</span>.<span class='ident'>reverse</span>();
         }
-        <span class='kw'>let</span> <span class='ident'>sorted</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>cloned</span>.<span class='ident'>iter</span>().<span class='ident'>take</span>(<span class='number'>2</span> <span class='op'>*</span> (<span class='ident'>count</span> <span class='kw'>as</span> <span class='ident'>usize</span>)).<span class='ident'>collect</span>();
+        <span class='kw'>let</span> <span class='ident'>sorted</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>cloned</span>.<span class='ident'>iter</span>().<span class='ident'>take</span>(<span class='number'>2</span> <span class='op'>*</span> <span class='ident'>count</span>).<span class='ident'>collect</span>();
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>index</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span>: <span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
         <span class='kw'>while</span> <span class='ident'>index</span> <span class='op'>&lt;</span> <span class='ident'>sorted</span>.<span class='ident'>len</span>() {
@@ -790,13 +771,13 @@
     }
 
     <span class='doccomment'>/// Select parents using tournament selection.</span>
-    <span class='kw'>fn</span> <span class='ident'>selection_tournament</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>num</span>: <span class='ident'>u32</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='ident'>num</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> ((<span class='ident'>num</span> <span class='op'>*</span> <span class='number'>2</span>) <span class='kw'>as</span> <span class='ident'>usize</span>) <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
+    <span class='kw'>fn</span> <span class='ident'>selection_tournament</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>num</span>: <span class='ident'>usize</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='ident'>num</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> <span class='ident'>num</span> <span class='op'>*</span> <span class='number'>2</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid parameter `num`: {}. Should be larger than zero and \
                                 less than half the population size.&quot;</span>,
                                <span class='ident'>num</span>));
         }
-        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> (<span class='ident'>count</span> <span class='kw'>as</span> <span class='ident'>usize</span>) <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
+        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> <span class='ident'>count</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than half the population size.&quot;</span>,
                                <span class='ident'>count</span>));
@@ -805,7 +786,7 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span>: <span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng</span> <span class='op'>=</span> ::<span class='ident'>rand</span>::<span class='ident'>thread_rng</span>();
         <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>num</span> {
-            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tournament</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>count</span> <span class='kw'>as</span> <span class='ident'>usize</span>);
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tournament</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>count</span>);
             <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>count</span> {
                 <span class='kw'>let</span> <span class='ident'>index</span> <span class='op'>=</span> <span class='ident'>rng</span>.<span class='ident'>gen</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>() <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>();
                 <span class='ident'>tournament</span>.<span class='ident'>push</span>(<span class='self'>self</span>.<span class='ident'>population</span>[<span class='ident'>index</span>].<span class='ident'>clone</span>());
@@ -827,16 +808,16 @@
     }
 
     <span class='doccomment'>/// Select parents using stochastic universal sampling.</span>
-    <span class='kw'>fn</span> <span class='ident'>selection_stochastic</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> (<span class='ident'>count</span> <span class='kw'>as</span> <span class='ident'>usize</span>) <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
+    <span class='kw'>fn</span> <span class='ident'>selection_stochastic</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> <span class='ident'>count</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than the population size.&quot;</span>,
                                <span class='ident'>count</span>));
         }
 
-        <span class='kw'>let</span> <span class='ident'>ratio</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() <span class='op'>/</span> (<span class='ident'>count</span> <span class='kw'>as</span> <span class='ident'>usize</span>);
+        <span class='kw'>let</span> <span class='ident'>ratio</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() <span class='op'>/</span> <span class='ident'>count</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span>: <span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>i</span> <span class='op'>=</span> ::<span class='ident'>rand</span>::<span class='ident'>random</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>() <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>usize</span>;
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>i</span> <span class='op'>=</span> ::<span class='ident'>rand</span>::<span class='ident'>random</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>() <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>();
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>selected</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>while</span> <span class='ident'>selected</span> <span class='op'>&lt;</span> <span class='ident'>count</span> {
             <span class='ident'>result</span>.<span class='ident'>push</span>((<span class='self'>self</span>.<span class='ident'>population</span>[<span class='ident'>i</span>].<span class='ident'>clone</span>(),
@@ -849,8 +830,8 @@
     }
 
     <span class='doccomment'>/// Select parents using roulette wheel selection.</span>
-    <span class='kw'>fn</span> <span class='ident'>selection_roulette</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> (<span class='ident'>count</span> <span class='kw'>as</span> <span class='ident'>usize</span>) <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
+    <span class='kw'>fn</span> <span class='ident'>selection_roulette</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> <span class='ident'>count</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than the population size.&quot;</span>,
                                <span class='ident'>count</span>));
@@ -874,8 +855,8 @@
             <span class='kw'>while</span> <span class='ident'>inner_selected</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='number'>2</span> {
                 <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>between</span>.<span class='ident'>ind_sample</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>rng</span>);
 
-                <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>cloned</span>.<span class='ident'>iter</span>().<span class='ident'>find</span>(<span class='op'>|</span><span class='kw-2'>ref</span> <span class='ident'>p</span><span class='op'>|</span> <span class='ident'>c</span> <span class='op'>&gt;=</span> <span class='ident'>p</span>.<span class='ident'>fitness</span>());
-                <span class='kw'>if</span> <span class='ident'>result</span>.<span class='ident'>is_none</span>() { <span class='comment'>// This should never be true, but we wish to avoid panicing.</span>
+                <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>cloned</span>.<span class='ident'>iter</span>().<span class='ident'>find</span>(<span class='op'>|</span><span class='ident'>p</span><span class='op'>|</span> <span class='ident'>c</span> <span class='op'>&gt;=</span> <span class='ident'>p</span>.<span class='ident'>fitness</span>());
+                <span class='kw'>if</span> <span class='ident'>result</span>.<span class='ident'>is_none</span>() { <span class='comment'>// This should never be true, but we wish to avoid panicking.</span>
                     <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Could not complete Roulette Selection. This most likely \
                                         indicates a bug in rsgenetic.&quot;</span>));
                 }
@@ -892,7 +873,7 @@
     <span class='kw'>fn</span> <span class='ident'>kill_off</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>String</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>old_len</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>();
         <span class='kw'>let</span> <span class='ident'>ratio</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() <span class='op'>/</span> <span class='ident'>count</span>;
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>i</span> <span class='op'>=</span> ::<span class='ident'>rand</span>::<span class='ident'>random</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>() <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>usize</span>;
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>i</span> <span class='op'>=</span> ::<span class='ident'>rand</span>::<span class='ident'>random</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>() <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>len</span>();
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>selected</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>while</span> <span class='ident'>selected</span> <span class='op'>&lt;</span> <span class='ident'>count</span> {
             <span class='self'>self</span>.<span class='ident'>population</span>.<span class='ident'>remove</span>(<span class='ident'>i</span>);
@@ -921,8 +902,8 @@
     <span class='doccomment'>/// The `Simulator` will stop running after this number of iterations.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns itself for chaining purposes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_max_iters</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>i</span>: <span class='ident'>i32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>max_iters</span> <span class='op'>=</span> <span class='ident'>i</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_max_iters</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>i</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+        <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>iter_limit</span> <span class='op'>=</span> <span class='ident'>IterLimit</span>::<span class='ident'>new</span>(<span class='ident'>i</span>);
         <span class='self'>self</span>
     }
 
@@ -948,9 +929,8 @@
     <span class='doccomment'>/// is smaller than `delta`, the simulator will stop running.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns itself for chaining purposes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_early_stop</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>delta</span>: <span class='ident'>f64</span>, <span class='ident'>n_iters</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>earlystop</span> <span class='op'>=</span> <span class='boolval'>true</span>;
-        <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>earlystopper</span> <span class='op'>=</span> <span class='ident'>EarlyStopper</span>::<span class='ident'>new</span>(<span class='ident'>delta</span>, <span class='ident'>n_iters</span>);
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_early_stop</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>delta</span>: <span class='ident'>f64</span>, <span class='ident'>n_iters</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+        <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>earlystopper</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>EarlyStopper</span>::<span class='ident'>new</span>(<span class='ident'>delta</span>, <span class='ident'>n_iters</span>));
         <span class='self'>self</span>
     }
 }

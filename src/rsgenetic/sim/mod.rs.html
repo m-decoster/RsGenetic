@@ -143,7 +143,7 @@
     <span class='doccomment'>/// or if the simulation wasn&#39;t run yet.</span>
     <span class='kw'>fn</span> <span class='ident'>time</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>NanoSecond</span><span class='op'>&gt;</span>;
     <span class='doccomment'>/// Get the number of iterations the `Simulator` needed to converge.</span>
-    <span class='kw'>fn</span> <span class='ident'>iterations</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span>;
+    <span class='kw'>fn</span> <span class='ident'>iterations</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span>;
 }
 
 <span class='doccomment'>/// The type of parent selection.</span>
@@ -151,28 +151,28 @@
     <span class='doccomment'>/// Select only the `count * 2` best performing parents in terms of fitness.</span>
     <span class='ident'>Maximize</span> {
         <span class='doccomment'>/// Should be larger than 0 and smaller than half the population size.</span>
-        <span class='ident'>count</span>: <span class='ident'>u32</span>,
+        <span class='ident'>count</span>: <span class='ident'>usize</span>,
     },
     <span class='doccomment'>/// Perform tournament selection with tournament size `count`, running `num` tournaments.</span>
     <span class='doccomment'>/// This yields `num * 2` parents.</span>
     <span class='ident'>Tournament</span> {
         <span class='doccomment'>/// Indicates the number of tournaments. Should be larger than 0 and smaller than the</span>
         <span class='doccomment'>/// population size.</span>
-        <span class='ident'>num</span>: <span class='ident'>u32</span>,
+        <span class='ident'>num</span>: <span class='ident'>usize</span>,
         <span class='doccomment'>/// Should be larger than 0 and smaller than the population size.</span>
-        <span class='ident'>count</span>: <span class='ident'>u32</span>,
+        <span class='ident'>count</span>: <span class='ident'>usize</span>,
     },
     <span class='doccomment'>/// Perform Stochastic Universal Sampling to do the selection.</span>
     <span class='doccomment'>/// Selects `count` parents.</span>
     <span class='ident'>Stochastic</span> {
         <span class='doccomment'>/// Should be larger than 0 and smaller than the population size.</span>
-        <span class='ident'>count</span>: <span class='ident'>u32</span>,
+        <span class='ident'>count</span>: <span class='ident'>usize</span>,
     },
     <span class='doccomment'>/// Perform Roulette Wheel Selection, also known as Fitness Proportionate Selection.</span>
     <span class='doccomment'>/// This yields `count` parents.</span>
     <span class='ident'>Roulette</span> {
         <span class='doccomment'>/// Should be larger than 0 and smaller than the population size.</span>
-        <span class='ident'>count</span>: <span class='ident'>u32</span>,
+        <span class='ident'>count</span>: <span class='ident'>usize</span>,
     },
 }
 
