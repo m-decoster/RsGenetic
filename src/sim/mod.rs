@@ -63,10 +63,9 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     /// This function will either return the best performing individual,
     /// or an error string indicating what went wrong.
     fn get(&self) -> SimResult<T>;
-    /// Get the number of nanoseconds spent running, or `None` in case of an overflow,
-    /// or if the simulation wasn't run yet.
+    /// Get the number of nanoseconds spent running, or `None` in case of an overflow.
     fn time(&self) -> Option<NanoSecond>;
-    /// Get the number of iterations the `Simulator` needed to converge.
+    /// Get the number of iterations the `Simulator` has executed so far.
     fn iterations(&self) -> u64;
 }
 
