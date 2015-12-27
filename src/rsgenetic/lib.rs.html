@@ -298,9 +298,9 @@
 <span class='doccomment'>//!                   .set_fitness_type(sim::FitnessType::Minimize)</span>
 <span class='doccomment'>//!                   .build();</span>
 <span class='doccomment'>//! // We can now run the simulator.</span>
-<span class='doccomment'>//! let result = s.run();</span>
+<span class='doccomment'>//! s.run();</span>
 <span class='doccomment'>//! // This will fail if the result was an error:</span>
-<span class='doccomment'>//! let best = result.unwrap();</span>
+<span class='doccomment'>//! let best = s.get().unwrap();</span>
 <span class='doccomment'>//! // For this simple example, we should always get 0.</span>
 <span class='doccomment'>//! assert!((*best).i == 0);</span>
 <span class='doccomment'>//! // We can also get the time spent running:</span>
