@@ -78,14 +78,14 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
         }
     }
 
-    fn step(&mut self) -> bool {
+    fn step(&mut self) -> StepResult {
         let time_start = SteadyTime::now();
         let should_stop = match self.earlystopper {
             Some(ref x) => self.iter_limit.reached() || x.reached(),
             None => self.iter_limit.reached(),
         };
         if should_stop {
-            return true
+            return StepResult::Done
         } else {
             // Perform selection
             let parents_tmp = match self.selection_type {
@@ -96,7 +96,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             };
             if parents_tmp.is_err() {
                 self.error = Some(parents_tmp.err().unwrap());
-                return false
+                return StepResult::Failure
             }
             let parents = parents_tmp.ok().unwrap();
             // Create children from the selected parents and mutate them.
@@ -113,7 +113,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 }
                 Err(e) => {
                     self.error = Some(e);
-                    return false
+                    return StepResult::Failure
                 }
             }
 
@@ -142,19 +142,13 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             }
             None => None,
         };
-        false // Not done yet
+        StepResult::Success // Not done yet, but successful
     }
 
     /// Run.
     fn run(&mut self) {
-        let mut stop = false;
-        while !stop {
-            stop = self.step();
-            if let Err(_) = self.get() { // `step` returns false if there was an error.
-                // Avoid infinite loops.
-                break;
-            }
-        }
+        // Loop until Failure or Done.
+        while self.step() == StepResult::Success {}
     }
 
     fn get(&self) -> SimResult<T> {
@@ -575,7 +569,7 @@ mod tests {
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
         let result = s.step();
-        assert_eq!(result, false); // This should not converge in one step.
+        assert_eq!(result, StepResult::Success); // This should not converge in one step.
         assert_eq!(s.iterations(), 1);
         assert!(s.time().unwrap() > 0); // Should not be `None` (otherwise we are way too slow).
         s.run();

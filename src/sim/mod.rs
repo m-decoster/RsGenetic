@@ -17,6 +17,17 @@ pub type NanoSecond = i64;
 /// or an error message.
 pub type SimResult<T> = Result<Box<T>, String>;
 
+/// The result of running a single step.
+#[derive(PartialEq,Eq,Debug)]
+pub enum StepResult {
+    /// The step was successful, but the simulation has not finished.
+    Success,
+    /// The step was not successful.
+    Failure,
+    /// The step was successful and the simulation finished.
+    Done
+}
+
 /// A `Simulation` is an execution of a genetic algorithm.
 pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     type B: Builder<Box<Self>>;
@@ -27,10 +38,20 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     fn builder(population: &Vec<Box<T>>) -> Self::B;
     /// Run the simulation completely.
     fn run(&mut self);
-    /// Make one step in the simulation. Returns whether the simulation has run
-    /// til completion.
-    fn step(&mut self) -> bool;
-    /// Get the current best phenotype or an error string.
+    /// Make one step in the simulation. This function returns a `StepResult`:
+    ///
+    /// * `StepResult::Success` when a step was successful, but the simulation is not done.
+    /// * `StepResult::Failure` when an error occurred. Check the result of `get()`.
+    /// * `StepResult::Done` on convergence or reaching the maximum iterations.
+    ///
+    /// Be careful to check for failures when running `step()` in a loop,
+    /// to avoid infinite loops. To run the simulation until convergence or until
+    /// reaching a maximum number of iterations, consider using `run()` instead.
+    fn step(&mut self) -> StepResult;
+    /// Get the result of the latest step or of a complete run.
+    /// 
+    /// This function will either return the best performing individual,
+    /// or an error string indicating what went wrong.
     fn get(&self) -> SimResult<T>;
     /// Get the number of nanoseconds spent running, or `None` in case of an overflow,
     /// or if the simulation wasn't run yet.
