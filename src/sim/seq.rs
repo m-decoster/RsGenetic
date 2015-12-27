@@ -21,6 +21,7 @@ pub struct Simulator<T: Phenotype> {
     fitness_type: FitnessType,
     earlystopper: Option<EarlyStopper>,
     duration: Option<NanoSecond>,
+    error: Option<String>
 }
 
 /// Used for early stopping.
@@ -72,18 +73,19 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 fitness_type: FitnessType::Maximize,
                 earlystopper: None,
                 duration: Some(0),
+                error: None,
             },
         }
     }
 
-    fn step(&mut self) -> Option<SimResult<T>> {
+    fn step(&mut self) -> bool {
         let time_start = SteadyTime::now();
         let should_stop = match self.earlystopper {
             Some(ref x) => self.iter_limit.reached() || x.reached(),
             None => self.iter_limit.reached(),
         };
         if should_stop {
-            return Some(Ok(self.get()));
+            return true
         } else {
             // Perform selection
             let parents_tmp = match self.selection_type {
@@ -93,7 +95,8 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 SelectionType::Roulette{count: c} => self.selection_roulette(c),
             };
             if parents_tmp.is_err() {
-                return Some(Err(parents_tmp.err().unwrap()));
+                self.error = Some(parents_tmp.err().unwrap());
+                return false
             }
             let parents = parents_tmp.ok().unwrap();
             // Create children from the selected parents and mutate them.
@@ -108,7 +111,10 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 Ok(_) => {
                     self.population.append(&mut children);
                 }
-                Err(e) => return Some(Err(e)),
+                Err(e) => {
+                    self.error = Some(e);
+                    return false
+                }
             }
 
             if let Some(ref mut stopper) = self.earlystopper {
@@ -136,35 +142,33 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             }
             None => None,
         };
-        None // Not done yet
+        false // Not done yet
     }
 
     /// Run.
-    fn run(&mut self) -> SimResult<T> {
+    fn run(&mut self) {
         let mut stop = false;
         while !stop {
-            let result = self.step();
-            stop = match result {
-                Some(x) => {
-                    match x {
-                        Ok(_) => true,
-                        Err(e) => return Err(e),
-                    }
-                }
-                None => false,
-            };
+            stop = self.step();
+            if let Err(_) = self.get() {
+                break;
+            }
         }
-        Ok(self.get())
     }
 
-    fn get(&self) -> Box<T> {
-        let mut cloned = self.population.clone();
-        cloned.sort_by(|x, y| {
-            (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
-        });
-        match self.fitness_type {
-            FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
-            FitnessType::Minimize => cloned[0].clone(),
+    fn get(&self) -> SimResult<T> {
+        match self.error {
+            Some(ref e) => Err(e.clone()),
+            None => {
+                let mut cloned = self.population.clone();
+                cloned.sort_by(|x, y| {
+                    (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
+                });
+                Ok(match self.fitness_type {
+                    FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
+                    FitnessType::Minimize => cloned[0].clone(),
+                })
+            }
         }
     }
 
@@ -422,13 +426,15 @@ mod tests {
         let mut s = *seq::Simulator::builder(&tests)
                          .set_selection_type(SelectionType::Maximize { count: 0 })
                          .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
 
         // count 101
         s = *seq::Simulator::builder(&tests)
                  .set_selection_type(SelectionType::Maximize { count: 101 })
                  .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
     }
 
     #[test]
@@ -438,13 +444,15 @@ mod tests {
         let mut s = *seq::Simulator::builder(&tests)
                          .set_selection_type(SelectionType::Tournament { num: 2, count: 0 })
                          .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
 
         // num 0
         s = *seq::Simulator::builder(&tests)
                  .set_selection_type(SelectionType::Tournament { num: 0, count: 1 })
                  .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
 
         // num 51
         s = *seq::Simulator::builder(&tests)
@@ -453,7 +461,8 @@ mod tests {
                      count: 1,
                  })
                  .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
     }
 
     #[test]
@@ -463,13 +472,15 @@ mod tests {
         let mut s = *seq::Simulator::builder(&tests)
                          .set_selection_type(SelectionType::Stochastic { count: 0 })
                          .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
 
         // count 101
         s = *seq::Simulator::builder(&tests)
                  .set_selection_type(SelectionType::Stochastic { count: 101 })
                  .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
     }
 
     #[test]
@@ -480,13 +491,15 @@ mod tests {
         let mut s = *seq::Simulator::builder(&tests)
                          .set_selection_type(SelectionType::Roulette { count: 0 })
                          .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
 
         // count 101
         s = *seq::Simulator::builder(&tests)
                  .set_selection_type(SelectionType::Roulette { count: 101 })
                  .build();
-        assert!(s.run().is_err());
+        s.run();
+        assert!(s.get().is_err());
     }
 
     #[test]
@@ -497,7 +510,8 @@ mod tests {
                          .set_selection_type(SelectionType::Stochastic { count: 1 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        assert!(s.run().is_ok()); // The algorithm should not fail.
+        s.run();
+        assert!(s.get().is_ok()); // The algorithm should not fail.
         assert!(s.time().is_some()); // The run time should not overflow for this example.
     }
 
@@ -527,8 +541,10 @@ mod tests {
                                   .build();
 
         // Both should run without error.
-        assert!(s_early.run().is_ok());
-        assert!(s_no_early.run().is_ok());
+        s_early.run();
+        s_no_early.run();
+        assert!(s_early.get().is_ok());
+        assert!(s_no_early.get().is_ok());
 
         // The one with early stopping should have less iterations.
         // It is impossible to have more, because the maximum is 1000 and without early stopping
@@ -544,7 +560,8 @@ mod tests {
                          .set_selection_type(SelectionType::Maximize { count: 5 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        let result = s.run().unwrap();
+        s.run();
+        let result = s.get().unwrap();
         assert_eq!(result.i, 0);
     }
 
@@ -557,10 +574,11 @@ mod tests {
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
         let result = s.step();
-        assert!(result.is_none()); // This should not converge in one step.
+        assert_eq!(result, false); // This should not converge in one step.
         assert_eq!(s.iterations(), 1);
         assert!(s.time().unwrap() > 0); // Should not be `None` (otherwise we are way too slow).
-        let final_result = s.run().unwrap();
+        s.run();
+        let final_result = s.get().unwrap();
         assert_eq!(final_result.i, 0);
     }
 
@@ -572,7 +590,8 @@ mod tests {
                          .set_selection_type(SelectionType::Tournament { count: 3, num: 5 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        let result = s.run().unwrap();
+        s.run();
+        let result = s.get().unwrap();
         assert_eq!(result.i, 0);
     }
 
@@ -584,7 +603,8 @@ mod tests {
                          .set_selection_type(SelectionType::Stochastic { count: 5 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        let result = s.run().unwrap();
+        s.run();
+        let result = s.get().unwrap();
         assert_eq!(result.i, 0);
     }
 
@@ -596,7 +616,8 @@ mod tests {
                          .set_selection_type(SelectionType::Roulette { count: 5 })
                          .set_fitness_type(FitnessType::Minimize)
                          .build();
-        let result = s.run().unwrap();
+        s.run();
+        let result = s.get().unwrap();
         assert_eq!(result.i, 0);
     }
 }

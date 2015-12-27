@@ -25,15 +25,13 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     /// Because the population is a required parameter, you have to pass it here,
     /// instead of using a builder function.
     fn builder(population: &Vec<Box<T>>) -> Self::B;
-    /// Run the simulation. Returns the best phenotype
-    /// or a string containing an error if something went wrong.
-    fn run(&mut self) -> SimResult<T>;
-    /// Make one step in the simulation. If the simulation has not yet
-    /// converged or reached the maximum number of iterations, this function
-    /// returns `None`.
-    fn step(&mut self) -> Option<SimResult<T>>;
-    /// Get the current best phenotype.
-    fn get(&self) -> Box<T>;
+    /// Run the simulation completely.
+    fn run(&mut self);
+    /// Make one step in the simulation. Returns whether the simulation has run
+    /// til completion.
+    fn step(&mut self) -> bool;
+    /// Get the current best phenotype or an error string.
+    fn get(&self) -> SimResult<T>;
     /// Get the number of nanoseconds spent running, or `None` in case of an overflow,
     /// or if the simulation wasn't run yet.
     fn time(&self) -> Option<NanoSecond>;
