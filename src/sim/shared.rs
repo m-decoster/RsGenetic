@@ -19,16 +19,13 @@ pub struct IterLimit {
     /// Maximum number of iterations allowed.
     max: u64,
     /// Current number of iterations.
-    cur: u64
+    cur: u64,
 }
 
 impl IterLimit {
     /// Create a new iteration limiter.
     pub fn new(max: u64) -> IterLimit {
-        IterLimit {
-            max: max,
-            cur: 0
-        }
+        IterLimit { max: max, cur: 0 }
     }
 
     /// Increment the number of iterations.

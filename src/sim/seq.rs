@@ -20,7 +20,7 @@ pub struct Simulator<T: Phenotype> {
     selection_type: SelectionType,
     fitness_type: FitnessType,
     earlystopper: Option<EarlyStopper>,
-    duration: Option<NanoSecond>
+    duration: Option<NanoSecond>,
 }
 
 /// Used for early stopping.
@@ -39,36 +39,23 @@ impl EarlyStopper {
         EarlyStopper {
             delta: delta,
             previous: 0.0,
-            iter_limit: IterLimit::new(n_iters)
+            iter_limit: IterLimit::new(n_iters),
         }
     }
 
     /// Update the `EarlyStopper` with a new fitness value.
-    ///
-    /// Returns whether or not the `Simulator` should stop.
-    fn update(&mut self, fitness: f64) -> bool {
+    fn update(&mut self, fitness: f64) {
         if (fitness - self.previous).abs() < self.delta {
             self.previous = fitness;
             self.iter_limit.inc();
         } else {
             self.iter_limit.reset();
         }
-
-        self.iter_limit.reached()
     }
-}
 
-impl<T: Phenotype> Simulator<T> {
-    /// Get the best performing organism.
-    fn get(&self) -> Box<T> {
-        let mut cloned = self.population.clone();
-        cloned.sort_by(|x, y| {
-            (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
-        });
-        match self.fitness_type {
-            FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
-            FitnessType::Minimize => cloned[0].clone(),
-        }
+    /// Returns whether the `Simulator` should stop.
+    fn reached(&self) -> bool {
+        self.iter_limit.reached()
     }
 }
 
@@ -84,15 +71,20 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 selection_type: SelectionType::Maximize { count: 5 },
                 fitness_type: FitnessType::Maximize,
                 earlystopper: None,
-                duration: None
+                duration: Some(0),
             },
         }
     }
 
-    /// Run.
-    fn run(&mut self) -> Result<Box<T>, String> {
+    fn step(&mut self) -> Option<SimResult<T>> {
         let time_start = SteadyTime::now();
-        while !self.iter_limit.reached() {
+        let should_stop = match self.earlystopper {
+            Some(ref x) => self.iter_limit.reached() || x.reached(),
+            None => self.iter_limit.reached(),
+        };
+        if should_stop {
+            return Some(Ok(self.get()));
+        } else {
             // Perform selection
             let parents_tmp = match self.selection_type {
                 SelectionType::Maximize{count: c} => self.selection_maximize(c),
@@ -101,24 +93,22 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 SelectionType::Roulette{count: c} => self.selection_roulette(c),
             };
             if parents_tmp.is_err() {
-                return Err(parents_tmp.err().unwrap());
+                return Some(Err(parents_tmp.err().unwrap()));
             }
             let parents = parents_tmp.ok().unwrap();
             // Create children from the selected parents and mutate them.
             let mut children: Vec<Box<T>> = parents.iter()
-                                               .map(|pair: &(Box<T>, Box<T>)| {
-                                                   pair.0.crossover(&*(pair.1))
-                                               })
-                                               .map(|c| Box::new(c.mutate()))
-                                               .collect();
+                                                   .map(|pair: &(Box<T>, Box<T>)| {
+                                                       pair.0.crossover(&*(pair.1))
+                                                   })
+                                                   .map(|c| Box::new(c.mutate()))
+                                                   .collect();
             // Kill off parts of the population at random to make room for the children
             match self.kill_off(children.len()) {
                 Ok(_) => {
                     self.population.append(&mut children);
                 }
-                Err(e) => {
-                    return Err(e);
-                }
+                Err(e) => return Some(Err(e)),
             }
 
             if let Some(ref mut stopper) = self.earlystopper {
@@ -131,16 +121,51 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                                           FitnessType::Minimize => cloned[0].clone(),
                                       }
                                       .fitness();
-
-                if stopper.update(highest_fitness) {
-                    break;
-                }
+                stopper.update(highest_fitness);
             }
 
             self.iter_limit.inc();
         }
-        self.duration = (SteadyTime::now() - time_start).num_nanoseconds();
+        let this_time = (SteadyTime::now() - time_start).num_nanoseconds();
+        self.duration = match self.duration {
+            Some(x) => {
+                match this_time {
+                    Some(y) => Some(x + y),
+                    None => None,
+                }
+            }
+            None => None,
+        };
+        None // Not done yet
+    }
+
+    /// Run.
+    fn run(&mut self) -> SimResult<T> {
+        let mut stop = false;
+        while !stop {
+            let result = self.step();
+            stop = match result {
+                Some(x) => {
+                    match x {
+                        Ok(_) => true,
+                        Err(e) => return Err(e),
+                    }
+                }
+                None => false,
+            };
+        }
         Ok(self.get())
+    }
+
+    fn get(&self) -> Box<T> {
+        let mut cloned = self.population.clone();
+        cloned.sort_by(|x, y| {
+            (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
+        });
+        match self.fitness_type {
+            FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
+            FitnessType::Minimize => cloned[0].clone(),
+        }
     }
 
     fn iterations(&self) -> u64 {
@@ -252,7 +277,12 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
             (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
         });
         // Calculate cumulative fitness
-        let cum_fitness: Vec<_> = cloned.iter().scan(0.0, |state, ref x| { *state = *state + x.fitness(); Some(*state) }).collect();
+        let cum_fitness: Vec<_> = cloned.iter()
+                                        .scan(0.0, |state, ref x| {
+                                            *state = *state + x.fitness();
+                                            Some(*state)
+                                        })
+                                        .collect();
 
         let between = Range::new(cum_fitness[0], cum_fitness[cum_fitness.len() - 1]);
         let mut rng = ::rand::thread_rng();
@@ -264,7 +294,8 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
                 let c = between.ind_sample(&mut rng);
 
                 let result = cloned.iter().find(|p| c >= p.fitness());
-                if result.is_none() { // This should never be true, but we wish to avoid panicking.
+                if result.is_none() {
+                    // This should never be true, but we wish to avoid panicking.
                     return Err(format!("Could not complete Roulette Selection. This most likely \
                                         indicates a bug in rsgenetic."));
                 }
@@ -395,8 +426,8 @@ mod tests {
 
         // count 101
         s = *seq::Simulator::builder(&tests)
-                         .set_selection_type(SelectionType::Maximize { count: 101 })
-                         .build();
+                 .set_selection_type(SelectionType::Maximize { count: 101 })
+                 .build();
         assert!(s.run().is_err());
     }
 
@@ -411,14 +442,17 @@ mod tests {
 
         // num 0
         s = *seq::Simulator::builder(&tests)
-                         .set_selection_type(SelectionType::Tournament { num: 0, count: 1 })
-                         .build();
+                 .set_selection_type(SelectionType::Tournament { num: 0, count: 1 })
+                 .build();
         assert!(s.run().is_err());
 
         // num 51
         s = *seq::Simulator::builder(&tests)
-                         .set_selection_type(SelectionType::Tournament { num: 51, count: 1 })
-                         .build();
+                 .set_selection_type(SelectionType::Tournament {
+                     num: 51,
+                     count: 1,
+                 })
+                 .build();
         assert!(s.run().is_err());
     }
 
@@ -433,15 +467,15 @@ mod tests {
 
         // count 101
         s = *seq::Simulator::builder(&tests)
-                         .set_selection_type(SelectionType::Stochastic { count: 101 })
-                         .build();
+                 .set_selection_type(SelectionType::Stochastic { count: 101 })
+                 .build();
         assert!(s.run().is_err());
     }
 
     #[test]
     fn test_roulette_invalid() {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-        
+
         // count 0
         let mut s = *seq::Simulator::builder(&tests)
                          .set_selection_type(SelectionType::Roulette { count: 0 })
@@ -450,8 +484,8 @@ mod tests {
 
         // count 101
         s = *seq::Simulator::builder(&tests)
-                         .set_selection_type(SelectionType::Roulette { count: 101 })
-                         .build();
+                 .set_selection_type(SelectionType::Roulette { count: 101 })
+                 .build();
         assert!(s.run().is_err());
     }
 
@@ -470,9 +504,8 @@ mod tests {
     #[test]
     fn test_time_norun() {
         let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-        let s = *seq::Simulator::builder(&tests)
-                         .build();
-        assert!(s.time().is_none()); // We did not run, so there is no time.
+        let s = *seq::Simulator::builder(&tests).build();
+        assert!(s.time().unwrap() == 0);
     }
 
     #[test]
@@ -513,6 +546,22 @@ mod tests {
                          .build();
         let result = s.run().unwrap();
         assert_eq!(result.i, 0);
+    }
+
+    #[test]
+    fn test_step() {
+        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
+        let mut s = *seq::Simulator::builder(&tests)
+                         .set_max_iters(1000)
+                         .set_selection_type(SelectionType::Maximize { count: 5 })
+                         .set_fitness_type(FitnessType::Minimize)
+                         .build();
+        let result = s.step();
+        assert!(result.is_none()); // This should not converge in one step.
+        assert_eq!(s.iterations(), 1);
+        assert!(s.time().unwrap() > 0); // Should not be `None` (otherwise we are way too slow).
+        let final_result = s.run().unwrap();
+        assert_eq!(final_result.i, 0);
     }
 
     #[test]

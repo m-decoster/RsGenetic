@@ -13,6 +13,9 @@ pub trait Builder<T> {
 
 /// Simulation run time is defined in nanoseconds.
 pub type NanoSecond = i64;
+/// The result of a simulation, containing the best phenotype
+/// or an error message.
+pub type SimResult<T> = Result<Box<T>, String>;
 
 /// A `Simulation` is an execution of a genetic algorithm.
 pub trait Simulation<T: Phenotype> : shared::Selector<T> {
@@ -24,7 +27,13 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     fn builder(population: &Vec<Box<T>>) -> Self::B;
     /// Run the simulation. Returns the best phenotype
     /// or a string containing an error if something went wrong.
-    fn run(&mut self) -> Result<Box<T>, String>;
+    fn run(&mut self) -> SimResult<T>;
+    /// Make one step in the simulation. If the simulation has not yet
+    /// converged or reached the maximum number of iterations, this function
+    /// returns `None`.
+    fn step(&mut self) -> Option<SimResult<T>>;
+    /// Get the current best phenotype.
+    fn get(&self) -> Box<T>;
     /// Get the number of nanoseconds spent running, or `None` in case of an overflow,
     /// or if the simulation wasn't run yet.
     fn time(&self) -> Option<NanoSecond>;
