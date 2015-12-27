@@ -28,6 +28,15 @@ pub enum StepResult {
     Done
 }
 
+/// The result of running an entire simulation.
+#[derive(PartialEq,Eq,Debug)]
+pub enum RunResult {
+    /// An error occurred somewhere during simulation.
+    Failure,
+    /// The simulation finished without errors.
+    Done
+}
+
 /// A `Simulation` is an execution of a genetic algorithm.
 pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     type B: Builder<Box<Self>>;
@@ -37,7 +46,7 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     /// instead of using a builder function.
     fn builder(population: &Vec<Box<T>>) -> Self::B;
     /// Run the simulation completely.
-    fn run(&mut self);
+    fn run(&mut self) -> RunResult;
     /// Make one step in the simulation. This function returns a `StepResult`:
     ///
     /// * `StepResult::Success` when a step was successful, but the simulation is not done.
@@ -46,7 +55,8 @@ pub trait Simulation<T: Phenotype> : shared::Selector<T> {
     ///
     /// Be careful to check for failures when running `step()` in a loop,
     /// to avoid infinite loops. To run the simulation until convergence or until
-    /// reaching a maximum number of iterations, consider using `run()` instead.
+    /// reaching a maximum number of iterations, consider using `run()` instead:
+    /// This function is mostly useful for making illustrations of the evolution.
     fn step(&mut self) -> StepResult;
     /// Get the result of the latest step or of a complete run.
     /// 

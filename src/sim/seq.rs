@@ -146,9 +146,15 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
     }
 
     /// Run.
-    fn run(&mut self) {
+    fn run(&mut self) -> RunResult {
         // Loop until Failure or Done.
-        while self.step() == StepResult::Success {}
+        loop {
+            match self.step() {
+                StepResult::Success => {}
+                StepResult::Failure => return RunResult::Failure,
+                StepResult::Done => return RunResult::Done
+            }
+        }
     }
 
     fn get(&self) -> SimResult<T> {
