@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/sim/shared.rs`.">
+    <meta name="description" content="Source to the Rust file `src/sim/shared/select/mod.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
-    <title>shared.rs.html -- source</title>
+    <title>mod.rs.html -- source</title>
 
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../main.css">
 
     
     
@@ -53,48 +53,9 @@
 <span id="11">11</span>
 <span id="12">12</span>
 <span id="13">13</span>
-<span id="14">14</span>
-<span id="15">15</span>
-<span id="16">16</span>
-<span id="17">17</span>
-<span id="18">18</span>
-<span id="19">19</span>
-<span id="20">20</span>
-<span id="21">21</span>
-<span id="22">22</span>
-<span id="23">23</span>
-<span id="24">24</span>
-<span id="25">25</span>
-<span id="26">26</span>
-<span id="27">27</span>
-<span id="28">28</span>
-<span id="29">29</span>
-<span id="30">30</span>
-<span id="31">31</span>
-<span id="32">32</span>
-<span id="33">33</span>
-<span id="34">34</span>
-<span id="35">35</span>
-<span id="36">36</span>
-<span id="37">37</span>
-<span id="38">38</span>
-<span id="39">39</span>
-<span id="40">40</span>
-<span id="41">41</span>
-<span id="42">42</span>
-<span id="43">43</span>
-<span id="44">44</span>
-<span id="45">45</span>
-<span id="46">46</span>
-<span id="47">47</span>
-<span id="48">48</span>
-<span id="49">49</span>
-<span id="50">50</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
-
-<span class='doccomment'>/// `Parents` come in a `Vec` of two `Box&lt;T&gt;`&#39;s.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>;
+<span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>util</span>::<span class='ident'>Parents</span>;
 
 <span class='doccomment'>/// A `Selector` can select `Parents` for a new iteration of a `Simulation`.</span>
 <span class='doccomment'>/// For information on what the different selection functions do, refer to `SelectionType`.</span>
@@ -105,41 +66,6 @@
     <span class='kw'>fn</span> <span class='ident'>selection_roulette</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
     <span class='doccomment'>/// Kill off phenotypes using stochastic universal sampling.</span>
     <span class='kw'>fn</span> <span class='ident'>kill_off</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>count</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>String</span><span class='op'>&gt;</span>;
-}
-
-<span class='doccomment'>/// An iteration limiter.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>IterLimit</span> {
-    <span class='doccomment'>/// Maximum number of iterations allowed.</span>
-    <span class='ident'>max</span>: <span class='ident'>u64</span>,
-    <span class='doccomment'>/// Current number of iterations.</span>
-    <span class='ident'>cur</span>: <span class='ident'>u64</span>,
-}
-
-<span class='kw'>impl</span> <span class='ident'>IterLimit</span> {
-    <span class='doccomment'>/// Create a new iteration limiter.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>max</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='ident'>IterLimit</span> {
-        <span class='ident'>IterLimit</span> { <span class='ident'>max</span>: <span class='ident'>max</span>, <span class='ident'>cur</span>: <span class='number'>0</span> }
-    }
-
-    <span class='doccomment'>/// Increment the number of iterations.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>inc</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='self'>self</span>.<span class='ident'>cur</span> <span class='op'>+=</span> <span class='number'>1</span>;
-    }
-
-    <span class='doccomment'>/// Check if the maximum has been reached.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>reached</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>cur</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>max</span>
-    }
-
-    <span class='doccomment'>/// Reset the number of iterations to zero.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>reset</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='self'>self</span>.<span class='ident'>cur</span> <span class='op'>=</span> <span class='number'>0</span>;
-    }
-
-    <span class='doccomment'>/// Get the current number of iterations.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span> {
-        <span class='self'>self</span>.<span class='ident'>cur</span>
-    }
 }
 </pre>
 </section>
@@ -194,13 +120,13 @@
     
 
     <script>
-        window.rootPath = "../../../";
+        window.rootPath = "../../../../../";
         window.currentCrate = "rsgenetic";
         window.playgroundUrl = "";
     </script>
-    <script src="../../../jquery.js"></script>
-    <script src="../../../main.js"></script>
+    <script src="../../../../../jquery.js"></script>
+    <script src="../../../../../main.js"></script>
     
-    <script async src="../../../search-index.js"></script>
+    <script async src="../../../../../search-index.js"></script>
 </body>
 </html>

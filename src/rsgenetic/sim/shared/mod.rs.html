@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `FitnessType` enum in crate `rsgenetic`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, FitnessType">
+    <meta name="description" content="Source to the Rust file `src/sim/shared/mod.rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang">
 
-    <title>rsgenetic::sim::FitnessType - Rust</title>
+    <title>mod.rs.html -- source</title>
 
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../../../main.css">
 
     
     
@@ -26,7 +26,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a></p><script>window.sidebarCurrent = {name: 'FitnessType', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        
     </nav>
 
     <nav class="sub">
@@ -40,20 +40,19 @@
         </form>
     </nav>
 
-    <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a>::<wbr><a class='enum' href=''>FitnessType</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-265' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#75-80' title='goto source code'>[src]</a></span></h1>
-<pre class='rust enum'>pub enum FitnessType {
-    Maximize,
-    Minimize,
-}</pre><div class='docblock'><p>Whether to maximize or to minimize the fitness value.</p>
-</div><h2 class='variants'>Variants</h2>
-<table><tr><td id='variant.Maximize'><code>Maximize</code></td><td><div class='docblock'><p>The <code>Simulation</code> will try to increase the fitness value of phenotypes.</p>
-</div></td></tr><tr><td id='variant.Minimize'><code>Minimize</code></td><td><div class='docblock'><p>The <code>Simulation</code> will try to decrease the fitness value of phenotypes.</p>
-</div></td></tr></table></section>
+    <section id='main' class="content source"><pre class="line-numbers"><span id="1">1</span>
+<span id="2">2</span>
+<span id="3">3</span>
+<span id="4">4</span>
+<span id="5">5</span>
+</pre><pre class='rust '>
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>select</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>util</span>;
+
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>select</span>::<span class='ident'>Selector</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>util</span>::{<span class='ident'>Parents</span>, <span class='ident'>IterLimit</span>, <span class='ident'>EarlyStopper</span>};
+</pre>
+</section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
@@ -105,13 +104,13 @@
     
 
     <script>
-        window.rootPath = "../../";
+        window.rootPath = "../../../../";
         window.currentCrate = "rsgenetic";
         window.playgroundUrl = "";
     </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
+    <script src="../../../../jquery.js"></script>
+    <script src="../../../../main.js"></script>
     
-    <script async src="../../search-index.js"></script>
+    <script async src="../../../../search-index.js"></script>
 </body>
 </html>
