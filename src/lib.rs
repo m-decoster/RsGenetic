@@ -117,9 +117,9 @@
 //!                   .set_fitness_type(sim::FitnessType::Minimize)
 //!                   .build();
 //! // We can now run the simulator.
-//! let result = s.run();
+//! s.run();
 //! // This will fail if the result was an error:
-//! let best = result.unwrap();
+//! let best = s.get().unwrap();
 //! // For this simple example, we should always get 0.
 //! assert!((*best).i == 0);
 //! // We can also get the time spent running:

@@ -150,7 +150,8 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
         let mut stop = false;
         while !stop {
             stop = self.step();
-            if let Err(_) = self.get() {
+            if let Err(_) = self.get() { // `step` returns false if there was an error.
+                // Avoid infinite loops.
                 break;
             }
         }
