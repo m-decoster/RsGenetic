@@ -107,7 +107,8 @@ fn main() {
                      .set_selection_type(SelectionType::Roulette { count: 10 })
                      .set_fitness_type(FitnessType::Minimize)
                      .build();
-    let result = *s.run().unwrap();
+    s.run();
+    let result = s.get().unwrap();
     let time = s.time();
     println!("Execution time: {} ns.", time.unwrap());
     println!("Result: {:?} | Fitness: {}.",

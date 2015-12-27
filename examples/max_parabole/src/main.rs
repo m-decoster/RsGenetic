@@ -56,7 +56,8 @@ fn main() {
                                 count: 10
                             })
                             .build();
-    let result = *s.run().unwrap();
+    s.run();
+    let result = s.get().unwrap();
     let time = s.time();
     println!("Execution time: {} ns.", time.unwrap());
     println!("Expected result: (-3, 10).");

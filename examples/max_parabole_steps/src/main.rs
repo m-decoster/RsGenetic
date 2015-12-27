@@ -58,11 +58,11 @@ fn main() {
                                 count: 10
                             })
                             .build();
-    while s.step().is_none() {
-        let result = s.get();
+    while let StepResult::Success = s.step() {
+        let result = s.get().unwrap();
         println!("Intermediate result: ({}, {}).", result.x, result.fitness());
     }
-    let result = s.get();
+    let result = s.get().unwrap();
     let time = s.time();
     println!("Execution time: {} ns.", time.unwrap());
     println!("Expected result: (-3, 10).");
