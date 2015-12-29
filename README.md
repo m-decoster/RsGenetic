@@ -12,8 +12,8 @@ and to provide more selection algorithms if needed.
 
 ## Examples and Documentation
 Documentation is available [here](http://m-decoster.github.io/RsGenetic).  
-Examples are available as Cargo projects in the `examples` directory. Simply `cd` into
-an example directory and execute `cargo run` to test the library.  
+Examples are available in the `examples` directory. Execute `cargo run --example $EXAMPLE_NAME`
+to run an example.
 
 ## License
 This library is available under Apache 2.0.
@@ -24,4 +24,4 @@ done or bugs that need to be fixed. If you encounter any bugs while using the li
 open an issue and/or fix the bug, and submit pull requests.
 
 ## Notes
-This library has only been tested with Rust stable 1.5.0.
+This library has only been tested with Rust stable 1.5.0, Rust beta and Rust nightly.

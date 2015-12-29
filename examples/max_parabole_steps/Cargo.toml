@@ -1,8 +1,0 @@
-[package]
-name = "test"
-version = "0.1.0"
-authors = ["Mathieu De Coster <mth.decoster@gmail.com>"]
-
-[dependencies]
-rsgenetic = "0.9.0"
-rand = "0.3"
