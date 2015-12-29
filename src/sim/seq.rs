@@ -226,7 +226,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
         for _ in 0..num {
             let mut tournament: Vec<Box<T>> = Vec::with_capacity(count);
             for _ in 0..count {
-                let index = rng.gen::<usize>() % self.population.len();
+                let index = rng.gen_range::<usize>(0, self.population.len());
                 tournament.push(self.population[index].clone());
             }
             tournament.sort_by(|x, y| {
@@ -255,7 +255,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
 
         let ratio = self.population.len() / count;
         let mut result: Parents<T> = Vec::new();
-        let mut i = ::rand::random::<usize>() % self.population.len();
+        let mut i = ::rand::thread_rng().gen_range::<usize>(0, self.population.len());
         let mut selected = 0;
         while selected < count {
             result.push((self.population[i].clone(),
@@ -317,7 +317,7 @@ impl<T: Phenotype> Selector<T> for Simulator<T> {
     fn kill_off(&mut self, count: usize) -> Result<(), String> {
         let old_len = self.population.len();
         let ratio = self.population.len() / count;
-        let mut i = ::rand::random::<usize>() % self.population.len();
+        let mut i = ::rand::thread_rng().gen_range::<usize>(0, self.population.len());
         let mut selected = 0;
         while selected < count {
             self.population.remove(i);
