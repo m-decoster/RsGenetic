@@ -1,8 +1,9 @@
 use pheno::Phenotype;
 
 pub mod seq;
-// Contains private information.
-mod shared;
+pub mod select;
+mod iterlimit;
+mod earlystopper;
 
 /// A `Builder` can create new instances of an object.
 /// For this library, only `Simulation` objects use this `Builder`.
@@ -38,7 +39,7 @@ pub enum RunResult {
 }
 
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<T: Phenotype> : shared::Selector<T> {
+pub trait Simulation<T: Phenotype> {
     type B: Builder<Box<Self>>;
 
     /// Create a `Builder` to create an instance.

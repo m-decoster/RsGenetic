@@ -9,7 +9,8 @@ use std::cmp::Ordering;
 use rand::Rng;
 use rand::distributions::{IndependentSample, Range};
 use super::*;
-use super::shared::*;
+use super::iterlimit::*;
+use super::earlystopper::*;
 use time::SteadyTime;
 
 /// A sequential implementation of `::sim::Simulation`.
@@ -24,41 +25,6 @@ pub struct Simulator<T: Phenotype> {
     error: Option<String>
 }
 
-/// Used for early stopping.
-struct EarlyStopper {
-    /// Minimum difference required for early stopping.
-    delta: f64,
-    /// Previously recorded fitness value.
-    previous: f64,
-    /// The number of iterations before stopping early.
-    iter_limit: IterLimit,
-}
-
-impl EarlyStopper {
-    /// Create a new `EarlyStopper`.
-    fn new(delta: f64, n_iters: u64) -> EarlyStopper {
-        EarlyStopper {
-            delta: delta,
-            previous: 0.0,
-            iter_limit: IterLimit::new(n_iters),
-        }
-    }
-
-    /// Update the `EarlyStopper` with a new fitness value.
-    fn update(&mut self, fitness: f64) {
-        if (fitness - self.previous).abs() < self.delta {
-            self.previous = fitness;
-            self.iter_limit.inc();
-        } else {
-            self.iter_limit.reset();
-        }
-    }
-
-    /// Returns whether the `Simulator` should stop.
-    fn reached(&self) -> bool {
-        self.iter_limit.reached()
-    }
-}
 
 impl<T: Phenotype> Simulation<T> for Simulator<T> {
     type B = SimulatorBuilder<T>;
