@@ -16,14 +16,16 @@ use time::SteadyTime;
 
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
-pub struct Simulator<T: Phenotype, S> where S: Selector<T> {
+pub struct Simulator<T: Phenotype, S>
+    where S: Selector<T>
+{
     population: Vec<Box<T>>,
     iter_limit: IterLimit,
     selector: Box<S>,
     fitness_type: FitnessType,
     earlystopper: Option<EarlyStopper>,
     duration: Option<NanoSecond>,
-    error: Option<String>
+    error: Option<String>,
 }
 
 impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
@@ -51,13 +53,13 @@ impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
             None => self.iter_limit.reached(),
         };
         if should_stop {
-            return StepResult::Done
+            return StepResult::Done;
         } else {
             // Perform selection
             let parents_tmp = (*self.selector).select(&self.population, self.fitness_type);
             if parents_tmp.is_err() {
                 self.error = Some(parents_tmp.err().unwrap());
-                return StepResult::Failure
+                return StepResult::Failure;
             }
             let parents = parents_tmp.ok().unwrap();
             // Create children from the selected parents and mutate them.
@@ -74,7 +76,7 @@ impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
                 }
                 Err(e) => {
                     self.error = Some(e);
-                    return StepResult::Failure
+                    return StepResult::Failure;
                 }
             }
 
@@ -113,7 +115,7 @@ impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
             match self.step() {
                 StepResult::Success => {}
                 StepResult::Failure => return RunResult::Failure,
-                StepResult::Done => return RunResult::Done
+                StepResult::Done => return RunResult::Done,
             }
         }
     }
@@ -167,7 +169,9 @@ impl<T: Phenotype, S: Selector<T>> Simulator<T, S> {
 }
 
 /// A `Builder` for the `Simulator` type.
-pub struct SimulatorBuilder<T: Phenotype, S> where S: Selector<T> {
+pub struct SimulatorBuilder<T: Phenotype, S>
+    where S: Selector<T>
+{
     sim: Simulator<T, S>,
 }
 
@@ -208,8 +212,8 @@ impl<T: Phenotype, S: Selector<T>> Builder<Box<Simulator<T, S>>> for SimulatorBu
     }
 }
 
-//#[cfg(test)]
-//mod tests {
+// #[cfg(test)]
+// mod tests {
 //    use super::*; // seq
 //    use super::super::*; // sim
 //    use pheno;
@@ -444,4 +448,4 @@ impl<T: Phenotype, S: Selector<T>> Builder<Box<Simulator<T, S>>> for SimulatorBu
 //        let result = s.get().unwrap();
 //        assert_eq!(result.i, 0);
 //    }
-//}
+// }

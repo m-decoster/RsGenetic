@@ -5,7 +5,7 @@ use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
 
 pub struct RouletteSelector {
-    count: usize
+    count: usize,
 }
 
 impl RouletteSelector {
@@ -14,13 +14,11 @@ impl RouletteSelector {
     /// Such a selector selects parents with a higher chance if those
     /// phenotypes have high fitness values. This selector yields `count` parents.
     pub fn new(count: usize) -> RouletteSelector {
-        RouletteSelector {
-            count: count
-        }
+        RouletteSelector { count: count }
     }
 }
 
-impl <T: Phenotype> Selector<T> for RouletteSelector {
+impl<T: Phenotype> Selector<T> for RouletteSelector {
     fn select(&self, population: &Vec<Box<T>>, _: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \

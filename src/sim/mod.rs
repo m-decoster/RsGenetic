@@ -26,7 +26,7 @@ pub enum StepResult {
     /// The step was not successful.
     Failure,
     /// The step was successful and the simulation finished.
-    Done
+    Done,
 }
 
 /// The result of running an entire simulation.
@@ -35,7 +35,7 @@ pub enum RunResult {
     /// An error occurred somewhere during simulation.
     Failure,
     /// The simulation finished without errors.
-    Done
+    Done,
 }
 
 /// A `Simulation` is an execution of a genetic algorithm.
@@ -61,7 +61,7 @@ pub trait Simulation<T: Phenotype, S> where S: select::Selector<T> {
     /// This function is mostly useful for making illustrations of the evolution.
     fn step(&mut self) -> StepResult;
     /// Get the result of the latest step or of a complete run.
-    /// 
+    ///
     /// This function will either return the best performing individual,
     /// or an error string indicating what went wrong.
     fn get(&self) -> SimResult<T>;

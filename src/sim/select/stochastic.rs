@@ -4,7 +4,7 @@ use super::super::FitnessType;
 use rand::Rng;
 
 pub struct StochasticSelector {
-    count: usize
+    count: usize,
 }
 
 impl StochasticSelector {
@@ -14,13 +14,11 @@ impl StochasticSelector {
     /// yielding parents with low, medium and high fitness values. In total,
     /// `count` parents are selected.
     pub fn new(count: usize) -> StochasticSelector {
-        StochasticSelector {
-            count: count
-        }
+        StochasticSelector { count: count }
     }
 }
 
-impl <T: Phenotype> Selector<T> for StochasticSelector {
+impl<T: Phenotype> Selector<T> for StochasticSelector {
     fn select(&self, population: &Vec<Box<T>>, _: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \

@@ -4,7 +4,7 @@ use super::super::FitnessType;
 use std::cmp::Ordering;
 
 pub struct MaximizeSelector {
-    count: usize
+    count: usize,
 }
 
 impl MaximizeSelector {
@@ -13,14 +13,15 @@ impl MaximizeSelector {
     /// Such a selector selects only the `count * 2` best performing phenotypes
     /// as parents.
     pub fn new(count: usize) -> MaximizeSelector {
-        MaximizeSelector {
-            count: count
-        }
+        MaximizeSelector { count: count }
     }
 }
 
-impl <T: Phenotype> Selector<T> for MaximizeSelector {
-    fn select(&self, population: &Vec<Box<T>>, fitness_type: FitnessType) -> Result<Parents<T>, String> {
+impl<T: Phenotype> Selector<T> for MaximizeSelector {
+    fn select(&self,
+              population: &Vec<Box<T>>,
+              fitness_type: FitnessType)
+              -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than half the population size.",

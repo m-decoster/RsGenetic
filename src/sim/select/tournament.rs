@@ -6,7 +6,7 @@ use rand::Rng;
 
 pub struct TournamentSelector {
     num: usize,
-    count: usize
+    count: usize,
 }
 
 impl TournamentSelector {
@@ -18,13 +18,16 @@ impl TournamentSelector {
     pub fn new(num: usize, count: usize) -> TournamentSelector {
         TournamentSelector {
             num: num,
-            count: count
+            count: count,
         }
     }
 }
 
-impl <T: Phenotype> Selector<T> for TournamentSelector {
-    fn select(&self, population: &Vec<Box<T>>, fitness_type: FitnessType) -> Result<Parents<T>, String> {
+impl<T: Phenotype> Selector<T> for TournamentSelector {
+    fn select(&self,
+              population: &Vec<Box<T>>,
+              fitness_type: FitnessType)
+              -> Result<Parents<T>, String> {
         if self.num <= 0 || self.num * 2 >= population.len() {
             return Err(format!("Invalid parameter `num`: {}. Should be larger than zero and \
                                 less than half the population size.",

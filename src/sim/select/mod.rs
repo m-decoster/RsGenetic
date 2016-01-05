@@ -27,5 +27,8 @@ pub trait Selector<T: Phenotype> {
     /// `Err(String)`, containing a message indicating the error.
     ///
     /// Otherwise it contains a vector of parent pairs wrapped in `Ok`.
-    fn select(&self, population: &Vec<Box<T>>, fitness_type: FitnessType) -> Result<Parents<T>, String>;
+    fn select(&self,
+              population: &Vec<Box<T>>,
+              fitness_type: FitnessType)
+              -> Result<Parents<T>, String>;
 }
