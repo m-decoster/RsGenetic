@@ -3,17 +3,21 @@ use super::*;
 use super::super::FitnessType;
 use rand::Rng;
 
-/// Create and return a stochastic selector.
-///
-/// Such a selector selects elements using stochastic universal sampling,
-/// yielding parents with low, medium and high fitness values. In total,
-/// `count` parents are selected.
-pub fn stochastic_selector(count: usize) -> StochasticSelector {
-    StochasticSelector { count: count }
-}
-
 pub struct StochasticSelector {
     count: usize
+}
+
+impl StochasticSelector {
+    /// Create and return a stochastic selector.
+    ///
+    /// Such a selector selects elements using stochastic universal sampling,
+    /// yielding parents with low, medium and high fitness values. In total,
+    /// `count` parents are selected.
+    pub fn new(count: usize) -> StochasticSelector {
+        StochasticSelector {
+            count: count
+        }
+    }
 }
 
 impl <T: Phenotype> Selector<T> for StochasticSelector {

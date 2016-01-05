@@ -2,7 +2,8 @@
 //! called a `Simulator`.
 //!
 //! To use a `Simulator`, you need a `SimulatorBuilder`, which you can
-//! obtain by calling `Simulator::builder(p)`, with `p` your initial population.
+//! obtain by calling `Simulator::builder(p, s)`, with `p` your initial population and
+//! `s` a selection algorithm of your choice.
 
 use pheno::Phenotype;
 use std::cmp::Ordering;

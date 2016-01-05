@@ -4,21 +4,23 @@ use super::super::FitnessType;
 use std::cmp::Ordering;
 use rand::Rng;
 
-/// Create and return a tournament selector.
-///
-/// Such a selector runs `num` tournaments, each with `count` participants.
-/// From each tournament, the best 2 phenotypes are selected, yielding
-/// `num * 2` parents.
-pub fn tournament_selector(num: usize, count: usize) -> TournamentSelector {
-    TournamentSelector {
-        num: num,
-        count: count
-    }
-}
-
 pub struct TournamentSelector {
     num: usize,
     count: usize
+}
+
+impl TournamentSelector {
+    /// Create and return a tournament selector.
+    ///
+    /// Such a selector runs `num` tournaments, each with `count` participants.
+    /// From each tournament, the best 2 phenotypes are selected, yielding
+    /// `num * 2` parents.
+    pub fn new(num: usize, count: usize) -> TournamentSelector {
+        TournamentSelector {
+            num: num,
+            count: count
+        }
+    }
 }
 
 impl <T: Phenotype> Selector<T> for TournamentSelector {

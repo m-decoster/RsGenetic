@@ -10,10 +10,10 @@ mod roulette;
 use pheno::Phenotype;
 use super::FitnessType;
 
-pub use self::max::maximize_selector;
-pub use self::tournament::tournament_selector;
-pub use self::stochastic::stochastic_selector;
-pub use self::roulette::roulette_selector;
+pub use self::max::MaximizeSelector;
+pub use self::tournament::TournamentSelector;
+pub use self::stochastic::StochasticSelector;
+pub use self::roulette::RouletteSelector;
 
 /// `Parents` come in a `Vec` of two `Box<T>`'s.
 pub type Parents<T> = Vec<(Box<T>, Box<T>)>;

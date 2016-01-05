@@ -4,16 +4,20 @@ use super::super::FitnessType;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
 
-/// Create and return a roulette selector.
-///
-/// Such a selector selects parents with a higher chance if those
-/// phenotypes have high fitness values. This selector yields `count` parents.
-pub fn roulette_selector(count: usize) -> RouletteSelector {
-    RouletteSelector { count: count }
-}
-
 pub struct RouletteSelector {
     count: usize
+}
+
+impl RouletteSelector {
+    /// Create and return a roulette selector.
+    ///
+    /// Such a selector selects parents with a higher chance if those
+    /// phenotypes have high fitness values. This selector yields `count` parents.
+    pub fn new(count: usize) -> RouletteSelector {
+        RouletteSelector {
+            count: count
+        }
+    }
 }
 
 impl <T: Phenotype> Selector<T> for RouletteSelector {

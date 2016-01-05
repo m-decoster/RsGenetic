@@ -3,16 +3,20 @@ use super::*;
 use super::super::FitnessType;
 use std::cmp::Ordering;
 
-/// Create and return a maximizing selector.
-///
-/// Such a selector selects only the `count * 2` best performing phenotypes
-/// as parents.
-pub fn maximize_selector(count: usize) -> MaximizeSelector {
-    MaximizeSelector { count: count }
-}
-
 pub struct MaximizeSelector {
     count: usize
+}
+
+impl MaximizeSelector {
+    /// Create and return a maximizing selector.
+    ///
+    /// Such a selector selects only the `count * 2` best performing phenotypes
+    /// as parents.
+    pub fn new(count: usize) -> MaximizeSelector {
+        MaximizeSelector {
+            count: count
+        }
+    }
 }
 
 impl <T: Phenotype> Selector<T> for MaximizeSelector {
