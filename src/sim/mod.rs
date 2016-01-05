@@ -39,13 +39,14 @@ pub enum RunResult {
 }
 
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<T: Phenotype> {
+pub trait Simulation<T: Phenotype, S> where S: select::Selector<T> {
     type B: Builder<Box<Self>>;
 
     /// Create a `Builder` to create an instance.
     /// Because the population is a required parameter, you have to pass it here,
     /// instead of using a builder function.
-    fn builder(population: &Vec<Box<T>>) -> Self::B;
+    /// The same is the case for the selector.
+    fn builder(population: &Vec<Box<T>>, selector: Box<S>) -> Self::B;
     /// Run the simulation completely.
     fn run(&mut self) -> RunResult;
     /// Make one step in the simulation. This function returns a `StepResult`:
@@ -71,6 +72,7 @@ pub trait Simulation<T: Phenotype> {
 }
 
 /// Whether to maximize or to minimize the fitness value.
+#[derive(Copy, Clone)]
 pub enum FitnessType {
     /// The `Simulation` will try to increase the fitness value of phenotypes.
     Maximize,

@@ -12,12 +12,12 @@ pub fn stochastic_selector(count: usize) -> StochasticSelector {
     StochasticSelector { count: count }
 }
 
-struct StochasticSelector {
+pub struct StochasticSelector {
     count: usize
 }
 
 impl <T: Phenotype> Selector<T> for StochasticSelector {
-    fn select(&self, population: &Vec<Box<T>>, fitness_type: FitnessType) -> Result<Parents<T>, String> {
+    fn select(&self, population: &Vec<Box<T>>, _: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than the population size.",

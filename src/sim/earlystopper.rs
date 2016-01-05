@@ -12,7 +12,7 @@ pub struct EarlyStopper {
 
 impl EarlyStopper {
     /// Create a new `EarlyStopper`.
-    fn new(delta: f64, n_iters: u64) -> EarlyStopper {
+    pub fn new(delta: f64, n_iters: u64) -> EarlyStopper {
         EarlyStopper {
             delta: delta,
             previous: 0.0,
@@ -21,7 +21,7 @@ impl EarlyStopper {
     }
 
     /// Update the `EarlyStopper` with a new fitness value.
-    fn update(&mut self, fitness: f64) {
+    pub fn update(&mut self, fitness: f64) {
         if (fitness - self.previous).abs() < self.delta {
             self.previous = fitness;
             self.iter_limit.inc();
@@ -31,7 +31,7 @@ impl EarlyStopper {
     }
 
     /// Returns whether the `Simulator` should stop.
-    fn reached(&self) -> bool {
+    pub fn reached(&self) -> bool {
         self.iter_limit.reached()
     }
 }

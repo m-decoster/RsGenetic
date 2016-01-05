@@ -16,7 +16,7 @@ pub fn tournament_selector(num: usize, count: usize) -> TournamentSelector {
     }
 }
 
-struct TournamentSelector {
+pub struct TournamentSelector {
     num: usize,
     count: usize
 }

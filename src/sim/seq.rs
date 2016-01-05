@@ -7,7 +7,6 @@
 use pheno::Phenotype;
 use std::cmp::Ordering;
 use rand::Rng;
-use rand::distributions::{IndependentSample, Range};
 use super::*;
 use super::select::*;
 use super::iterlimit::*;
@@ -26,16 +25,16 @@ pub struct Simulator<T: Phenotype, S> where S: Selector<T> {
     error: Option<String>
 }
 
-impl<T: Phenotype, S: Selector<T>> Simulation<T> for Simulator<T, S> {
+impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
     type B = SimulatorBuilder<T, S>;
 
     /// Create builder.
-    fn builder(pop: &Vec<Box<T>>) -> SimulatorBuilder<T, S> {
+    fn builder(pop: &Vec<Box<T>>, sel: Box<S>) -> SimulatorBuilder<T, S> {
         SimulatorBuilder {
             sim: Simulator {
                 population: pop.clone(),
                 iter_limit: IterLimit::new(100),
-                selector: Box::new(maximize_selector(5)),
+                selector: sel,
                 fitness_type: FitnessType::Maximize,
                 earlystopper: None,
                 duration: Some(0),

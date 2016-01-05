@@ -11,7 +11,7 @@ pub fn maximize_selector(count: usize) -> MaximizeSelector {
     MaximizeSelector { count: count }
 }
 
-struct MaximizeSelector {
+pub struct MaximizeSelector {
     count: usize
 }
 

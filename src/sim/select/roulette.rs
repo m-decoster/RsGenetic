@@ -1,7 +1,6 @@
 use pheno::Phenotype;
 use super::*;
 use super::super::FitnessType;
-use rand::Rng;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
 
@@ -13,12 +12,12 @@ pub fn roulette_selector(count: usize) -> RouletteSelector {
     RouletteSelector { count: count }
 }
 
-struct RouletteSelector {
+pub struct RouletteSelector {
     count: usize
 }
 
 impl <T: Phenotype> Selector<T> for RouletteSelector {
-    fn select(&self, population: &Vec<Box<T>>, fitness_type: FitnessType) -> Result<Parents<T>, String> {
+    fn select(&self, population: &Vec<Box<T>>, _: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
                                 less than the population size.",
