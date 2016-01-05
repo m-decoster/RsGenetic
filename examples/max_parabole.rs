@@ -5,6 +5,7 @@ extern crate rand;
 
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
+use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
 use rand::distributions::{IndependentSample, Range};
 
@@ -50,11 +51,8 @@ impl Clone for MyData {
 
 fn main() {
     let population = (-300..300).map(|i| Box::new(MyData{ x: i as f64 })).collect();
-    let mut s = *Simulator::builder(&population)
+    let mut s = *Simulator::builder(&population, Box::new(StochasticSelector::new(10)))
                             .set_max_iters(50)
-                            .set_selection_type(SelectionType::Stochastic {
-                                count: 10
-                            })
                             .build();
     s.run();
     let result = s.get().unwrap();

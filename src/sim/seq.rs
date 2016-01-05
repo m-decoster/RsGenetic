@@ -182,14 +182,6 @@ impl<T: Phenotype, S: Selector<T>> SimulatorBuilder<T, S> {
         self
     }
 
-    /// Set the selector of the resulting `Simulator`.
-    ///
-    /// Returns itself for chaining purposes.
-    pub fn set_selector(mut self, s: S) -> Self {
-        self.sim.selector = Box::new(s);
-        self
-    }
-
     /// Set the fitness type of the resulting `Simulator`,
     /// determining whether the `Simulator` will try to maximize
     /// or minimize the fitness values of `Phenotype`s.

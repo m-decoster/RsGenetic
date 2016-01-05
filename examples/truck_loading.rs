@@ -10,6 +10,7 @@ extern crate rand;
 
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
+use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
 use rand::Rng;
 
@@ -102,9 +103,8 @@ fn main() {
         }
         population.push(Box::new(LoadingScheme { scheme: pheno }));
     }
-    let mut s = *Simulator::builder(&population)
+    let mut s = *Simulator::builder(&population, Box::new(RouletteSelector::new(10)))
                      .set_max_iters(50)
-                     .set_selection_type(SelectionType::Roulette { count: 10 })
                      .set_fitness_type(FitnessType::Minimize)
                      .build();
     s.run();
