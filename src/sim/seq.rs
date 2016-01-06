@@ -238,4 +238,36 @@ mod tests {
         s.kill_off(10);
         assert_eq!(s.population.len(), 90);
     }
+
+    #[test]
+    fn test_max_iters() {
+        let selector = MaximizeSelector::new(2);
+        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let mut s = *seq::Simulator::builder(&population, Box::new(selector))
+                         .set_max_iters(2)
+                         .build();
+        s.run();
+        assert!(s.iterations() <= 2);
+    }
+
+    #[test]
+    fn test_early_stopping() {
+        let selector = MaximizeSelector::new(2);
+        let population: Vec<Box<Test>> = (0..100).map(|_| Box::new(Test { f: 0 })).collect();
+        let mut s = *seq::Simulator::builder(&population, Box::new(selector))
+                         .set_early_stop(10.0, 5)
+                         .set_max_iters(10)
+                         .build();
+        s.run();
+        assert!(s.iterations() <= 5);
+    }
+
+    #[test]
+    fn test_selector_error_propagate() {
+        let selector = MaximizeSelector::new(0);
+        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let mut s = *seq::Simulator::builder(&population, Box::new(selector)).build();
+        s.run();
+        assert!(s.get().is_err());
+    }
 }
