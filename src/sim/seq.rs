@@ -216,26 +216,20 @@ mod tests {
         }
 
         fn crossover(&self, t: &Test) -> Test {
-            Test {
-                f: cmp::min(self.f, t.f)
-            }
+            Test { f: cmp::min(self.f, t.f) }
         }
 
         fn mutate(&self) -> Test {
             if self.f < 0 {
-                Test {
-                    f: self.f + 1
-                }
+                Test { f: self.f + 1 }
             } else if self.f > 0 {
-                Test {
-                    f: self.f - 1
-                }
+                Test { f: self.f - 1 }
             } else {
                 self.clone()
             }
         }
     }
-    
+
     #[test]
     fn test_kill_off_count() {
         let selector = MaximizeSelector::new(2);

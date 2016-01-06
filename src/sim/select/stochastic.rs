@@ -27,8 +27,7 @@ impl<T: Phenotype> Selector<T> for StochasticSelector {
     fn select(&self, population: &Vec<Box<T>>, _: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
-                                multiple of two and \
-                                less than the population size.",
+                                multiple of two and less than the population size.",
                                self.count));
         }
 
@@ -65,20 +64,14 @@ mod tests {
         }
 
         fn crossover(&self, t: &Test) -> Test {
-            Test {
-                f: cmp::min(self.f, t.f)
-            }
+            Test { f: cmp::min(self.f, t.f) }
         }
 
         fn mutate(&self) -> Test {
             if self.f < 0 {
-                Test {
-                    f: self.f + 1
-                }
+                Test { f: self.f + 1 }
             } else if self.f > 0 {
-                Test {
-                    f: self.f - 1
-                }
+                Test { f: self.f - 1 }
             } else {
                 self.clone()
             }
@@ -110,6 +103,7 @@ mod tests {
     fn test_result_size() {
         let selector = StochasticSelector::new(20);
         let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
-        assert_eq!(20, selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
+        assert_eq!(20,
+                   selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
     }
 }

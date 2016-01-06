@@ -33,14 +33,13 @@ impl<T: Phenotype> Selector<T> for TournamentSelector {
               fitness_type: FitnessType)
               -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, \
-                                a multiple of two and \
-                                less than half the population size.",
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
+                                multiple of two and less than half the population size.",
                                self.count));
         }
         if self.participants <= 0 || self.participants >= population.len() {
-            return Err(format!("Invalid parameter `participants`: {}. Should be larger than zero and \
-                                less than the population size.",
+            return Err(format!("Invalid parameter `participants`: {}. Should be larger than \
+                                zero and less than the population size.",
                                self.participants));
         }
 
@@ -87,20 +86,14 @@ mod tests {
         }
 
         fn crossover(&self, t: &Test) -> Test {
-            Test {
-                f: cmp::min(self.f, t.f)
-            }
+            Test { f: cmp::min(self.f, t.f) }
         }
 
         fn mutate(&self) -> Test {
             if self.f < 0 {
-                Test {
-                    f: self.f + 1
-                }
+                Test { f: self.f + 1 }
             } else if self.f > 0 {
-                Test {
-                    f: self.f - 1
-                }
+                Test { f: self.f - 1 }
             } else {
                 self.clone()
             }
@@ -146,6 +139,7 @@ mod tests {
     fn test_result_size() {
         let selector = TournamentSelector::new(20, 5);
         let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
-        assert_eq!(20, selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
+        assert_eq!(20,
+                   selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
     }
 }
