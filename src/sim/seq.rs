@@ -70,15 +70,8 @@ impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
                                                    .map(|c| Box::new(c.mutate()))
                                                    .collect();
             // Kill off parts of the population at random to make room for the children
-            match self.kill_off(children.len()) {
-                Ok(_) => {
-                    self.population.append(&mut children);
-                }
-                Err(e) => {
-                    self.error = Some(e);
-                    return StepResult::Failure;
-                }
-            }
+            self.kill_off(children.len());
+            self.population.append(&mut children);
 
             if let Some(ref mut stopper) = self.earlystopper {
                 let mut cloned = self.population.clone();
@@ -147,8 +140,7 @@ impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
 
 impl<T: Phenotype, S: Selector<T>> Simulator<T, S> {
     /// Kill off phenotypes using stochastic universal sampling.
-    fn kill_off(&mut self, count: usize) -> Result<(), String> {
-        let old_len = self.population.len();
+    fn kill_off(&mut self, count: usize) {
         let ratio = self.population.len() / count;
         let mut i = ::rand::thread_rng().gen_range::<usize>(0, self.population.len());
         let mut selected = 0;
@@ -158,12 +150,6 @@ impl<T: Phenotype, S: Selector<T>> Simulator<T, S> {
             i = i % self.population.len();
 
             selected += 1;
-        }
-        if self.population.len() == old_len - count {
-            Ok(())
-        } else {
-            Err(format!("Something went wrong during reduction of population. Invalid number of \
-                         results."))
         }
     }
 }
@@ -212,240 +198,50 @@ impl<T: Phenotype, S: Selector<T>> Builder<Box<Simulator<T, S>>> for SimulatorBu
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//    use super::*; // seq
-//    use super::super::*; // sim
-//    use pheno;
-//    use std::cmp;
-//
-//    struct Test {
-//        i: i32,
-//    }
-//
-//    impl pheno::Phenotype for Test {
-//        fn fitness(&self) -> f64 {
-//            (self.i - 0).abs() as f64
-//        }
-//
-//        fn crossover(&self, t: &Test) -> Test {
-//            Test { i: cmp::min(self.i, t.i) }
-//        }
-//
-//        fn mutate(&self) -> Test {
-//            if self.i < 0 {
-//                Test { i: self.i + 1 }
-//            } else {
-//                Test { i: self.i - 1 }
-//            }
-//        }
-//    }
-//
-//    impl Clone for Test {
-//        fn clone(&self) -> Self {
-//            Test { i: self.i }
-//        }
-//    }
-//
-//    #[test]
-//    fn test_maximize_invalid() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-//        // count 0
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_selection_type(SelectionType::Maximize { count: 0 })
-//                         .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//
-//        // count 101
-//        s = *seq::Simulator::builder(&tests)
-//                 .set_selection_type(SelectionType::Maximize { count: 101 })
-//                 .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//    }
-//
-//    #[test]
-//    fn test_tournament_invalid() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-//        // count 0
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_selection_type(SelectionType::Tournament { num: 2, count: 0 })
-//                         .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//
-//        // num 0
-//        s = *seq::Simulator::builder(&tests)
-//                 .set_selection_type(SelectionType::Tournament { num: 0, count: 1 })
-//                 .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//
-//        // num 51
-//        s = *seq::Simulator::builder(&tests)
-//                 .set_selection_type(SelectionType::Tournament {
-//                     num: 51,
-//                     count: 1,
-//                 })
-//                 .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//    }
-//
-//    #[test]
-//    fn test_stochastic_invalid() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-//        // count 0
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_selection_type(SelectionType::Stochastic { count: 0 })
-//                         .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//
-//        // count 101
-//        s = *seq::Simulator::builder(&tests)
-//                 .set_selection_type(SelectionType::Stochastic { count: 101 })
-//                 .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//    }
-//
-//    #[test]
-//    fn test_roulette_invalid() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-//
-//        // count 0
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_selection_type(SelectionType::Roulette { count: 0 })
-//                         .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//
-//        // count 101
-//        s = *seq::Simulator::builder(&tests)
-//                 .set_selection_type(SelectionType::Roulette { count: 101 })
-//                 .build();
-//        s.run();
-//        assert!(s.get().is_err());
-//    }
-//
-//    #[test]
-//    fn test_runtime() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_max_iters(2000)
-//                         .set_selection_type(SelectionType::Stochastic { count: 1 })
-//                         .set_fitness_type(FitnessType::Minimize)
-//                         .build();
-//        s.run();
-//        assert!(s.get().is_ok()); // The algorithm should not fail.
-//        assert!(s.time().is_some()); // The run time should not overflow for this example.
-//    }
-//
-//    #[test]
-//    fn test_time_norun() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-//        let s = *seq::Simulator::builder(&tests).build();
-//        assert!(s.time().unwrap() == 0);
-//    }
-//
-//    #[test]
-//    fn test_earlystop() {
-//        // Run two tests: one with early stopping, one without.
-//        // The one with early stopping should have less iterations.
-//        let tests = (0..100).map(|i| Box::new(Test { i: i })).collect();
-//        let mut s_early = *seq::Simulator::builder(&tests)
-//                               .set_max_iters(1000)
-//                               .set_selection_type(SelectionType::Stochastic { count: 5 })
-//                               .set_fitness_type(FitnessType::Minimize)
-//                               .set_early_stop(0.1, 5)
-//                               .build();
-//
-//        let mut s_no_early = *seq::Simulator::builder(&tests)
-//                                  .set_max_iters(1000)
-//                                  .set_selection_type(SelectionType::Stochastic { count: 5 })
-//                                  .set_fitness_type(FitnessType::Minimize)
-//                                  .build();
-//
-//        // Both should run without error.
-//        s_early.run();
-//        s_no_early.run();
-//        assert!(s_early.get().is_ok());
-//        assert!(s_no_early.get().is_ok());
-//
-//        // The one with early stopping should have less iterations.
-//        // It is impossible to have more, because the maximum is 1000 and without early stopping
-//        // we will always go to 1000.
-//        assert!(s_early.iterations() < s_no_early.iterations());
-//    }
-//
-//    #[test]
-//    fn simple_convergence_test_maximize() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_max_iters(1000)
-//                         .set_selection_type(SelectionType::Maximize { count: 5 })
-//                         .set_fitness_type(FitnessType::Minimize)
-//                         .build();
-//        s.run();
-//        let result = s.get().unwrap();
-//        assert_eq!(result.i, 0);
-//    }
-//
-//    #[test]
-//    fn test_step() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_max_iters(1000)
-//                         .set_selection_type(SelectionType::Maximize { count: 5 })
-//                         .set_fitness_type(FitnessType::Minimize)
-//                         .build();
-//        let result = s.step();
-//        assert_eq!(result, StepResult::Success); // This should not converge in one step.
-//        assert_eq!(s.iterations(), 1);
-//        assert!(s.time().unwrap() > 0); // Should not be `None` (otherwise we are way too slow).
-//        s.run();
-//        let final_result = s.get().unwrap();
-//        assert_eq!(final_result.i, 0);
-//    }
-//
-//    #[test]
-//    fn simple_convergence_test_tournament() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_max_iters(1000)
-//                         .set_selection_type(SelectionType::Tournament { count: 3, num: 5 })
-//                         .set_fitness_type(FitnessType::Minimize)
-//                         .build();
-//        s.run();
-//        let result = s.get().unwrap();
-//        assert_eq!(result.i, 0);
-//    }
-//
-//    #[test]
-//    fn simple_convergence_test_stochastic() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_max_iters(1000)
-//                         .set_selection_type(SelectionType::Stochastic { count: 5 })
-//                         .set_fitness_type(FitnessType::Minimize)
-//                         .build();
-//        s.run();
-//        let result = s.get().unwrap();
-//        assert_eq!(result.i, 0);
-//    }
-//
-//    #[test]
-//    fn simple_convergence_test_roulette() {
-//        let tests = (0..100).map(|i| Box::new(Test { i: i + 10 })).collect();
-//        let mut s = *seq::Simulator::builder(&tests)
-//                         .set_max_iters(1000)
-//                         .set_selection_type(SelectionType::Roulette { count: 5 })
-//                         .set_fitness_type(FitnessType::Minimize)
-//                         .build();
-//        s.run();
-//        let result = s.get().unwrap();
-//        assert_eq!(result.i, 0);
-//    }
-// }
+#[cfg(test)]
+mod tests {
+    use ::sim::*;
+    use ::sim::select::*;
+    use ::pheno::*;
+    use std::cmp;
+
+    #[derive(Clone)]
+    struct Test {
+        f: i64,
+    }
+
+    impl Phenotype for Test {
+        fn fitness(&self) -> f64 {
+            (self.f - 0).abs() as f64
+        }
+
+        fn crossover(&self, t: &Test) -> Test {
+            Test {
+                f: cmp::min(self.f, t.f)
+            }
+        }
+
+        fn mutate(&self) -> Test {
+            if self.f < 0 {
+                Test {
+                    f: self.f + 1
+                }
+            } else if self.f > 0 {
+                Test {
+                    f: self.f - 1
+                }
+            } else {
+                self.clone()
+            }
+        }
+    }
+    
+    #[test]
+    fn test_kill_off_count() {
+        let selector = MaximizeSelector::new(2);
+        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let mut s = *seq::Simulator::builder(&population, Box::new(selector)).build();
+        s.kill_off(10);
+        assert_eq!(s.population.len(), 90);
+    }
+}

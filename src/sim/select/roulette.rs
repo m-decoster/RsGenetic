@@ -25,8 +25,9 @@ impl RouletteSelector {
 
 impl<T: Phenotype> Selector<T> for RouletteSelector {
     fn select(&self, population: &Vec<Box<T>>, _: FitnessType) -> Result<Parents<T>, String> {
-        if self.count <= 0 || self.count >= population.len() {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
+        if self.count <= 0 || self.count % 2 != 0 || self.count >= population.len() {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
+                                multiple of two and \
                                 less than the population size.",
                                self.count));
         }
@@ -67,5 +68,73 @@ impl<T: Phenotype> Selector<T> for RouletteSelector {
             selected += 2;
         }
         Ok(results)
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use ::sim::*;
+    use ::sim::select::*;
+    use ::pheno::*;
+    use std::cmp;
+
+    #[derive(Clone)]
+    struct Test {
+        f: i64,
+    }
+
+    impl Phenotype for Test {
+        fn fitness(&self) -> f64 {
+            (self.f - 0).abs() as f64
+        }
+
+        fn crossover(&self, t: &Test) -> Test {
+            Test {
+                f: cmp::min(self.f, t.f)
+            }
+        }
+
+        fn mutate(&self) -> Test {
+            if self.f < 0 {
+                Test {
+                    f: self.f + 1
+                }
+            } else if self.f > 0 {
+                Test {
+                    f: self.f - 1
+                }
+            } else {
+                self.clone()
+            }
+        }
+    }
+
+    #[test]
+    fn test_count_zero() {
+        let selector = RouletteSelector::new(0);
+        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        assert!(selector.select(&population, FitnessType::Minimize).is_err());
+    }
+
+    #[test]
+    fn test_count_odd() {
+        let selector = RouletteSelector::new(5);
+        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        assert!(selector.select(&population, FitnessType::Minimize).is_err());
+    }
+
+    #[test]
+    fn test_count_too_large() {
+        let selector = RouletteSelector::new(100);
+        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        assert!(selector.select(&population, FitnessType::Minimize).is_err());
+    }
+
+    #[test]
+    fn test_result_size() {
+        let selector = RouletteSelector::new(20);
+        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        assert_eq!(20, selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
     }
 }

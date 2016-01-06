@@ -35,3 +35,28 @@ impl EarlyStopper {
         self.iter_limit.reached()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::EarlyStopper;
+
+    #[test]
+    fn test_early_stopper_reset() {
+        let mut stopper = EarlyStopper::new(10.0, 5);
+        for _ in 0..4 {
+            stopper.update(1.0);
+        }
+        assert_eq!(stopper.reached(), false);
+        stopper.update(20.0);
+        assert_eq!(stopper.reached(), false);
+    }
+
+    #[test]
+    fn test_early_stopper_reached() {
+        let mut stopper = EarlyStopper::new(10.0, 5);
+        for _ in 0..5 {
+            stopper.update(1.0);
+        }
+        assert!(stopper.reached());
+    }
+}

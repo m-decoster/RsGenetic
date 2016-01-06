@@ -32,3 +32,33 @@ impl IterLimit {
         self.cur
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::IterLimit;
+
+    #[test]
+    fn test_iter_limit_reset() {
+        let mut limit = IterLimit::new(5);
+        for _ in 0..4 {
+            limit.inc();
+        }
+        assert_eq!(limit.reached(), false);
+        limit.reset();
+        assert_eq!(limit.reached(), false);
+    }
+
+    #[test]
+    fn test_iter_limit_reached() {
+        let mut limit = IterLimit::new(5);
+        for _ in 0..5 {
+            limit.inc();
+        }
+        assert!(limit.reached());
+        for _ in 0..10 {
+            limit.inc();
+        }
+        assert!(limit.reached());
+        assert_eq!(limit.get(), 15);
+    }
+}
