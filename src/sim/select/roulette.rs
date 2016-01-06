@@ -4,6 +4,9 @@ use super::super::FitnessType;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
 
+/// Selects phenotypes with a probability based on their fitness value.
+/// 
+/// Commonly known as *Roulette Wheel Selection*.
 pub struct RouletteSelector {
     count: usize,
 }
@@ -13,6 +16,8 @@ impl RouletteSelector {
     ///
     /// Such a selector selects parents with a higher chance if those
     /// phenotypes have high fitness values. This selector yields `count` parents.
+    ///
+    /// * `count`: must be larger than zero, a multiple of two and less than the population size.
     pub fn new(count: usize) -> RouletteSelector {
         RouletteSelector { count: count }
     }

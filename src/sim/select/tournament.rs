@@ -4,21 +4,25 @@ use super::super::FitnessType;
 use std::cmp::Ordering;
 use rand::Rng;
 
+/// Runs several tournaments, and selects best performing phenotypes from each tournament.
 pub struct TournamentSelector {
-    num: usize,
     count: usize,
+    participants: usize,
 }
 
 impl TournamentSelector {
     /// Create and return a tournament selector.
     ///
-    /// Such a selector runs `num` tournaments, each with `count` participants.
+    /// Such a selector runs `count / 2` tournaments, each with `participants` participants.
     /// From each tournament, the best 2 phenotypes are selected, yielding
-    /// `num * 2` parents.
-    pub fn new(num: usize, count: usize) -> TournamentSelector {
+    /// `count` parents.
+    ///
+    /// * `count`: must be larger than zero, a multiple of two and less than the population size.
+    /// * `participants`: must be larger than zero and less than the population size.
+    pub fn new(count: usize, participants: usize) -> TournamentSelector {
         TournamentSelector {
-            num: num,
             count: count,
+            participants: participants,
         }
     }
 }
@@ -28,22 +32,23 @@ impl<T: Phenotype> Selector<T> for TournamentSelector {
               population: &Vec<Box<T>>,
               fitness_type: FitnessType)
               -> Result<Parents<T>, String> {
-        if self.num <= 0 || self.num * 2 >= population.len() {
-            return Err(format!("Invalid parameter `num`: {}. Should be larger than zero and \
-                                less than half the population size.",
-                               self.num));
-        }
-        if self.count <= 0 || self.count >= population.len() {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
+        if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, \
+                                a multiple of two and \
                                 less than half the population size.",
                                self.count));
+        }
+        if self.participants <= 0 || self.participants >= population.len() {
+            return Err(format!("Invalid parameter `participants`: {}. Should be larger than zero and \
+                                less than the population size.",
+                               self.participants));
         }
 
         let mut result: Parents<T> = Vec::new();
         let mut rng = ::rand::thread_rng();
-        for _ in 0..self.num {
-            let mut tournament: Vec<Box<T>> = Vec::with_capacity(self.count);
-            for _ in 0..self.count {
+        for _ in 0..(self.count / 2) {
+            let mut tournament: Vec<Box<T>> = Vec::with_capacity(self.participants);
+            for _ in 0..self.participants {
                 let index = rng.gen_range::<usize>(0, population.len());
                 tournament.push(population[index].clone());
             }

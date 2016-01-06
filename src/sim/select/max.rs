@@ -3,6 +3,7 @@ use super::*;
 use super::super::FitnessType;
 use std::cmp::Ordering;
 
+/// Selects best performing phenotypes from the population.
 pub struct MaximizeSelector {
     count: usize,
 }
@@ -10,8 +11,10 @@ pub struct MaximizeSelector {
 impl MaximizeSelector {
     /// Create and return a maximizing selector.
     ///
-    /// Such a selector selects only the `count * 2` best performing phenotypes
+    /// Such a selector selects only the `count` best performing phenotypes
     /// as parents.
+    ///
+    /// * `count`: must be larger than zero, a multiple of two and less than the population size.
     pub fn new(count: usize) -> MaximizeSelector {
         MaximizeSelector { count: count }
     }
@@ -22,8 +25,9 @@ impl<T: Phenotype> Selector<T> for MaximizeSelector {
               population: &Vec<Box<T>>,
               fitness_type: FitnessType)
               -> Result<Parents<T>, String> {
-        if self.count <= 0 || self.count * 2 >= population.len() {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero and \
+        if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
+            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
+                                multiple of two and \
                                 less than half the population size.",
                                self.count));
         }
@@ -35,7 +39,7 @@ impl<T: Phenotype> Selector<T> for MaximizeSelector {
         if let FitnessType::Maximize = fitness_type {
             cloned.reverse();
         }
-        let sorted: Vec<&Box<T>> = cloned.iter().take(2 * self.count).collect();
+        let sorted: Vec<&Box<T>> = cloned.iter().take(self.count).collect();
         let mut index = 0;
         let mut result: Parents<T> = Vec::new();
         while index < sorted.len() {

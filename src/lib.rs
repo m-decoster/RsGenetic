@@ -11,7 +11,7 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! rsgenetic = "0.8"
+//! rsgenetic = "0.10"
 //! ```
 //!
 //! and adding `extern crate rsgenetic;` to your crate root.
@@ -128,6 +128,8 @@
 //!     None    => -1 // Overflow occured
 //! };
 //! ```
+
+#![warn(missing_docs)]
 
 extern crate rand;
 extern crate time;

@@ -3,6 +3,9 @@ use super::*;
 use super::super::FitnessType;
 use rand::Rng;
 
+/// Selects phenotypes at random, starting from a random index and taking equidistant jumps.
+///
+/// Commonly known as *Stochastic Universal Sampling*.
 pub struct StochasticSelector {
     count: usize,
 }
@@ -13,6 +16,8 @@ impl StochasticSelector {
     /// Such a selector selects elements using stochastic universal sampling,
     /// yielding parents with low, medium and high fitness values. In total,
     /// `count` parents are selected.
+    ///
+    /// * `count`: must be larger than zero and less than the population size.
     pub fn new(count: usize) -> StochasticSelector {
         StochasticSelector { count: count }
     }

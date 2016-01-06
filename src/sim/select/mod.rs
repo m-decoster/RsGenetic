@@ -1,6 +1,9 @@
 //! The selection module provides a trait that can be implemented
 //! to implement new selection algorithms. This module also provides a couple
 //! of useful selection algorithms.
+//!
+//! Each of the selection algorithms provided has a parameter `count`, which indicates the
+//! number of selected parents.
 
 mod max;
 mod tournament;
