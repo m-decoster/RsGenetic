@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-138' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#1-127' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p>RsGenetic provides a simple framework for genetic algorithms.
@@ -57,7 +57,7 @@ and this library takes care of the rest.</p>
 <p>You can use this library by adding the following lines to your <code>Cargo.toml</code> file:</p>
 <pre class='rust rust-example-rendered'>
 [<span class='ident'>dependencies</span>]
-<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.9&quot;</span></pre>
+<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.10&quot;</span></pre>
 
 <p>and adding <code>extern crate rsgenetic;</code> to your crate root.</p>
 
@@ -76,19 +76,17 @@ the genetic algorithm on a single thread.</p>
 <li>Roulette</li>
 </ul>
 
-<p>There is a short explanation for each of these below. Currently, the number of parents
-may vary depending on the chosen selection type. For more information, look at the
-documentation
-for the <code>SelectionType</code> enum.</p>
+<p>There is a short explanation for each of these below. For more information, look at the
+documentation of individual selectors.</p>
 
 <h3 id='maximize' class='section-header'><a href='#maximize'>Maximize</a></h3>
 <p>Maximize takes 1 parameter: the count. This is half the number of parents
-that will be selected. Selection happens by taking the top <code>count * 2</code> individuals,
-ranked by fitness. The resulting number of parents is <code>count * 2</code>.</p>
+that will be selected. Selection happens by taking the top <code>count</code> individuals,
+ranked by fitness. The resulting number of parents is <code>count</code>.</p>
 
 <h3 id='tournament' class='section-header'><a href='#tournament'>Tournament</a></h3>
-<p>Tournament takes 2 parameters: the number of tournaments and the count. The count indicates how
-many phenotypes participate in a tournament. The resulting number of parents is <code>num * 2</code>.</p>
+<p>Tournament takes 2 parameters: the number of tournaments (<code>count</code>) and <code>participators</code>, which indicates how
+many phenotypes participate in a tournament. The resulting number of parents is <code>count</code>.</p>
 
 <h3 id='stochastic' class='section-header'><a href='#stochastic'>Stochastic</a></h3>
 <p>Stochastic takes 1 parameter: the count. The resulting number of parents is <code>count</code>.</p>
@@ -104,6 +102,7 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <h2 id='implementing-phenotype' class='section-header'><a href='#implementing-phenotype'>Implementing Phenotype</a></h2><pre class='rust rust-example-rendered'>
 <span class='comment'>// Define the structure of your Phenotype</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
 <span class='kw'>struct</span> <span class='ident'>Test</span> {
     <span class='ident'>i</span>: <span class='ident'>i32</span>,
 }
@@ -125,14 +124,6 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
             <span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='self'>self</span>.<span class='ident'>i</span> <span class='op'>-</span> <span class='number'>1</span>}
         }
     }
-}
-
-<span class='comment'>// Implement the Clone trait.</span>
-<span class='comment'>// This is required for the internal workings of the library.</span>
-<span class='kw'>impl</span> <span class='ident'>Clone</span> <span class='kw'>for</span> <span class='ident'>Test</span> {
-    <span class='kw'>fn</span> <span class='ident'>clone</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='self'>self</span>.<span class='ident'>i</span> }
-    }
 }</pre>
 
 <h2 id='running-a-simulation' class='section-header'><a href='#running-a-simulation'>Running a Simulation</a></h2><pre class='rust rust-example-rendered'>
@@ -142,12 +133,8 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
     <span class='ident'>tests</span>.<span class='ident'>push</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> }));
 }
 <span class='comment'>// Create a simulator using a builder.</span>
-<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>) <span class='comment'>// Population is mandatory</span>
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='ident'>tests</span>, <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>sim</span>::<span class='ident'>select</span>::<span class='ident'>TournamentSelector</span>::<span class='ident'>new</span>(<span class='number'>4</span>, <span class='number'>4</span>)))
                   .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
-                  .<span class='ident'>set_selection_type</span>(<span class='ident'>sim</span>::<span class='ident'>SelectionType</span>::<span class='ident'>Tournament</span> {
-                        <span class='ident'>count</span>: <span class='number'>3</span>,
-                        <span class='ident'>num</span>: <span class='number'>5</span>
-                  })
                   .<span class='ident'>set_fitness_type</span>(<span class='ident'>sim</span>::<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
                   .<span class='ident'>build</span>();
 <span class='comment'>// We can now run the simulator.</span>
