@@ -31,21 +31,19 @@
 //! * Stochastic
 //! * Roulette
 //!
-//! There is a short explanation for each of these below. Currently, the number of parents
-//! may vary depending on the chosen selection type. For more information, look at the
-//! documentation
-//! for the `SelectionType` enum.
+//! There is a short explanation for each of these below. For more information, look at the
+//! documentation of individual selectors.
 //!
 //! ### Maximize
 //!
 //! Maximize takes 1 parameter: the count. This is half the number of parents
-//! that will be selected. Selection happens by taking the top `count * 2` individuals,
-//! ranked by fitness. The resulting number of parents is `count * 2`.
+//! that will be selected. Selection happens by taking the top `count` individuals,
+//! ranked by fitness. The resulting number of parents is `count`.
 //!
 //! ### Tournament
 //!
-//! Tournament takes 2 parameters: the number of tournaments and the count. The count indicates how
-//! many phenotypes participate in a tournament. The resulting number of parents is `num * 2`.
+//! Tournament takes 2 parameters: the number of tournaments (`count`) and `participators`, which indicates how
+//! many phenotypes participate in a tournament. The resulting number of parents is `count`.
 //!
 //! ### Stochastic
 //!
@@ -67,6 +65,7 @@
 //!
 //! ```ignore
 //! // Define the structure of your Phenotype
+//! #[derive(Clone)]
 //! struct Test {
 //!     i: i32,
 //! }
@@ -89,14 +88,6 @@
 //!         }
 //!     }
 //! }
-//!
-//! // Implement the Clone trait.
-//! // This is required for the internal workings of the library.
-//! impl Clone for Test {
-//!     fn clone(&self) -> Self {
-//!         Test { i: self.i }
-//!     }
-//! }
 //! ```
 //!
 //! ## Running a Simulation
@@ -108,12 +99,8 @@
 //!     tests.push(Box::new(Test { i: i + 10 }));
 //! }
 //! // Create a simulator using a builder.
-//! let mut s = *seq::Simulator::builder(tests) // Population is mandatory
+//! let mut s = *seq::Simulator::builder(tests, Box::new(sim::select::TournamentSelector::new(4, 4)))
 //!                   .set_max_iters(1000)
-//!                   .set_selection_type(sim::SelectionType::Tournament {
-//!                         count: 3,
-//!                         num: 5
-//!                   })
 //!                   .set_fitness_type(sim::FitnessType::Minimize)
 //!                   .build();
 //! // We can now run the simulator.
