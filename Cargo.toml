@@ -5,7 +5,7 @@ authors = ["Mathieu De Coster <mth.decoster@gmail.com>"]
 description = "A library providing genetic algorithm execution."
 repository = "https://github.com/m-decoster/RsGenetic"
 readme = "README.md"
-keywords = ["genetic"]
+keywords = ["genetic", "algorithm", "evolution"]
 license = "Apache-2.0"
 documentation = "http://m-decoster.github.io/RsGenetic"
 
