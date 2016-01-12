@@ -63,6 +63,11 @@ impl<T: Phenotype, S: Selector<T>> Simulation<T, S> for Simulator<T, S> {
     }
 
     fn step(&mut self) -> StepResult {
+        if self.population.is_empty() {
+            self.error = Some(format!("Tried to run a simulator without a population, \
+                                       or the population was empty."));
+            return StepResult::Failure;
+        }
         let time_start = SteadyTime::now();
         let should_stop = match self.earlystopper {
             Some(ref x) => self.iter_limit.reached() || x.reached(),
@@ -283,6 +288,13 @@ mod tests {
         let selector = MaximizeSelector::new(0);
         let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
         let mut s = *seq::Simulator::builder(&population, Box::new(selector)).build();
+        s.run();
+        assert!(s.get().is_err());
+    }
+
+    #[test]
+    fn test_no_population() {
+        let mut s: seq::Simulator<Test> = *seq::Simulator::builder().build();
         s.run();
         assert!(s.get().is_err());
     }
