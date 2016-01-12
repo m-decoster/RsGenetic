@@ -5,11 +5,7 @@
 [![License Apache](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 
 ## Summary and Features
-RsGenetic is a simple framework for executing a genetic algorithm in Rust.  
-This library is not yet feature-complete. It currently offers a sequential implementation that
-can run genetic algorithms with a limited set of selection algorithms. The goal is
-to provide at least one parallel implementation, to optimize these implementations,
-and to provide more selection algorithms if needed.
+RsGenetic is a framework for executing genetic algorithms in Rust. It is designed to have a simple but modular API.
 
 ## Examples and Documentation
 Documentation is available [here](http://m-decoster.github.io/RsGenetic).  

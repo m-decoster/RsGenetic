@@ -1,13 +1,13 @@
 // file: lib.rs
 //
 // Copyright 2015-2016 The RsGenetic Developers
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // 	http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! rsgenetic = "0.10"
+//! rsgenetic = "0.11"
 //! ```
 //!
 //! and adding `extern crate rsgenetic;` to your crate root.
@@ -115,7 +115,9 @@
 //!     tests.push(Box::new(Test { i: i + 10 }));
 //! }
 //! // Create a simulator using a builder.
-//! let mut s = *seq::Simulator::builder(tests, Box::new(sim::select::TournamentSelector::new(4, 4)))
+//! let mut s = *seq::Simulator::builder()
+//!                   .set_population(&tests)
+//!                   .set_selector(Box::new(sim::select::TournamentSelector::new(4,4)))
 //!                   .set_max_iters(1000)
 //!                   .set_fitness_type(sim::FitnessType::Minimize)
 //!                   .build();

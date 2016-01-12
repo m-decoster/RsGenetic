@@ -1,13 +1,13 @@
 // file: mod.rs
 //
 // Copyright 2015-2016 The RsGenetic Developers
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // 	http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,15 +55,12 @@ pub enum RunResult {
 }
 
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<T: Phenotype, S> where S: select::Selector<T> {
+pub trait Simulation<T: Phenotype> {
     /// A `Builder` is used to create instances of a `Simulation`.
     type B: Builder<Box<Self>>;
 
     /// Create a `Builder` to create an instance.
-    /// Because the population is a required parameter, you have to pass it here,
-    /// instead of using a builder function.
-    /// The same is the case for the selector.
-    fn builder(population: &Vec<Box<T>>, selector: Box<S>) -> Self::B;
+    fn builder() -> Self::B;
     /// Run the simulation completely.
     fn run(&mut self) -> RunResult;
     /// Make one step in the simulation. This function returns a `StepResult`:
@@ -83,8 +80,14 @@ pub trait Simulation<T: Phenotype, S> where S: select::Selector<T> {
     /// or an error string indicating what went wrong.
     fn get(&self) -> SimResult<T>;
     /// Get the number of nanoseconds spent running, or `None` in case of an overflow.
+    ///
+    /// When `Self` is `par::Simulator`, i.e. a parallel simulator is used,
+    /// the duration is the average duration of all child simulators.
     fn time(&self) -> Option<NanoSecond>;
     /// Get the number of iterations the `Simulator` has executed so far.
+    ///
+    /// When `Self` is `par::Simulator`, i.e. a parallel simulator is used,
+    /// this returns the number of iterations made by the parallel simulator itself.
     fn iterations(&self) -> u64;
 }
 
