@@ -16,12 +16,20 @@ Examples are available in the `examples` directory. Execute `cargo run --example
 to run an example.
 
 ## License
-This library is available under Apache 2.0.
 
-## Contributing
+Licensed under either of
+
+ * Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+### Contribution
+
 Contributions are always welcome. Take a look at the issues for any enhancements that need to be
 done or bugs that need to be fixed. If you encounter any bugs while using the library, feel free to
 open an issue and/or fix the bug, and submit pull requests.
 
-## Notes
-This library has only been tested with Rust stable 1.5.0, Rust beta and Rust nightly.
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.
