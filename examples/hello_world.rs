@@ -1,13 +1,13 @@
 // file: hello_world.rs
 //
 // Copyright 2015-2016 The RsGenetic Developers
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // 	http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
 // limitations under the License.
 
 //! Daily programmer challenge 249.
-//! 
+//!
 //! This program generates an input string
 //! using a genetic algorithm.
 extern crate rsgenetic;
@@ -48,12 +48,14 @@ impl Phenotype for StringGuess {
         // 1-way crossover
         let mut rng = ::rand::thread_rng();
         let index = rng.gen::<usize>() % self.guess.len();
-        let string_crossed_over = self.guess.chars().take(index)
-                                            .chain(other.guess.chars().skip(index))
-                                            .collect();
+        let string_crossed_over = self.guess
+                                      .chars()
+                                      .take(index)
+                                      .chain(other.guess.chars().skip(index))
+                                      .collect();
         StringGuess {
             target: self.target.clone(),
-            guess: string_crossed_over
+            guess: string_crossed_over,
         }
     }
 
@@ -65,15 +67,17 @@ impl Phenotype for StringGuess {
             let index = rng.gen::<usize>() % self.guess.len();
             let random_char = match rng.gen_ascii_chars().take(1).next() {
                 Some(x) => x,
-                None => panic!("Could not mutate phenotype.")
+                None => panic!("Could not mutate phenotype."),
             };
             let char_at_index = match self.guess.chars().skip(index).take(1).next() {
                 Some(x) => x,
-                None => panic!("Could not mutate phenotype.")
+                None => panic!("Could not mutate phenotype."),
             };
             StringGuess {
                 target: self.target.clone(),
-                guess: str::replace(&self.guess, &char_at_index.to_string(), &random_char.to_string()),
+                guess: str::replace(&self.guess,
+                                    &char_at_index.to_string(),
+                                    &random_char.to_string()),
             }
         } else {
             self.clone()
@@ -93,14 +97,17 @@ fn main() {
             guess: guess,
         }));
     }
-    let mut s = *Simulator::builder(&population, Box::new(MaximizeSelector::new(40)))
+    let mut s = *Simulator::builder(&population, Box::new(RouletteSelector::new(40)))
                      .set_max_iters(1000)
                      .set_fitness_type(FitnessType::Minimize)
                      .build();
     let mut index = 1;
     while let StepResult::Success = s.step() {
         let result = s.get().unwrap();
-        println!("Gen: {} | Fitness: {} | {}", index, result.fitness(), result.guess);
+        println!("Gen: {} | Fitness: {} | {}",
+                 index,
+                 result.fitness(),
+                 result.guess);
         if (*result).guess == input {
             break;
         }
