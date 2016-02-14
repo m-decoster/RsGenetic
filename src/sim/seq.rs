@@ -293,6 +293,7 @@ mod tests {
         let population: Vec<Test> = (0..100).map(|_| Test { f: 0 }).collect();
         let mut s = seq::Simulator::builder()
                          .set_population(&population)
+                         .set_selector(Box::new(selector))
                          .set_early_stop(10.0, 5)
                          .set_max_iters(10)
                          .build();
