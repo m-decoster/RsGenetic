@@ -110,9 +110,9 @@
 //!
 //! ```ignore
 //! // Generate a random population.
-//! let mut tests: Vec<Box<Test>> = Vec::new();
+//! let mut tests: Vec<Test> = Vec::new();
 //! for i in 0..100 {
-//!     tests.push(Box::new(Test { i: i + 10 }));
+//!     tests.push(Test { i: i + 10 });
 //! }
 //! // Create a simulator using a builder.
 //! let mut s = *seq::Simulator::builder()

@@ -32,7 +32,7 @@ use time::SteadyTime;
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
 pub struct Simulator<T: Phenotype> {
-    population: Vec<Box<T>>,
+    population: Vec<T>,
     iter_limit: IterLimit,
     selector: Box<Selector<T>>,
     fitness_type: FitnessType,
@@ -81,11 +81,11 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             }
             let parents = parents_tmp.ok().unwrap();
             // Create children from the selected parents and mutate them.
-            let mut children: Vec<Box<T>> = parents.iter()
-                                                   .map(|pair: &(Box<T>, Box<T>)| {
-                                                       pair.0.crossover(&*(pair.1))
+            let mut children: Vec<T> = parents.iter()
+                                                   .map(|pair: &(T, T)| {
+                                                       pair.0.crossover(&(pair.1))
                                                    })
-                                                   .map(|c| Box::new(c.mutate()))
+                                                   .map(|c| c.mutate())
                                                    .collect();
             // Kill off parts of the population at random to make room for the children
             self.kill_off(children.len());
@@ -181,7 +181,7 @@ impl<T: Phenotype> SimulatorBuilder<T> {
     /// Set the population of the resulting `Simulator`.
     ///
     /// Returns itself for chaining purposes.
-    pub fn set_population(mut self, pop: &Vec<Box<T>>) -> Self {
+    pub fn set_population(mut self, pop: &Vec<T>) -> Self {
         self.sim.population = pop.clone();
         self
     }
@@ -224,9 +224,9 @@ impl<T: Phenotype> SimulatorBuilder<T> {
     }
 }
 
-impl<T: Phenotype> Builder<Box<Simulator<T>>> for SimulatorBuilder<T> {
-    fn build(self) -> Box<Simulator<T>> {
-        Box::new(self.sim)
+impl<T: Phenotype> Builder<Simulator<T>> for SimulatorBuilder<T> {
+    fn build(self) -> Simulator<T> {
+        self.sim
     }
 }
 
@@ -265,8 +265,8 @@ mod tests {
     #[test]
     fn test_kill_off_count() {
         let selector = MaximizeSelector::new(2);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
-        let mut s = *seq::Simulator::builder()
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
+        let mut s = seq::Simulator::builder()
                          .set_population(&population)
                          .set_selector(Box::new(selector))
                          .build();
@@ -277,8 +277,8 @@ mod tests {
     #[test]
     fn test_max_iters() {
         let selector = MaximizeSelector::new(2);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
-        let mut s = *seq::Simulator::builder()
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
+        let mut s = seq::Simulator::builder()
                          .set_population(&population)
                          .set_selector(Box::new(selector))
                          .set_max_iters(2)
@@ -290,8 +290,8 @@ mod tests {
     #[test]
     fn test_early_stopping() {
         let selector = MaximizeSelector::new(2);
-        let population: Vec<Box<Test>> = (0..100).map(|_| Box::new(Test { f: 0 })).collect();
-        let mut s = *seq::Simulator::builder()
+        let population: Vec<Test> = (0..100).map(|_| Test { f: 0 }).collect();
+        let mut s = seq::Simulator::builder()
                          .set_population(&population)
                          .set_early_stop(10.0, 5)
                          .set_max_iters(10)
@@ -303,8 +303,8 @@ mod tests {
     #[test]
     fn test_selector_error_propagate() {
         let selector = MaximizeSelector::new(0);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
-        let mut s = *seq::Simulator::builder()
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
+        let mut s = seq::Simulator::builder()
                          .set_population(&population)
                          .set_selector(Box::new(selector))
                          .build();

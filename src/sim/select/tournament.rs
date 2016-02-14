@@ -45,7 +45,7 @@ impl TournamentSelector {
 
 impl<T: Phenotype> Selector<T> for TournamentSelector {
     fn select(&self,
-              population: &Vec<Box<T>>,
+              population: &Vec<T>,
               fitness_type: FitnessType)
               -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
@@ -62,7 +62,7 @@ impl<T: Phenotype> Selector<T> for TournamentSelector {
         let mut result: Parents<T> = Vec::new();
         let mut rng = ::rand::thread_rng();
         for _ in 0..(self.count / 2) {
-            let mut tournament: Vec<Box<T>> = Vec::with_capacity(self.participants);
+            let mut tournament: Vec<T> = Vec::with_capacity(self.participants);
             for _ in 0..self.participants {
                 let index = rng.gen_range::<usize>(0, population.len());
                 tournament.push(population[index].clone());
@@ -119,42 +119,42 @@ mod tests {
     #[test]
     fn test_count_zero() {
         let selector = TournamentSelector::new(0, 1);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_participants_zero() {
         let selector = TournamentSelector::new(2, 0);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_count_odd() {
         let selector = TournamentSelector::new(5, 1);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_count_too_large() {
         let selector = TournamentSelector::new(100, 1);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_participants_too_large() {
         let selector = TournamentSelector::new(2, 100);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_result_size() {
         let selector = TournamentSelector::new(20, 5);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert_eq!(20,
                    selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
     }

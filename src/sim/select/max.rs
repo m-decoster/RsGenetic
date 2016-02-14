@@ -38,7 +38,7 @@ impl MaximizeSelector {
 
 impl<T: Phenotype> Selector<T> for MaximizeSelector {
     fn select(&self,
-              population: &Vec<Box<T>>,
+              population: &Vec<T>,
               fitness_type: FitnessType)
               -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
@@ -54,7 +54,7 @@ impl<T: Phenotype> Selector<T> for MaximizeSelector {
         if let FitnessType::Maximize = fitness_type {
             cloned.reverse();
         }
-        let sorted: Vec<&Box<T>> = cloned.iter().take(self.count).collect();
+        let sorted: Vec<&T> = cloned.iter().take(self.count).collect();
         let mut index = 0;
         let mut result: Parents<T> = Vec::new();
         while index < sorted.len() {
@@ -100,28 +100,28 @@ mod tests {
     #[test]
     fn test_count_zero() {
         let selector = MaximizeSelector::new(0);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_count_odd() {
         let selector = MaximizeSelector::new(5);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_count_too_large() {
         let selector = MaximizeSelector::new(100);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_result_size() {
         let selector = MaximizeSelector::new(20);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert_eq!(20,
                    selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
     }
@@ -129,10 +129,10 @@ mod tests {
     #[test]
     fn test_result_ok() {
         let selector = MaximizeSelector::new(20);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         // The lowest fitness should be zero.
         assert!((0.0 -
-                 (*selector.select(&population, FitnessType::Minimize)
+                 (selector.select(&population, FitnessType::Minimize)
                            .unwrap()[0]
                        .0)
                      .fitness())
