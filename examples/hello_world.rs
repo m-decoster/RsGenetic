@@ -21,7 +21,6 @@
 extern crate rsgenetic;
 extern crate rand;
 
-use std::str;
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
@@ -69,15 +68,18 @@ impl Phenotype for StringGuess {
                 Some(x) => x,
                 None => panic!("Could not mutate phenotype."),
             };
-            let char_at_index = match self.guess.chars().skip(index).take(1).next() {
-                Some(x) => x,
-                None => panic!("Could not mutate phenotype."),
-            };
+            let mut new_guess = String::new();
+
+            for (i, c) in self.guess.chars().enumerate() {
+                if i != index {
+                    new_guess.push(c);
+                } else {
+                    new_guess.push(random_char);
+                }
+            }
             StringGuess {
                 target: self.target.clone(),
-                guess: str::replace(&self.guess,
-                                    &char_at_index.to_string(),
-                                    &random_char.to_string()),
+                guess: new_guess,
             }
         } else {
             self.clone()
