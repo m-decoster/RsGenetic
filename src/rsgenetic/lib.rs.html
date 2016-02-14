@@ -167,7 +167,41 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
 </pre><pre class='rust '>
+<span class='comment'>// file: lib.rs</span>
+<span class='comment'>//</span>
+<span class='comment'>// Copyright 2015-2016 The RsGenetic Developers</span>
+<span class='comment'>//</span>
+<span class='comment'>// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class='comment'>// you may not use this file except in compliance with the License.</span>
+<span class='comment'>// You may obtain a copy of the License at</span>
+<span class='comment'>//</span>
+<span class='comment'>// 	http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class='comment'>//</span>
+<span class='comment'>// Unless required by applicable law or agreed to in writing, software</span>
+<span class='comment'>// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class='comment'>// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class='comment'>// See the License for the specific language governing permissions and</span>
+<span class='comment'>// limitations under the License.</span>
+
 <span class='doccomment'>//! # RsGenetic</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! RsGenetic provides a simple framework for genetic algorithms.</span>
@@ -181,7 +215,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```ignore</span>
 <span class='doccomment'>//! [dependencies]</span>
-<span class='doccomment'>//! rsgenetic = &quot;0.10&quot;</span>
+<span class='doccomment'>//! rsgenetic = &quot;0.11&quot;</span>
 <span class='doccomment'>//! ```</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! and adding `extern crate rsgenetic;` to your crate root.</span>
@@ -269,7 +303,9 @@
 <span class='doccomment'>//!     tests.push(Box::new(Test { i: i + 10 }));</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//! // Create a simulator using a builder.</span>
-<span class='doccomment'>//! let mut s = *seq::Simulator::builder(tests, Box::new(sim::select::TournamentSelector::new(4, 4)))</span>
+<span class='doccomment'>//! let mut s = *seq::Simulator::builder()</span>
+<span class='doccomment'>//!                   .set_population(&amp;tests)</span>
+<span class='doccomment'>//!                   .set_selector(Box::new(sim::select::TournamentSelector::new(4,4)))</span>
 <span class='doccomment'>//!                   .set_max_iters(1000)</span>
 <span class='doccomment'>//!                   .set_fitness_type(sim::FitnessType::Minimize)</span>
 <span class='doccomment'>//!                   .build();</span>

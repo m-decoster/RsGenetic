@@ -45,10 +45,10 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-333' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#42-73' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait Simulation&lt;T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>, S&gt; <span class='where'>where S: <a class='trait' href='../../rsgenetic/sim/select/trait.Selector.html' title='rsgenetic::sim::select::Selector'>Selector</a>&lt;T&gt;</span> {
+        </span><a id='src-332' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#58-92' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Simulation&lt;T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&gt; {
     type B: <a class='trait' href='../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;Self&gt;&gt;;
-    fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;&gt;, selector: <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;S&gt;) -&gt; Self::<a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>B</a>;
+    fn <a href='#tymethod.builder' class='fnname'>builder</a>() -&gt; Self::<a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>B</a>;
     fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a>;
     fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a>;
     fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;T&gt;;
@@ -62,10 +62,7 @@
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.builder' class='method stab '><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;&gt;, selector: <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;S&gt;) -&gt; Self::<a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>B</a></code></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.
-Because the population is a required parameter, you have to pass it here,
-instead of using a builder function.
-The same is the case for the selector.</p>
+        <h3 id='tymethod.builder' class='method stab '><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>() -&gt; Self::<a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>B</a></code></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.</p>
 </div><h3 id='tymethod.run' class='method stab '><code>fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a></code></h3><div class='docblock'><p>Run the simulation completely.</p>
 </div><h3 id='tymethod.step' class='method stab '><code>fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a></code></h3><div class='docblock'><p>Make one step in the simulation. This function returns a <code>StepResult</code>:</p>
 
@@ -84,11 +81,17 @@ This function is mostly useful for making illustrations of the evolution.</p>
 <p>This function will either return the best performing individual,
 or an error string indicating what went wrong.</p>
 </div><h3 id='tymethod.time' class='method stab '><code>fn <a href='#tymethod.time' class='fnname'>time</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../rsgenetic/sim/type.NanoSecond.html' title='rsgenetic::sim::NanoSecond'>NanoSecond</a>&gt;</code></h3><div class='docblock'><p>Get the number of nanoseconds spent running, or <code>None</code> in case of an overflow.</p>
+
+<p>When <code>Self</code> is <code>par::Simulator</code>, i.e. a parallel simulator is used,
+the duration is the average duration of all child simulators.</p>
 </div><h3 id='tymethod.iterations' class='method stab '><code>fn <a href='#tymethod.iterations' class='fnname'>iterations</a>(&amp;self) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></h3><div class='docblock'><p>Get the number of iterations the <code>Simulator</code> has executed so far.</p>
+
+<p>When <code>Self</code> is <code>par::Simulator</code>, i.e. a parallel simulator is used,
+this returns the number of iterations made by the parallel simulator itself.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl&lt;T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>, S: <a class='trait' href='../../rsgenetic/sim/select/trait.Selector.html' title='rsgenetic::sim::select::Selector'>Selector</a>&lt;T&gt;&gt; <a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>Simulation</a>&lt;T, S&gt; for <a class='struct' href='../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;T, S&gt;</code></li>
+    <li><code>impl&lt;T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&gt; <a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>Simulation</a>&lt;T&gt; for <a class='struct' href='../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;T&gt;</code></li>
 </ul><script type="text/javascript" async
                               src="../../implementors/rsgenetic/sim/trait.Simulation.js">
                       </script></section>
