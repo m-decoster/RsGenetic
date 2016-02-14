@@ -74,12 +74,13 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             return StepResult::Done;
         } else {
             // Perform selection
-            let parents_tmp = (*self.selector).select(&self.population, self.fitness_type);
-            if parents_tmp.is_err() {
-                self.error = Some(parents_tmp.err().unwrap());
-                return StepResult::Failure;
-            }
-            let parents = parents_tmp.ok().unwrap();
+            let parents = match self.selector.select(&self.population, self.fitness_type) {
+                Ok(parents) => parents,
+                Err(e) => {
+                    self.error = Some(e);
+                    return StepResult::Failure;
+                }
+            };
             // Create children from the selected parents and mutate them.
             let mut children: Vec<T> = parents.iter()
                                                    .map(|pair: &(T, T)| {
