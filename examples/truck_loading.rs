@@ -109,7 +109,7 @@ impl Clone for LoadingScheme {
 }
 
 fn main() {
-    let mut population: Vec<Box<LoadingScheme>> = Vec::with_capacity(300);
+    let mut population: Vec<LoadingScheme> = Vec::with_capacity(300);
     let mut rng = ::rand::thread_rng();
     for _ in 0..300 {
         let mut pheno: Scheme = Vec::with_capacity(PACKAGES.len());
@@ -117,9 +117,9 @@ fn main() {
             let index = rng.gen::<usize>() % NUM_TRUCKS;
             pheno.push((index, PACKAGES[j]));
         }
-        population.push(Box::new(LoadingScheme { scheme: pheno }));
+        population.push(LoadingScheme { scheme: pheno });
     }
-    let mut s = *Simulator::builder()
+    let mut s = Simulator::builder()
                      .set_population(&population)
                      .set_selector(Box::new(RouletteSelector::new(10)))
                      .set_max_iters(50)

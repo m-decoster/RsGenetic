@@ -40,7 +40,7 @@ impl StochasticSelector {
 }
 
 impl<T: Phenotype> Selector<T> for StochasticSelector {
-    fn select(&self, population: &Vec<Box<T>>, _: FitnessType) -> Result<Parents<T>, String> {
+    fn select(&self, population: &Vec<T>, _: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than the population size.",
@@ -97,28 +97,28 @@ mod tests {
     #[test]
     fn test_count_zero() {
         let selector = StochasticSelector::new(0);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_count_odd() {
         let selector = StochasticSelector::new(5);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_count_too_large() {
         let selector = StochasticSelector::new(100);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population, FitnessType::Minimize).is_err());
     }
 
     #[test]
     fn test_result_size() {
         let selector = StochasticSelector::new(20);
-        let population: Vec<Box<Test>> = (0..100).map(|i| Box::new(Test { f: i })).collect();
+        let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert_eq!(20,
                    selector.select(&population, FitnessType::Minimize).unwrap().len() * 2);
     }

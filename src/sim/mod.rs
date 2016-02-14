@@ -23,16 +23,16 @@ mod earlystopper;
 
 /// A `Builder` can create new instances of an object.
 /// For this library, only `Simulation` objects use this `Builder`.
-pub trait Builder<T> {
+pub trait Builder<T: ?Sized> {
     /// Return the result.
-    fn build(self) -> T;
+    fn build(self) -> T where T: Sized;
 }
 
 /// Simulation run time is defined in nanoseconds.
 pub type NanoSecond = i64;
 /// The result of a simulation, containing the best phenotype
 /// or an error message.
-pub type SimResult<T> = Result<Box<T>, String>;
+pub type SimResult<T> = Result<T, String>;
 
 /// The result of running a single step.
 #[derive(PartialEq,Eq,Debug)]
@@ -57,10 +57,10 @@ pub enum RunResult {
 /// A `Simulation` is an execution of a genetic algorithm.
 pub trait Simulation<T: Phenotype> {
     /// A `Builder` is used to create instances of a `Simulation`.
-    type B: Builder<Box<Self>>;
+    type B: Builder<Self>;
 
     /// Create a `Builder` to create an instance.
-    fn builder() -> Self::B;
+    fn builder() -> Self::B where Self: Sized;
     /// Run the simulation completely.
     fn run(&mut self) -> RunResult;
     /// Make one step in the simulation. This function returns a `StepResult`:

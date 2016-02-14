@@ -34,8 +34,8 @@ pub use self::tournament::TournamentSelector;
 pub use self::stochastic::StochasticSelector;
 pub use self::roulette::RouletteSelector;
 
-/// `Parents` come in a `Vec` of two `Box<T>`'s.
-pub type Parents<T> = Vec<(Box<T>, Box<T>)>;
+/// `Parents` come in a `Vec` of two `T`'s.
+pub type Parents<T> = Vec<(T, T)>;
 
 /// A `Selector` can select `Parents` for a new iteration of a `Simulation`.
 pub trait Selector<T: Phenotype> {
@@ -47,7 +47,7 @@ pub trait Selector<T: Phenotype> {
     ///
     /// Otherwise it contains a vector of parent pairs wrapped in `Ok`.
     fn select(&self,
-              population: &Vec<Box<T>>,
+              population: &Vec<T>,
               fitness_type: FitnessType)
               -> Result<Parents<T>, String>;
 }

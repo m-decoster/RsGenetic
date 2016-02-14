@@ -89,17 +89,17 @@ impl Phenotype for StringGuess {
 
 fn main() {
     let input = "HelloWorld";
-    let mut population: Vec<Box<StringGuess>> = Vec::with_capacity(500);
+    let mut population: Vec<StringGuess> = Vec::with_capacity(500);
     let mut rng = ::rand::thread_rng();
     for _ in 0..500 {
         // Generate a random string
         let guess = rng.gen_ascii_chars().take(input.len()).collect::<String>();
-        population.push(Box::new(StringGuess {
+        population.push(StringGuess {
             target: String::from(input),
             guess: guess,
-        }));
+        });
     }
-    let mut s = *Simulator::builder()
+    let mut s = Simulator::builder()
                      .set_population(&population)
                      .set_selector(Box::new(RouletteSelector::new(40)))
                      .set_max_iters(1000)
@@ -112,7 +112,7 @@ fn main() {
                  index,
                  result.fitness(),
                  result.guess);
-        if (*result).guess == input {
+        if result.guess == input {
             break;
         }
         index += 1;
