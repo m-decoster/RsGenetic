@@ -354,6 +354,7 @@
 <span id="312">312</span>
 <span id="313">313</span>
 <span id="314">314</span>
+<span id="315">315</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: seq.rs</span>
 <span class='comment'>//</span>
@@ -389,7 +390,7 @@
 <span class='doccomment'>/// A sequential implementation of `::sim::Simulation`.</span>
 <span class='doccomment'>/// The genetic algorithm is run in a single thread.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> {
-    <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>,
+    <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
     <span class='ident'>iter_limit</span>: <span class='ident'>IterLimit</span>,
     <span class='ident'>selector</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Selector</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>,
     <span class='ident'>fitness_type</span>: <span class='ident'>FitnessType</span>,
@@ -438,11 +439,11 @@
             }
             <span class='kw'>let</span> <span class='ident'>parents</span> <span class='op'>=</span> <span class='ident'>parents_tmp</span>.<span class='ident'>ok</span>().<span class='ident'>unwrap</span>();
             <span class='comment'>// Create children from the selected parents and mutate them.</span>
-            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>children</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>parents</span>.<span class='ident'>iter</span>()
-                                                   .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>pair</span>: <span class='kw-2'>&amp;</span>(<span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>)<span class='op'>|</span> {
-                                                       <span class='ident'>pair</span>.<span class='number'>0</span>.<span class='ident'>crossover</span>(<span class='kw-2'>&amp;</span><span class='op'>*</span>(<span class='ident'>pair</span>.<span class='number'>1</span>))
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>children</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>parents</span>.<span class='ident'>iter</span>()
+                                                   .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>pair</span>: <span class='kw-2'>&amp;</span>(<span class='ident'>T</span>, <span class='ident'>T</span>)<span class='op'>|</span> {
+                                                       <span class='ident'>pair</span>.<span class='number'>0</span>.<span class='ident'>crossover</span>(<span class='kw-2'>&amp;</span>(<span class='ident'>pair</span>.<span class='number'>1</span>))
                                                    })
-                                                   .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>c</span>.<span class='ident'>mutate</span>()))
+                                                   .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> <span class='ident'>c</span>.<span class='ident'>mutate</span>())
                                                    .<span class='ident'>collect</span>();
             <span class='comment'>// Kill off parts of the population at random to make room for the children</span>
             <span class='self'>self</span>.<span class='ident'>kill_off</span>(<span class='ident'>children</span>.<span class='ident'>len</span>());
@@ -538,7 +539,7 @@
     <span class='doccomment'>/// Set the population of the resulting `Simulator`.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns itself for chaining purposes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_population</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pop</span>: <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_population</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pop</span>: <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>population</span> <span class='op'>=</span> <span class='ident'>pop</span>.<span class='ident'>clone</span>();
         <span class='self'>self</span>
     }
@@ -581,9 +582,9 @@
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> {
-        <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>sim</span>)
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='kw'>for</span> <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>sim</span>
     }
 }
 
@@ -622,8 +623,8 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_kill_off_count</span>() {
         <span class='kw'>let</span> <span class='ident'>selector</span> <span class='op'>=</span> <span class='ident'>MaximizeSelector</span>::<span class='ident'>new</span>(<span class='number'>2</span>);
-        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
+        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='ident'>i</span> }).<span class='ident'>collect</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
                          .<span class='ident'>set_population</span>(<span class='kw-2'>&amp;</span><span class='ident'>population</span>)
                          .<span class='ident'>set_selector</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>selector</span>))
                          .<span class='ident'>build</span>();
@@ -634,8 +635,8 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_max_iters</span>() {
         <span class='kw'>let</span> <span class='ident'>selector</span> <span class='op'>=</span> <span class='ident'>MaximizeSelector</span>::<span class='ident'>new</span>(<span class='number'>2</span>);
-        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
+        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='ident'>i</span> }).<span class='ident'>collect</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
                          .<span class='ident'>set_population</span>(<span class='kw-2'>&amp;</span><span class='ident'>population</span>)
                          .<span class='ident'>set_selector</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>selector</span>))
                          .<span class='ident'>set_max_iters</span>(<span class='number'>2</span>)
@@ -647,9 +648,10 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_early_stopping</span>() {
         <span class='kw'>let</span> <span class='ident'>selector</span> <span class='op'>=</span> <span class='ident'>MaximizeSelector</span>::<span class='ident'>new</span>(<span class='number'>2</span>);
-        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='number'>0</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
+        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span>_<span class='op'>|</span> <span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='number'>0</span> }).<span class='ident'>collect</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
                          .<span class='ident'>set_population</span>(<span class='kw-2'>&amp;</span><span class='ident'>population</span>)
+                         .<span class='ident'>set_selector</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>selector</span>))
                          .<span class='ident'>set_early_stop</span>(<span class='number'>10.0</span>, <span class='number'>5</span>)
                          .<span class='ident'>set_max_iters</span>(<span class='number'>10</span>)
                          .<span class='ident'>build</span>();
@@ -660,8 +662,8 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_selector_error_propagate</span>() {
         <span class='kw'>let</span> <span class='ident'>selector</span> <span class='op'>=</span> <span class='ident'>MaximizeSelector</span>::<span class='ident'>new</span>(<span class='number'>0</span>);
-        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='ident'>i</span> })).<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
+        <span class='kw'>let</span> <span class='ident'>population</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>100</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>Test</span> { <span class='ident'>f</span>: <span class='ident'>i</span> }).<span class='ident'>collect</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
                          .<span class='ident'>set_population</span>(<span class='kw-2'>&amp;</span><span class='ident'>population</span>)
                          .<span class='ident'>set_selector</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>selector</span>))
                          .<span class='ident'>build</span>();

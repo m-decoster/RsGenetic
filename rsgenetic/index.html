@@ -128,9 +128,9 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
 
 <h2 id='running-a-simulation' class='section-header'><a href='#running-a-simulation'>Running a Simulation</a></h2><pre class='rust rust-example-rendered'>
 <span class='comment'>// Generate a random population.</span>
-<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tests</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tests</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Test</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
 <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>100</span> {
-    <span class='ident'>tests</span>.<span class='ident'>push</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> }));
+    <span class='ident'>tests</span>.<span class='ident'>push</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> });
 }
 <span class='comment'>// Create a simulator using a builder.</span>
 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()

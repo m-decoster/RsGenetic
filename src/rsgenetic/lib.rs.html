@@ -298,9 +298,9 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```ignore</span>
 <span class='doccomment'>//! // Generate a random population.</span>
-<span class='doccomment'>//! let mut tests: Vec&lt;Box&lt;Test&gt;&gt; = Vec::new();</span>
+<span class='doccomment'>//! let mut tests: Vec&lt;Test&gt; = Vec::new();</span>
 <span class='doccomment'>//! for i in 0..100 {</span>
-<span class='doccomment'>//!     tests.push(Box::new(Test { i: i + 10 }));</span>
+<span class='doccomment'>//!     tests.push(Test { i: i + 10 });</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//! // Create a simulator using a builder.</span>
 <span class='doccomment'>//! let mut s = *seq::Simulator::builder()</span>
