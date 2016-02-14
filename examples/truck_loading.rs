@@ -94,8 +94,8 @@ impl Phenotype for LoadingScheme {
         LoadingScheme {
             scheme: self.scheme
                         .iter()
-                        .map(|pair: &(TruckIndex, PackageSize)| {
-                            (rng.gen::<usize>() % NUM_TRUCKS, pair.1)
+                        .map(|&(_, size)| {
+                            (rng.gen::<usize>() % NUM_TRUCKS, size)
                         })
                         .collect(),
         }

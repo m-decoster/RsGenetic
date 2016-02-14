@@ -83,9 +83,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             };
             // Create children from the selected parents and mutate them.
             let mut children: Vec<T> = parents.iter()
-                                                   .map(|pair: &(T, T)| {
-                                                       pair.0.crossover(&(pair.1))
-                                                   })
+                                                   .map(|&(ref a, ref b)| a.crossover(b))
                                                    .map(|c| c.mutate())
                                                    .collect();
             // Kill off parts of the population at random to make room for the children
