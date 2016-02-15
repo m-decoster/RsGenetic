@@ -27,7 +27,7 @@ pub struct EarlyStopper<F: Fitness> {
     iter_limit: IterLimit,
 }
 
-impl <F: Fitness> EarlyStopper<F> {
+impl<F: Fitness> EarlyStopper<F> {
     /// Create a new `EarlyStopper`.
     pub fn new(delta: F, n_iters: u64) -> EarlyStopper<F> {
         EarlyStopper {
@@ -56,13 +56,11 @@ impl <F: Fitness> EarlyStopper<F> {
 #[cfg(test)]
 mod tests {
     use super::EarlyStopper;
-    use ::test::MyFitness;
+    use test::MyFitness;
 
     impl MyFitness {
         fn new(f: i64) -> MyFitness {
-            MyFitness {
-                f: f
-            }
+            MyFitness { f: f }
         }
     }
 

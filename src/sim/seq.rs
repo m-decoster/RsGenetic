@@ -32,7 +32,10 @@ use std::marker::PhantomData;
 
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
-pub struct Simulator<'a, T, F> where T: 'a + Phenotype<F>, F: Fitness {
+pub struct Simulator<'a, T, F>
+    where T: 'a + Phenotype<F>,
+          F: Fitness
+{
     population: &'a mut Vec<T>,
     iter_limit: IterLimit,
     selector: Box<Selector<T, F>>,
@@ -42,7 +45,10 @@ pub struct Simulator<'a, T, F> where T: 'a + Phenotype<F>, F: Fitness {
     phantom: PhantomData<&'a T>,
 }
 
-impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F> where T: Phenotype<F>, F: Fitness {
+impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
+    where T: Phenotype<F>,
+          F: Fitness
+{
     type B = SimulatorBuilder<'a, T, F>;
 
     /// Create builder.
@@ -92,8 +98,11 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F> where T: Phenotype<F
             self.population.append(&mut children);
 
             if let Some(ref mut stopper) = self.earlystopper {
-                let highest_fitness = self.population.iter().max_by_key(|x|
-                                                                        x.fitness()).unwrap().fitness();
+                let highest_fitness = self.population
+                                          .iter()
+                                          .max_by_key(|x| x.fitness())
+                                          .unwrap()
+                                          .fitness();
                 stopper.update(highest_fitness);
             }
 
@@ -127,9 +136,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F> where T: Phenotype<F
     fn get(&'a self) -> SimResult<'a, T> {
         match self.error {
             Some(ref e) => Err(e),
-            None => {
-                Ok(self.population.iter().max_by_key(|x| x.fitness()).unwrap())
-            }
+            None => Ok(self.population.iter().max_by_key(|x| x.fitness()).unwrap()),
         }
     }
 
@@ -142,7 +149,10 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F> where T: Phenotype<F
     }
 }
 
-impl<'a, T, F> Simulator<'a, T, F> where T: Phenotype<F>, F: Fitness {
+impl<'a, T, F> Simulator<'a, T, F>
+    where T: Phenotype<F>,
+          F: Fitness
+{
     /// Kill off phenotypes using stochastic universal sampling.
     fn kill_off(&mut self, count: usize) {
         let ratio = self.population.len() / count;
@@ -159,11 +169,17 @@ impl<'a, T, F> Simulator<'a, T, F> where T: Phenotype<F>, F: Fitness {
 }
 
 /// A `Builder` for the `Simulator` type.
-pub struct SimulatorBuilder<'a, T, F> where T: 'a + Phenotype<F>, F: Fitness {
+pub struct SimulatorBuilder<'a, T, F>
+    where T: 'a + Phenotype<F>,
+          F: Fitness
+{
     sim: Simulator<'a, T, F>,
 }
 
-impl<'a, T, F> SimulatorBuilder<'a, T, F> where T: Phenotype<F>, F: Fitness {
+impl<'a, T, F> SimulatorBuilder<'a, T, F>
+    where T: Phenotype<F>,
+          F: Fitness
+{
     /// Set the selector of the resulting `Simulator`.
     ///
     /// Returns itself for chaining purposes.
@@ -192,7 +208,10 @@ impl<'a, T, F> SimulatorBuilder<'a, T, F> where T: Phenotype<F>, F: Fitness {
     }
 }
 
-impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F> where T: Phenotype<F>, F: Fitness {
+impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F>
+    where T: Phenotype<F>,
+          F: Fitness
+{
     fn build(self) -> Simulator<'a, T, F> {
         self.sim
     }
@@ -202,8 +221,8 @@ impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F> where
 mod tests {
     use ::sim::*;
     use ::sim::select::*;
-    use ::test::Test;
-    use ::test::MyFitness;
+    use test::Test;
+    use test::MyFitness;
 
     #[test]
     fn test_kill_off_count() {

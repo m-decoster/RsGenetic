@@ -45,15 +45,11 @@ struct SchemeFitness {
 
 impl Fitness for SchemeFitness {
     fn zero() -> SchemeFitness {
-        SchemeFitness {
-            f: 0
-        }
+        SchemeFitness { f: 0 }
     }
 
     fn abs_diff(&self, other: &Self) -> Self {
-        SchemeFitness {
-            f: (self.f - other.f).abs()
-        }
+        SchemeFitness { f: (self.f - other.f).abs() }
     }
 }
 

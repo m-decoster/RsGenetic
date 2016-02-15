@@ -41,7 +41,10 @@ impl TournamentSelector {
     }
 }
 
-impl<T, F> Selector<T, F> for TournamentSelector where T: Phenotype<F>, F: Fitness {
+impl<T, F> Selector<T, F> for TournamentSelector
+    where T: Phenotype<F>,
+          F: Fitness
+{
     fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
@@ -62,11 +65,9 @@ impl<T, F> Selector<T, F> for TournamentSelector where T: Phenotype<F>, F: Fitne
                 let index = rng.gen_range::<usize>(0, population.len());
                 tournament.push(population[index].clone());
             }
-            tournament.sort_by(|x, y| {
-                x.fitness().cmp(&y.fitness())
-            });
-                    result.push((tournament[tournament.len() - 1].clone(),
-                                 tournament[tournament.len() - 2].clone()));
+            tournament.sort_by(|x, y| x.fitness().cmp(&y.fitness()));
+            result.push((tournament[tournament.len() - 1].clone(),
+                         tournament[tournament.len() - 2].clone()));
         }
         Ok(result)
     }
@@ -75,7 +76,7 @@ impl<T, F> Selector<T, F> for TournamentSelector where T: Phenotype<F>, F: Fitne
 #[cfg(test)]
 mod tests {
     use ::sim::select::*;
-    use ::test::Test;
+    use test::Test;
 
     #[test]
     fn test_count_zero() {
@@ -116,7 +117,6 @@ mod tests {
     fn test_result_size() {
         let selector = TournamentSelector::new(20, 5);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        assert_eq!(20,
-                   selector.select(&population).unwrap().len() * 2);
+        assert_eq!(20, selector.select(&population).unwrap().len() * 2);
     }
 }

@@ -34,7 +34,10 @@ impl MaximizeSelector {
     }
 }
 
-impl<T, F> Selector<T, F> for MaximizeSelector where T: Phenotype<F>, F: Fitness {
+impl<T, F> Selector<T, F> for MaximizeSelector
+    where T: Phenotype<F>,
+          F: Fitness
+{
     fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
@@ -43,9 +46,7 @@ impl<T, F> Selector<T, F> for MaximizeSelector where T: Phenotype<F>, F: Fitness
         }
 
         let mut cloned = population.clone();
-        cloned.sort_by(|x, y| {
-            x.fitness().cmp(&y.fitness())
-        });
+        cloned.sort_by(|x, y| x.fitness().cmp(&y.fitness()));
         let sorted: Vec<&T> = cloned.iter().take(self.count).collect();
         let mut index = 0;
         let mut result: Parents<T> = Vec::new();
@@ -61,7 +62,7 @@ impl<T, F> Selector<T, F> for MaximizeSelector where T: Phenotype<F>, F: Fitness
 mod tests {
     use ::sim::select::*;
     use ::pheno::*;
-    use ::test::Test;
+    use test::Test;
 
     #[test]
     fn test_count_zero() {
@@ -88,8 +89,7 @@ mod tests {
     fn test_result_size() {
         let selector = MaximizeSelector::new(20);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        assert_eq!(20,
-                   selector.select(&population).unwrap().len() * 2);
+        assert_eq!(20, selector.select(&population).unwrap().len() * 2);
     }
 
     #[test]

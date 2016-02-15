@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::{Fitness,Phenotype};
+use pheno::{Fitness, Phenotype};
 
 pub mod seq;
 pub mod select;

@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::{Phenotype,Fitness};
+use pheno::{Phenotype, Fitness};
 use super::*;
 use rand::Rng;
 
@@ -38,7 +38,10 @@ impl StochasticSelector {
     }
 }
 
-impl<T, F> Selector<T, F> for StochasticSelector where T: Phenotype<F>, F: Fitness {
+impl<T, F> Selector<T, F> for StochasticSelector
+    where T: Phenotype<F>,
+          F: Fitness
+{
     fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
@@ -64,7 +67,7 @@ impl<T, F> Selector<T, F> for StochasticSelector where T: Phenotype<F>, F: Fitne
 #[cfg(test)]
 mod tests {
     use ::sim::select::*;
-    use ::test::Test;
+    use test::Test;
 
     #[test]
     fn test_count_zero() {
@@ -91,7 +94,6 @@ mod tests {
     fn test_result_size() {
         let selector = StochasticSelector::new(20);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        assert_eq!(20,
-                   selector.select(&population).unwrap().len() * 2);
+        assert_eq!(20, selector.select(&population).unwrap().len() * 2);
     }
 }

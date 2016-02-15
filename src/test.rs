@@ -23,9 +23,7 @@ pub struct Test {
 
 impl Phenotype<MyFitness> for Test {
     fn fitness(&self) -> MyFitness {
-        MyFitness {
-            f: (self.f - 0).abs()
-        }
+        MyFitness { f: (self.f - 0).abs() }
     }
 
     fn crossover(&self, t: &Test) -> Test {

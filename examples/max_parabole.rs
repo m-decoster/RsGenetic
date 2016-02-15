@@ -33,28 +33,26 @@ struct MyFitness {
 impl Eq for MyFitness {}
 
 impl PartialEq for MyFitness {
-        fn eq(&self, other: &MyFitness) -> bool {
-                    (self.f- other.f).abs() < 0.0001
-                            }
+    fn eq(&self, other: &MyFitness) -> bool {
+        (self.f - other.f).abs() < 0.0001
+    }
 }
 
 impl PartialOrd for MyFitness {
-        fn partial_cmp(&self, other: &MyFitness) -> Option<Ordering> {
-                    self.f.partial_cmp(&other.f)
-                            }
+    fn partial_cmp(&self, other: &MyFitness) -> Option<Ordering> {
+        self.f.partial_cmp(&other.f)
+    }
 }
 
 impl Ord for MyFitness {
-        fn cmp(&self, other: &MyFitness) -> Ordering {
-                    self.partial_cmp(other).unwrap_or(Ordering::Equal)
-                            }
+    fn cmp(&self, other: &MyFitness) -> Ordering {
+        self.partial_cmp(other).unwrap_or(Ordering::Equal)
+    }
 }
 
 impl Fitness for MyFitness {
     fn zero() -> MyFitness {
-        MyFitness {
-            f: 0.0
-        }
+        MyFitness { f: 0.0 }
     }
 
     fn abs_diff(&self, other: &MyFitness) -> MyFitness {
@@ -69,9 +67,7 @@ struct MyData {
 impl Phenotype<MyFitness> for MyData {
     fn fitness(&self) -> MyFitness {
         // Calculate the function here, because it's what we wish to maximize.
-        MyFitness {
-            f: 10.0 - ((self.x + 3.0) * (self.x + 3.0))
-        }
+        MyFitness { f: 10.0 - ((self.x + 3.0) * (self.x + 3.0)) }
     }
 
     fn crossover(&self, other: &MyData) -> MyData {

@@ -25,7 +25,7 @@ mod max;
 mod tournament;
 mod stochastic;
 
-use pheno::{Fitness,Phenotype};
+use pheno::{Fitness, Phenotype};
 
 pub use self::max::MaximizeSelector;
 pub use self::tournament::TournamentSelector;
