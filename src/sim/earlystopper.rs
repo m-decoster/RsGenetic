@@ -56,7 +56,7 @@ impl EarlyStopper {
 #[cfg(test)]
 mod tests {
     use super::EarlyStopper;
-    use ::pheno::Fitness;
+    use pheno::Fitness;
 
     #[test]
     fn test_early_stopper_reset() {

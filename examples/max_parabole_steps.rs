@@ -1,13 +1,13 @@
 // file: max_parabole_steps.rs
 //
 // Copyright 2015-2016 The RsGenetic Developers
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // 	http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,9 +39,7 @@ impl Phenotype for MyData {
 
     fn crossover(&self, other: &MyData) -> MyData {
         // We take the average for crossover.
-        MyData {
-            x: (self.x + other.x) / 2.0
-        }
+        MyData { x: (self.x + other.x) / 2.0 }
     }
 
     fn mutate(&self) -> MyData {
@@ -55,9 +53,7 @@ impl Phenotype for MyData {
         let between = Range::new(-1.0, 1.0);
         let mut rng = rand::thread_rng();
         let offset = between.ind_sample(&mut rng);
-        MyData {
-            x: self.x + offset
-        }
+        MyData { x: self.x + offset }
     }
 }
 
@@ -68,12 +64,12 @@ impl Clone for MyData {
 }
 
 fn main() {
-    let population = (-300..300).map(|i| MyData{ x: i as f64 }).collect();
+    let population = (-300..300).map(|i| MyData { x: i as f64 }).collect();
     let mut s = Simulator::builder()
-                            .set_population(&population)
-                            .set_selector(Box::new(StochasticSelector::new(10)))
-                            .set_max_iters(50)
-                            .build();
+                    .set_population(&population)
+                    .set_selector(Box::new(StochasticSelector::new(10)))
+                    .set_max_iters(50)
+                    .build();
     while let StepResult::Success = s.step() {
         let result = s.get().unwrap();
         println!("Intermediate result: ({}, {}).", result.x, result.fitness());

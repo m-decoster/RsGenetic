@@ -37,10 +37,7 @@ impl MaximizeSelector {
 }
 
 impl<T: Phenotype> Selector<T> for MaximizeSelector {
-    fn select(&self,
-              population: &Vec<T>,
-              fitness_type: FitnessType)
-              -> Result<Parents<T>, String> {
+    fn select(&self, population: &Vec<T>, fitness_type: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than half the population size.",
@@ -133,8 +130,8 @@ mod tests {
         // The lowest fitness should be zero.
         assert!((Fitness::new(0.0) -
                  (selector.select(&population, FitnessType::Minimize)
-                           .unwrap()[0]
-                       .0)
+                          .unwrap()[0]
+                      .0)
                      .fitness())
                     .abs() < Fitness::new(0.001));
     }

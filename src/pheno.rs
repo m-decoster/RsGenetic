@@ -30,16 +30,12 @@ pub struct Fitness {
 impl Fitness {
     /// Construct a new `Fitness` object.
     pub fn new(val: f64) -> Fitness {
-        Fitness {
-            value: val
-        }
+        Fitness { value: val }
     }
 
     /// Calculate the absolute value of some `Fitness`.
     pub fn abs(&self) -> Fitness {
-        Fitness {
-            value: self.value.abs()
-        }
+        Fitness { value: self.value.abs() }
     }
 }
 
@@ -49,8 +45,7 @@ impl Into<f64> for Fitness {
     }
 }
 
-impl Eq for Fitness {
-}
+impl Eq for Fitness {}
 
 impl PartialEq for Fitness {
     fn eq(&self, other: &Fitness) -> bool {
@@ -74,9 +69,7 @@ impl Add for Fitness {
     type Output = Fitness;
 
     fn add(self, other: Fitness) -> Fitness {
-        Fitness {
-            value: self.value + other.value
-        }
+        Fitness { value: self.value + other.value }
     }
 }
 
@@ -84,9 +77,7 @@ impl Sub for Fitness {
     type Output = Fitness;
 
     fn sub(self, other: Fitness) -> Fitness {
-        Fitness {
-            value: self.value - other.value
-        }
+        Fitness { value: self.value - other.value }
     }
 }
 

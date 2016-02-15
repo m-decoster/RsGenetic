@@ -62,7 +62,8 @@ impl<T: Phenotype> Selector<T> for RouletteSelector {
                                         })
                                         .collect();
 
-        let between = Range::new(cum_fitness[0].into(), cum_fitness[cum_fitness.len() - 1].into());
+        let between = Range::new(cum_fitness[0].into(),
+                                 cum_fitness[cum_fitness.len() - 1].into());
         let mut rng = ::rand::thread_rng();
 
         let mut selected = 0;

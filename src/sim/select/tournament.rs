@@ -44,10 +44,7 @@ impl TournamentSelector {
 }
 
 impl<T: Phenotype> Selector<T> for TournamentSelector {
-    fn select(&self,
-              population: &Vec<T>,
-              fitness_type: FitnessType)
-              -> Result<Parents<T>, String> {
+    fn select(&self, population: &Vec<T>, fitness_type: FitnessType) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than half the population size.",

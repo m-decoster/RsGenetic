@@ -39,7 +39,11 @@ impl Phenotype for StringGuess {
         if self.target.len() != self.guess.len() {
             Fitness::new(std::f64::INFINITY)
         } else {
-            Fitness::new(self.target.chars().zip(self.guess.chars()).filter(|&(a, b)| a != b).count() as f64)
+            Fitness::new(self.target
+                             .chars()
+                             .zip(self.guess.chars())
+                             .filter(|&(a, b)| a != b)
+                             .count() as f64)
         }
     }
 
@@ -100,11 +104,11 @@ fn main() {
         });
     }
     let mut s = Simulator::builder()
-                     .set_population(&population)
-                     .set_selector(Box::new(RouletteSelector::new(40)))
-                     .set_max_iters(1000)
-                     .set_fitness_type(FitnessType::Minimize)
-                     .build();
+                    .set_population(&population)
+                    .set_selector(Box::new(RouletteSelector::new(40)))
+                    .set_max_iters(1000)
+                    .set_fitness_type(FitnessType::Minimize)
+                    .build();
     let mut index = 1;
     while let StepResult::Success = s.step() {
         let result = s.get().unwrap();
