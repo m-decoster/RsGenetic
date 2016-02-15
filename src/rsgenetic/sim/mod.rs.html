@@ -9,6 +9,7 @@
 
     <title>mod.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
 
     
@@ -141,6 +142,9 @@
 <span id="99"> 99</span>
 <span id="100">100</span>
 <span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: mod.rs</span>
 <span class='comment'>//</span>
@@ -176,7 +180,7 @@
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>NanoSecond</span> <span class='op'>=</span> <span class='ident'>i64</span>;
 <span class='doccomment'>/// The result of a simulation, containing the best phenotype</span>
 <span class='doccomment'>/// or an error message.</span>
-<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SimResult</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>String</span><span class='op'>&gt;</span>;
+<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>SimResult</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>T</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>String</span><span class='op'>&gt;</span>;
 
 <span class='doccomment'>/// The result of running a single step.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>,<span class='ident'>Debug</span>)]</span>
@@ -199,12 +203,15 @@
 }
 
 <span class='doccomment'>/// A `Simulation` is an execution of a genetic algorithm.</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Simulation</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> {
+<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Simulation</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// A `Builder` is used to create instances of a `Simulation`.</span>
     <span class='kw'>type</span> <span class='ident'>B</span>: <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='kw'>Self</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Create a `Builder` to create an instance.</span>
-    <span class='kw'>fn</span> <span class='ident'>builder</span>() <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>B</span> <span class='kw'>where</span> <span class='kw'>Self</span>: <span class='ident'>Sized</span>;
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// `population` is a required parameter of any `Simulation`, which</span>
+    <span class='doccomment'>/// is why it is a parameter of this function.</span>
+    <span class='kw'>fn</span> <span class='ident'>builder</span>(<span class='ident'>population</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>B</span> <span class='kw'>where</span> <span class='kw'>Self</span>: <span class='ident'>Sized</span>;
     <span class='doccomment'>/// Run the simulation completely.</span>
     <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>RunResult</span>;
     <span class='doccomment'>/// Make one step in the simulation. This function returns a `StepResult`:</span>
@@ -222,7 +229,7 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This function will either return the best performing individual,</span>
     <span class='doccomment'>/// or an error string indicating what went wrong.</span>
-    <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>SimResult</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
+    <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>SimResult</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span>;
     <span class='doccomment'>/// Get the number of nanoseconds spent running, or `None` in case of an overflow.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// When `Self` is `par::Simulator`, i.e. a parallel simulator is used,</span>
@@ -303,6 +310,6 @@
     <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     
-    <script async src="../../../search-index.js"></script>
+    <script defer src="../../../search-index.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@
 
     <title>tournament.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../../main.css">
 
     
@@ -198,9 +199,6 @@
 <span id="156">156</span>
 <span id="157">157</span>
 <span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
-<span id="161">161</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: tournament.rs</span>
 <span class='comment'>//</span>
@@ -248,10 +246,7 @@
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&gt;</span> <span class='ident'>Selector</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>TournamentSelector</span> {
-    <span class='kw'>fn</span> <span class='ident'>select</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
-              <span class='ident'>population</span>: <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
-              <span class='ident'>fitness_type</span>: <span class='ident'>FitnessType</span>)
-              <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>select</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>population</span>: <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>fitness_type</span>: <span class='ident'>FitnessType</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='number'>0</span> <span class='op'>||</span> <span class='self'>self</span>.<span class='ident'>count</span> <span class='op'>%</span> <span class='number'>2</span> <span class='op'>!=</span> <span class='number'>0</span> <span class='op'>||</span> <span class='self'>self</span>.<span class='ident'>count</span> <span class='op'>*</span> <span class='number'>2</span> <span class='op'>&gt;=</span> <span class='ident'>population</span>.<span class='ident'>len</span>() {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than half the population size.&quot;</span>,
@@ -301,8 +296,8 @@
     }
 
     <span class='kw'>impl</span> <span class='ident'>Phenotype</span> <span class='kw'>for</span> <span class='ident'>Test</span> {
-        <span class='kw'>fn</span> <span class='ident'>fitness</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>f64</span> {
-            (<span class='self'>self</span>.<span class='ident'>f</span> <span class='op'>-</span> <span class='number'>0</span>).<span class='ident'>abs</span>() <span class='kw'>as</span> <span class='ident'>f64</span>
+        <span class='kw'>fn</span> <span class='ident'>fitness</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Fitness</span> {
+            <span class='ident'>Fitness</span>::<span class='ident'>new</span>((<span class='self'>self</span>.<span class='ident'>f</span> <span class='op'>-</span> <span class='number'>0</span>).<span class='ident'>abs</span>() <span class='kw'>as</span> <span class='ident'>f64</span>)
         }
 
         <span class='kw'>fn</span> <span class='ident'>crossover</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>Test</span>) <span class='op'>-&gt;</span> <span class='ident'>Test</span> {
@@ -423,6 +418,6 @@
     <script src="../../../../jquery.js"></script>
     <script src="../../../../main.js"></script>
     
-    <script async src="../../../../search-index.js"></script>
+    <script defer src="../../../../search-index.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@
 
     <title>rsgenetic - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
 
     
@@ -45,7 +46,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#17-145' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/rsgenetic/lib.rs.html#17-144' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p>RsGenetic provides a simple framework for genetic algorithms.
@@ -57,7 +58,7 @@ and this library takes care of the rest.</p>
 <p>You can use this library by adding the following lines to your <code>Cargo.toml</code> file:</p>
 <pre class='rust rust-example-rendered'>
 [<span class='ident'>dependencies</span>]
-<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.11&quot;</span></pre>
+<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;0.13&quot;</span></pre>
 
 <p>and adding <code>extern crate rsgenetic;</code> to your crate root.</p>
 
@@ -97,7 +98,7 @@ many phenotypes participate in a tournament. The resulting number of parents is 
 <h2 id='early-stopping' class='section-header'><a href='#early-stopping'>Early Stopping</a></h2>
 <p>If you wish, you can stop early if the fitness value of the best performing Phenotype
 doesn&#39;t improve by a large amount for a number of iterations. This can be done by calling the
-<code>set_early_stop(delta: f64, n_iters: u32)</code> function on the <code>SimulatorBuilder</code>.</p>
+<code>set_early_stop(delta: Fitness, n_iters: u32)</code> function on the <code>SimulatorBuilder</code>.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <h2 id='implementing-phenotype' class='section-header'><a href='#implementing-phenotype'>Implementing Phenotype</a></h2><pre class='rust rust-example-rendered'>
@@ -109,8 +110,8 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
 
 <span class='comment'>// Implement the Phenotype trait.</span>
 <span class='kw'>impl</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span> <span class='kw'>for</span> <span class='ident'>Test</span> {
-    <span class='kw'>fn</span> <span class='ident'>fitness</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>f64</span> {
-        (<span class='self'>self</span>.<span class='ident'>i</span> <span class='op'>-</span> <span class='number'>0</span>).<span class='ident'>abs</span>() <span class='kw'>as</span> <span class='ident'>f64</span>
+    <span class='kw'>fn</span> <span class='ident'>fitness</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Fitness</span> {
+        <span class='ident'>Fitness</span>::<span class='ident'>new</span>((<span class='self'>self</span>.<span class='ident'>i</span> <span class='op'>-</span> <span class='number'>0</span>).<span class='ident'>abs</span>() <span class='kw'>as</span> <span class='ident'>f64</span>)
     }
 
     <span class='kw'>fn</span> <span class='ident'>crossover</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>Test</span>) <span class='op'>-&gt;</span> <span class='ident'>Test</span> {
@@ -133,8 +134,7 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
     <span class='ident'>tests</span>.<span class='ident'>push</span>(<span class='ident'>Test</span> { <span class='ident'>i</span>: <span class='ident'>i</span> <span class='op'>+</span> <span class='number'>10</span> });
 }
 <span class='comment'>// Create a simulator using a builder.</span>
-<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>()
-                  .<span class='ident'>set_population</span>(<span class='kw-2'>&amp;</span><span class='ident'>tests</span>)
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>seq</span>::<span class='ident'>Simulator</span>::<span class='ident'>builder</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>tests</span>)
                   .<span class='ident'>set_selector</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>sim</span>::<span class='ident'>select</span>::<span class='ident'>TournamentSelector</span>::<span class='ident'>new</span>(<span class='number'>4</span>,<span class='number'>4</span>)))
                   .<span class='ident'>set_max_iters</span>(<span class='number'>1000</span>)
                   .<span class='ident'>set_fitness_type</span>(<span class='ident'>sim</span>::<span class='ident'>FitnessType</span>::<span class='ident'>Minimize</span>)
@@ -228,6 +228,6 @@ doesn&#39;t improve by a large amount for a number of iterations. This can be do
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>

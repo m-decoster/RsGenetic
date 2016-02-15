@@ -9,6 +9,7 @@
 
     <title>rsgenetic::sim::select::TournamentSelector - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
 
     
@@ -45,11 +46,11 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-149' class='srclink' href='../../../src/rsgenetic/sim/select/tournament.rs.html#24-27' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-202' class='srclink' href='../../../src/rsgenetic/sim/select/tournament.rs.html#24-27' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct TournamentSelector {
     // some fields omitted
 }</pre><div class='docblock'><p>Runs several tournaments, and selects best performing phenotypes from each tournament.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../../rsgenetic/sim/select/struct.TournamentSelector.html' title='rsgenetic::sim::select::TournamentSelector'>TournamentSelector</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(count: <a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, participants: <a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../../rsgenetic/sim/select/struct.TournamentSelector.html' title='rsgenetic::sim::select::TournamentSelector'>TournamentSelector</a></code></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../../rsgenetic/sim/select/struct.TournamentSelector.html' title='rsgenetic::sim::select::TournamentSelector'>TournamentSelector</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(count: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, participants: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../../rsgenetic/sim/select/struct.TournamentSelector.html' title='rsgenetic::sim::select::TournamentSelector'>TournamentSelector</a></code></h4>
 <div class='docblock'><p>Create and return a tournament selector.</p>
 
 <p>Such a selector runs <code>count / 2</code> tournaments, each with <code>participants</code> participants.
@@ -120,6 +121,6 @@ From each tournament, the best 2 phenotypes are selected, yielding
     <script src="../../../jquery.js"></script>
     <script src="../../../main.js"></script>
     
-    <script async src="../../../search-index.js"></script>
+    <script defer src="../../../search-index.js"></script>
 </body>
 </html>

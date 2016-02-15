@@ -9,6 +9,7 @@
 
     <title>lib.rs.html -- source</title>
 
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
 
     
@@ -184,7 +185,6 @@
 <span id="142">142</span>
 <span id="143">143</span>
 <span id="144">144</span>
-<span id="145">145</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: lib.rs</span>
 <span class='comment'>//</span>
@@ -215,7 +215,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```ignore</span>
 <span class='doccomment'>//! [dependencies]</span>
-<span class='doccomment'>//! rsgenetic = &quot;0.12&quot;</span>
+<span class='doccomment'>//! rsgenetic = &quot;0.13&quot;</span>
 <span class='doccomment'>//! ```</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! and adding `extern crate rsgenetic;` to your crate root.</span>
@@ -261,7 +261,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! If you wish, you can stop early if the fitness value of the best performing Phenotype</span>
 <span class='doccomment'>//! doesn&#39;t improve by a large amount for a number of iterations. This can be done by calling the</span>
-<span class='doccomment'>//! `set_early_stop(delta: f64, n_iters: u32)` function on the `SimulatorBuilder`.</span>
+<span class='doccomment'>//! `set_early_stop(delta: Fitness, n_iters: u32)` function on the `SimulatorBuilder`.</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! # Examples</span>
 <span class='doccomment'>//!</span>
@@ -276,8 +276,8 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! // Implement the Phenotype trait.</span>
 <span class='doccomment'>//! impl pheno::Phenotype for Test {</span>
-<span class='doccomment'>//!     fn fitness(&amp;self) -&gt; f64 {</span>
-<span class='doccomment'>//!         (self.i - 0).abs() as f64</span>
+<span class='doccomment'>//!     fn fitness(&amp;self) -&gt; Fitness {</span>
+<span class='doccomment'>//!         Fitness::new((self.i - 0).abs() as f64)</span>
 <span class='doccomment'>//!     }</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//!     fn crossover(&amp;self, t: &amp;Test) -&gt; Test {</span>
@@ -303,8 +303,7 @@
 <span class='doccomment'>//!     tests.push(Test { i: i + 10 });</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//! // Create a simulator using a builder.</span>
-<span class='doccomment'>//! let mut s = *seq::Simulator::builder()</span>
-<span class='doccomment'>//!                   .set_population(&amp;tests)</span>
+<span class='doccomment'>//! let mut s = *seq::Simulator::builder(&amp;mut tests)</span>
 <span class='doccomment'>//!                   .set_selector(Box::new(sim::select::TournamentSelector::new(4,4)))</span>
 <span class='doccomment'>//!                   .set_max_iters(1000)</span>
 <span class='doccomment'>//!                   .set_fitness_type(sim::FitnessType::Minimize)</span>
@@ -391,6 +390,6 @@
     <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     
-    <script async src="../../search-index.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>
