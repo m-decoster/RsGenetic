@@ -24,14 +24,12 @@
 mod max;
 mod tournament;
 mod stochastic;
-//mod roulette;
 
 use pheno::{Fitness,Phenotype};
 
 pub use self::max::MaximizeSelector;
 pub use self::tournament::TournamentSelector;
 pub use self::stochastic::StochasticSelector;
-//pub use self::roulette::RouletteSelector;
 
 /// `Parents` come in a `Vec` of two `T`'s.
 pub type Parents<T> = Vec<(T, T)>;

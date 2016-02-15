@@ -26,15 +26,54 @@ use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
 use rand::distributions::{IndependentSample, Range};
+use std::cmp::Ordering;
+
+struct MyFitness {
+    f: f64,
+}
+
+impl Eq for MyFitness {}
+
+impl PartialEq for MyFitness {
+        fn eq(&self, other: &MyFitness) -> bool {
+                    (self.f- other.f).abs() < 0.0001
+                            }
+}
+
+impl PartialOrd for MyFitness {
+        fn partial_cmp(&self, other: &MyFitness) -> Option<Ordering> {
+                    self.f.partial_cmp(&other.f)
+                            }
+}
+
+impl Ord for MyFitness {
+        fn cmp(&self, other: &MyFitness) -> Ordering {
+                    self.partial_cmp(other).unwrap_or(Ordering::Equal)
+                            }
+}
+
+impl Fitness for MyFitness {
+    fn zero() -> MyFitness {
+        MyFitness {
+            f: 0.0
+        }
+    }
+
+    fn abs_diff(&self, other: &MyFitness) -> MyFitness {
+        MyFitness { f: (self.f - other.f).abs() }
+    }
+}
 
 struct MyData {
     x: f64,
 }
 
-impl Phenotype for MyData {
-    fn fitness(&self) -> Fitness {
+impl Phenotype<MyFitness> for MyData {
+    fn fitness(&self) -> MyFitness {
         // Calculate the function here, because it's what we wish to maximize.
-        Fitness::new((10.0 - ((self.x + 3.0) * (self.x + 3.0))))
+        MyFitness {
+            f: 10.0 - ((self.x + 3.0) * (self.x + 3.0))
+        }
     }
 
     fn crossover(&self, other: &MyData) -> MyData {
@@ -71,11 +110,11 @@ fn main() {
                     .build();
     while let StepResult::Success = s.step() {
         let result = s.get().unwrap();
-        println!("Intermediate result: ({}, {}).", result.x, result.fitness());
+        println!("Intermediate result: ({}, {}).", result.x, result.fitness().f);
     }
     let result = s.get().unwrap();
     let time = s.time();
     println!("Execution time: {} ns.", time.unwrap());
     println!("Expected result: (-3, 10).");
-    println!("Result: ({}, {}).", result.x, result.fitness());
+    println!("Result: ({}, {}).", result.x, result.fitness().f);
 }

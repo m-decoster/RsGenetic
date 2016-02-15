@@ -56,24 +56,32 @@ impl <F: Fitness> EarlyStopper<F> {
 #[cfg(test)]
 mod tests {
     use super::EarlyStopper;
-    use pheno::Fitness;
+    use ::test::MyFitness;
+
+    impl MyFitness {
+        fn new(f: i64) -> MyFitness {
+            MyFitness {
+                f: f
+            }
+        }
+    }
 
     #[test]
     fn test_early_stopper_reset() {
-        let mut stopper = EarlyStopper::new(Fitness::new(10.0), 5);
+        let mut stopper = EarlyStopper::new(MyFitness::new(10), 5);
         for _ in 0..4 {
-            stopper.update(Fitness::new(1.0));
+            stopper.update(MyFitness::new(1));
         }
         assert_eq!(stopper.reached(), false);
-        stopper.update(Fitness::new(20.0));
+        stopper.update(MyFitness::new(20));
         assert_eq!(stopper.reached(), false);
     }
 
     #[test]
     fn test_early_stopper_reached() {
-        let mut stopper = EarlyStopper::new(Fitness::new(10.0), 5);
+        let mut stopper = EarlyStopper::new(MyFitness::new(10), 5);
         for _ in 0..5 {
-            stopper.update(Fitness::new(1.0));
+            stopper.update(MyFitness::new(1));
         }
         assert!(stopper.reached());
     }

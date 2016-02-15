@@ -202,33 +202,8 @@ impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F> where
 mod tests {
     use ::sim::*;
     use ::sim::select::*;
-    use ::pheno::*;
-    use std::cmp;
-
-    #[derive(Clone, Copy)]
-    struct Test {
-        f: i64,
-    }
-
-    impl Phenotype for Test {
-        fn fitness(&self) -> Fitness {
-            Fitness::new((self.f - 0).abs() as f64)
-        }
-
-        fn crossover(&self, t: &Test) -> Test {
-            Test { f: cmp::min(self.f, t.f) }
-        }
-
-        fn mutate(&self) -> Test {
-            if self.f < 0 {
-                Test { f: self.f + 1 }
-            } else if self.f > 0 {
-                Test { f: self.f - 1 }
-            } else {
-                self.clone()
-            }
-        }
-    }
+    use ::test::Test;
+    use ::test::MyFitness;
 
     #[test]
     fn test_kill_off_count() {
@@ -259,7 +234,7 @@ mod tests {
         let mut population: Vec<Test> = (0..100).map(|_| Test { f: 0 }).collect();
         let mut s = seq::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
-                        .set_early_stop(Fitness::new(10.0), 5)
+                        .set_early_stop(MyFitness { f: 10 }, 5)
                         .set_max_iters(10)
                         .build();
         s.run();
