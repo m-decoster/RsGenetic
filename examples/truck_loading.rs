@@ -43,7 +43,7 @@ struct LoadingScheme {
 }
 
 impl Phenotype for LoadingScheme {
-    fn fitness(&self) -> f64 {
+    fn fitness(&self) -> Fitness {
         let mut ret: f64 = 0.0;
         // Calculate for each truck the total load.
         let mut trucks: Vec<PackageSize> = vec![0; NUM_TRUCKS];
@@ -54,7 +54,7 @@ impl Phenotype for LoadingScheme {
             let space_left = CAPACITY - load;
             if space_left < 0 {
                 // We have overfilled a truck: penalize this solution heavily.
-                return std::f64::INFINITY;
+                return Fitness::new(std::f64::INFINITY);
             }
             if space_left == CAPACITY {
                 // We have an empty truck: give this solution a little boost.
@@ -67,7 +67,7 @@ impl Phenotype for LoadingScheme {
                 ret += space_left as f64;
             }
         }
-        ret
+        Fitness::new(ret)
     }
 
     fn crossover(&self, other: &LoadingScheme) -> LoadingScheme {

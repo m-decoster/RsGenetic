@@ -34,12 +34,12 @@ struct StringGuess {
 }
 
 impl Phenotype for StringGuess {
-    fn fitness(&self) -> f64 {
+    fn fitness(&self) -> Fitness {
         // Hamming distance
         if self.target.len() != self.guess.len() {
-            std::f64::INFINITY
+            Fitness::new(std::f64::INFINITY)
         } else {
-            self.target.chars().zip(self.guess.chars()).filter(|&(a, b)| a != b).count() as f64
+            Fitness::new(self.target.chars().zip(self.guess.chars()).filter(|&(a, b)| a != b).count() as f64)
         }
     }
 

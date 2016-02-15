@@ -21,7 +21,7 @@
 //! obtain by calling `Simulator::builder()`.
 
 use pheno::Phenotype;
-use std::cmp::Ordering;
+use pheno::Fitness;
 use rand::Rng;
 use super::*;
 use super::select::*;
@@ -91,15 +91,14 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
             self.population.append(&mut children);
 
             if let Some(ref mut stopper) = self.earlystopper {
-                let mut cloned = self.population.clone();
-                cloned.sort_by(|x, y| {
-                    (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
-                });
                 let highest_fitness = match self.fitness_type {
-                                          FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
-                                          FitnessType::Minimize => cloned[0].clone(),
-                                      }
-                                      .fitness();
+                    FitnessType::Maximize => {
+                        self.population.iter().max_by_key(|x| x.fitness()).unwrap().fitness()
+                    }
+                    FitnessType::Minimize => {
+                        self.population.iter().min_by_key(|x| x.fitness()).unwrap().fitness()
+                    }
+                };
                 stopper.update(highest_fitness);
             }
 
@@ -134,13 +133,13 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
         match self.error {
             Some(ref e) => Err(e.clone()),
             None => {
-                let mut cloned = self.population.clone();
-                cloned.sort_by(|x, y| {
-                    (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
-                });
                 Ok(match self.fitness_type {
-                    FitnessType::Maximize => cloned[cloned.len() - 1].clone(),
-                    FitnessType::Minimize => cloned[0].clone(),
+                    FitnessType::Maximize => {
+                        self.population.iter().max_by_key(|x| x.fitness()).unwrap().clone()
+                    }
+                    FitnessType::Minimize => {
+                        self.population.iter().min_by_key(|x| x.fitness()).unwrap().clone()
+                    }
                 })
             }
         }
@@ -217,7 +216,7 @@ impl<T: Phenotype> SimulatorBuilder<T> {
     /// is smaller than `delta`, the simulator will stop running.
     ///
     /// Returns itself for chaining purposes.
-    pub fn set_early_stop(mut self, delta: f64, n_iters: u64) -> Self {
+    pub fn set_early_stop(mut self, delta: Fitness, n_iters: u64) -> Self {
         self.sim.earlystopper = Some(EarlyStopper::new(delta, n_iters));
         self
     }
@@ -242,8 +241,8 @@ mod tests {
     }
 
     impl Phenotype for Test {
-        fn fitness(&self) -> f64 {
-            (self.f - 0).abs() as f64
+        fn fitness(&self) -> Fitness {
+            Fitness::new((self.f - 0).abs() as f64)
         }
 
         fn crossover(&self, t: &Test) -> Test {
@@ -293,7 +292,7 @@ mod tests {
         let mut s = seq::Simulator::builder()
                          .set_population(&population)
                          .set_selector(Box::new(selector))
-                         .set_early_stop(10.0, 5)
+                         .set_early_stop(Fitness::new(10.0), 5)
                          .set_max_iters(10)
                          .build();
         s.run();

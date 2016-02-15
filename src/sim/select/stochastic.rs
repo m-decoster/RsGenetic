@@ -75,8 +75,8 @@ mod tests {
     }
 
     impl Phenotype for Test {
-        fn fitness(&self) -> f64 {
-            (self.f - 0).abs() as f64
+        fn fitness(&self) -> Fitness {
+            Fitness::new((self.f - 0).abs() as f64)
         }
 
         fn crossover(&self, t: &Test) -> Test {

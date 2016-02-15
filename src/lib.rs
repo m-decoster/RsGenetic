@@ -27,7 +27,7 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! rsgenetic = "0.12"
+//! rsgenetic = "0.13"
 //! ```
 //!
 //! and adding `extern crate rsgenetic;` to your crate root.
@@ -73,7 +73,7 @@
 //!
 //! If you wish, you can stop early if the fitness value of the best performing Phenotype
 //! doesn't improve by a large amount for a number of iterations. This can be done by calling the
-//! `set_early_stop(delta: f64, n_iters: u32)` function on the `SimulatorBuilder`.
+//! `set_early_stop(delta: Fitness, n_iters: u32)` function on the `SimulatorBuilder`.
 //!
 //! # Examples
 //!
@@ -88,8 +88,8 @@
 //!
 //! // Implement the Phenotype trait.
 //! impl pheno::Phenotype for Test {
-//!     fn fitness(&self) -> f64 {
-//!         (self.i - 0).abs() as f64
+//!     fn fitness(&self) -> Fitness {
+//!         Fitness::new((self.i - 0).abs() as f64)
 //!     }
 //!
 //!     fn crossover(&self, t: &Test) -> Test {

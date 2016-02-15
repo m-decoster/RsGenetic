@@ -32,9 +32,9 @@ struct MyData {
 }
 
 impl Phenotype for MyData {
-    fn fitness(&self) -> f64 {
+    fn fitness(&self) -> Fitness {
         // Calculate the function here, because it's what we wish to maximize.
-        10.0 - ((self.x + 3.0) * (self.x + 3.0))
+        Fitness::new((10.0 - ((self.x + 3.0) * (self.x + 3.0))))
     }
 
     fn crossover(&self, other: &MyData) -> MyData {

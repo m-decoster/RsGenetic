@@ -15,6 +15,7 @@
 // limitations under the License.
 
 use pheno::Phenotype;
+use pheno::Fitness;
 use super::*;
 use super::super::FitnessType;
 use rand::distributions::{IndependentSample, Range};
@@ -55,22 +56,22 @@ impl<T: Phenotype> Selector<T> for RouletteSelector {
         });
         // Calculate cumulative fitness
         let cum_fitness: Vec<_> = cloned.iter()
-                                        .scan(0.0, |state, ref x| {
+                                        .scan(Fitness::new(0.0), |state: &mut Fitness, ref x| {
                                             *state = *state + x.fitness();
                                             Some(*state)
                                         })
                                         .collect();
 
-        let between = Range::new(cum_fitness[0], cum_fitness[cum_fitness.len() - 1]);
+        let between = Range::new(cum_fitness[0].into(), cum_fitness[cum_fitness.len() - 1].into());
         let mut rng = ::rand::thread_rng();
 
         let mut selected = 0;
         while selected < self.count {
             let mut inner_selected: Vec<T> = Vec::with_capacity(2);
             while inner_selected.len() < 2 {
-                let c = between.ind_sample(&mut rng);
+                let c: f64 = between.ind_sample(&mut rng);
 
-                let result = cloned.iter().find(|p| c >= p.fitness());
+                let result = cloned.iter().find(|p| c >= p.fitness().into());
                 if result.is_none() {
                     // This should never be true, but we wish to avoid panicking.
                     return Err(format!("Could not complete Roulette Selection. This most likely \
@@ -100,8 +101,8 @@ mod tests {
     }
 
     impl Phenotype for Test {
-        fn fitness(&self) -> f64 {
-            (self.f - 0).abs() as f64
+        fn fitness(&self) -> Fitness {
+            Fitness::new((self.f - 0).abs() as f64)
         }
 
         fn crossover(&self, t: &Test) -> Test {

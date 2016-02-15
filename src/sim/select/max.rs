@@ -78,8 +78,8 @@ mod tests {
     }
 
     impl Phenotype for Test {
-        fn fitness(&self) -> f64 {
-            (self.f - 0).abs() as f64
+        fn fitness(&self) -> Fitness {
+            Fitness::new((self.f - 0).abs() as f64)
         }
 
         fn crossover(&self, t: &Test) -> Test {
@@ -131,11 +131,11 @@ mod tests {
         let selector = MaximizeSelector::new(20);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         // The lowest fitness should be zero.
-        assert!((0.0 -
+        assert!((Fitness::new(0.0) -
                  (selector.select(&population, FitnessType::Minimize)
                            .unwrap()[0]
                        .0)
                      .fitness())
-                    .abs() < 0.001);
+                    .abs() < Fitness::new(0.001));
     }
 }
