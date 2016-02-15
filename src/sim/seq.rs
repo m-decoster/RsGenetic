@@ -134,7 +134,7 @@ impl<'a, T: Phenotype> Simulation<'a, T> for Simulator<'a, T> {
 
     fn get(&'a self) -> SimResult<'a, T> {
         match self.error {
-            Some(ref e) => Err(e.clone()),
+            Some(ref e) => Err(e),
             None => {
                 Ok(match self.fitness_type {
                     FitnessType::Maximize => {
@@ -230,7 +230,7 @@ mod tests {
     use ::pheno::*;
     use std::cmp;
 
-    #[derive(Clone)]
+    #[derive(Clone, Copy)]
     struct Test {
         f: i64,
     }

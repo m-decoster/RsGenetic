@@ -32,7 +32,7 @@ pub trait Builder<T: ?Sized> {
 pub type NanoSecond = i64;
 /// The result of a simulation, containing the best phenotype
 /// or an error message.
-pub type SimResult<'a, T> = Result<&'a T, String>;
+pub type SimResult<'a, T> = Result<&'a T, &'a String>;
 
 /// The result of running a single step.
 #[derive(PartialEq,Eq,Debug)]
