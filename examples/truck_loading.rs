@@ -133,8 +133,8 @@ fn main() {
              result.scheme,
              result.fitness());
     let mut trucks: Vec<_> = vec![0; NUM_TRUCKS];
-    for placement in result.scheme {
-        trucks[placement.0] += placement.1;
+    for &(index, size) in &result.scheme {
+        trucks[index] += size;
     }
     println!("Load per truck: {:?}.", trucks);
 }

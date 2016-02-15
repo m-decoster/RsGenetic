@@ -28,10 +28,11 @@ use super::select::*;
 use super::iterlimit::*;
 use super::earlystopper::*;
 use time::SteadyTime;
+use std::marker::PhantomData;
 
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
-pub struct Simulator<T: Phenotype> {
+pub struct Simulator<'a, T: 'a + Phenotype> {
     population: Vec<T>,
     iter_limit: IterLimit,
     selector: Box<Selector<T>>,
@@ -39,13 +40,14 @@ pub struct Simulator<T: Phenotype> {
     earlystopper: Option<EarlyStopper>,
     duration: Option<NanoSecond>,
     error: Option<String>,
+    phantom: PhantomData<&'a T>,
 }
 
-impl<T: Phenotype> Simulation<T> for Simulator<T> {
-    type B = SimulatorBuilder<T>;
+impl<'a, T: Phenotype> Simulation<'a, T> for Simulator<'a, T> {
+    type B = SimulatorBuilder<'a, T>;
 
     /// Create builder.
-    fn builder() -> SimulatorBuilder<T> {
+    fn builder() -> SimulatorBuilder<'a, T> {
         SimulatorBuilder {
             sim: Simulator {
                 population: Vec::new(),
@@ -55,6 +57,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
                 earlystopper: None,
                 duration: Some(0),
                 error: None,
+                phantom: PhantomData::default()
             },
         }
     }
@@ -129,16 +132,16 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
         }
     }
 
-    fn get(&self) -> SimResult<T> {
+    fn get(&'a self) -> SimResult<'a, T> {
         match self.error {
             Some(ref e) => Err(e.clone()),
             None => {
                 Ok(match self.fitness_type {
                     FitnessType::Maximize => {
-                        self.population.iter().max_by_key(|x| x.fitness()).unwrap().clone()
+                        self.population.iter().max_by_key(|x| x.fitness()).unwrap()
                     }
                     FitnessType::Minimize => {
-                        self.population.iter().min_by_key(|x| x.fitness()).unwrap().clone()
+                        self.population.iter().min_by_key(|x| x.fitness()).unwrap()
                     }
                 })
             }
@@ -154,7 +157,7 @@ impl<T: Phenotype> Simulation<T> for Simulator<T> {
     }
 }
 
-impl<T: Phenotype> Simulator<T> {
+impl<'a, T: Phenotype> Simulator<'a, T> {
     /// Kill off phenotypes using stochastic universal sampling.
     fn kill_off(&mut self, count: usize) {
         let ratio = self.population.len() / count;
@@ -171,11 +174,11 @@ impl<T: Phenotype> Simulator<T> {
 }
 
 /// A `Builder` for the `Simulator` type.
-pub struct SimulatorBuilder<T: Phenotype> {
-    sim: Simulator<T>,
+pub struct SimulatorBuilder<'a, T: 'a + Phenotype> {
+    sim: Simulator<'a, T>,
 }
 
-impl<T: Phenotype> SimulatorBuilder<T> {
+impl<'a, T: Phenotype> SimulatorBuilder<'a, T> {
     /// Set the population of the resulting `Simulator`.
     ///
     /// Returns itself for chaining purposes.
@@ -222,8 +225,8 @@ impl<T: Phenotype> SimulatorBuilder<T> {
     }
 }
 
-impl<T: Phenotype> Builder<Simulator<T>> for SimulatorBuilder<T> {
-    fn build(self) -> Simulator<T> {
+impl<'a, T: Phenotype> Builder<Simulator<'a, T>> for SimulatorBuilder<'a, T> {
+    fn build(self) -> Simulator<'a, T> {
         self.sim
     }
 }
