@@ -17,7 +17,6 @@
 use pheno::Phenotype;
 use pheno::Fitness;
 use super::*;
-use super::super::FitnessType;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
 
@@ -40,8 +39,8 @@ impl RouletteSelector {
     }
 }
 
-impl<T: Phenotype> Selector<T> for RouletteSelector {
-    fn select(&self, population: &Vec<T>, _: FitnessType) -> Result<Parents<T>, String> {
+impl<T, F> Selector<T, F> for RouletteSelector where T: Phenotype<F>, F: Fitness {
+    fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than the population size.",
@@ -56,8 +55,8 @@ impl<T: Phenotype> Selector<T> for RouletteSelector {
         });
         // Calculate cumulative fitness
         let cum_fitness: Vec<_> = cloned.iter()
-                                        .scan(Fitness::new(0.0), |state: &mut Fitness, ref x| {
-                                            *state = *state + x.fitness();
+                                        .scan(F::zero(), |state: &mut F, ref x| {
+                                            *state = state.add(x.fitness());
                                             Some(*state)
                                         })
                                         .collect();

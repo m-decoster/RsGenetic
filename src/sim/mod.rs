@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::Phenotype;
+use pheno::{Fitness,Phenotype};
 
 pub mod seq;
 pub mod select;
@@ -55,7 +55,7 @@ pub enum RunResult {
 }
 
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<'a, T: Phenotype> {
+pub trait Simulation<'a, T, F> where T: Phenotype<F>, F: Fitness {
     /// A `Builder` is used to create instances of a `Simulation`.
     type B: Builder<Self>;
 
@@ -92,13 +92,4 @@ pub trait Simulation<'a, T: Phenotype> {
     /// When `Self` is `par::Simulator`, i.e. a parallel simulator is used,
     /// this returns the number of iterations made by the parallel simulator itself.
     fn iterations(&self) -> u64;
-}
-
-/// Whether to maximize or to minimize the fitness value.
-#[derive(Copy, Clone)]
-pub enum FitnessType {
-    /// The `Simulation` will try to increase the fitness value of phenotypes.
-    Maximize,
-    /// The `Simulation` will try to decrease the fitness value of phenotypes.
-    Minimize,
 }

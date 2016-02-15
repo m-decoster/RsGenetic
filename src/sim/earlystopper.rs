@@ -18,28 +18,28 @@ use super::iterlimit::*;
 use pheno::Fitness;
 
 /// Used for early stopping.
-pub struct EarlyStopper {
+pub struct EarlyStopper<F: Fitness> {
     /// Minimum difference required for early stopping.
-    delta: Fitness,
+    delta: F,
     /// Previously recorded fitness value.
-    previous: Fitness,
+    previous: F,
     /// The number of iterations before stopping early.
     iter_limit: IterLimit,
 }
 
-impl EarlyStopper {
+impl <F: Fitness> EarlyStopper<F> {
     /// Create a new `EarlyStopper`.
-    pub fn new(delta: Fitness, n_iters: u64) -> EarlyStopper {
+    pub fn new(delta: F, n_iters: u64) -> EarlyStopper<F> {
         EarlyStopper {
             delta: delta,
-            previous: Fitness::new(0.0),
+            previous: F::zero(),
             iter_limit: IterLimit::new(n_iters),
         }
     }
 
     /// Update the `EarlyStopper` with a new fitness value.
-    pub fn update(&mut self, fitness: Fitness) {
-        if (fitness - self.previous).abs() < self.delta {
+    pub fn update(&mut self, fitness: F) {
+        if self.previous.abs_diff(&fitness) < self.delta {
             self.previous = fitness;
             self.iter_limit.inc();
         } else {

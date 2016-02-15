@@ -14,77 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::cmp::Ordering;
-use std::fmt;
-use std::ops::{Sub, Add};
-
-/// `Fitness` is a wrapper struct around a 64-bit floating point type,
-/// implementing equality. This is useful to be able to use functions
-/// for sorting and comparison, without requiring the population to be
-/// `cloned`.
-#[derive(Clone, Copy)]
-pub struct Fitness {
-    value: f64,
-}
-
-impl Fitness {
-    /// Construct a new `Fitness` object.
-    pub fn new(val: f64) -> Fitness {
-        Fitness { value: val }
-    }
-
-    /// Calculate the absolute value of some `Fitness`.
-    pub fn abs(&self) -> Fitness {
-        Fitness { value: self.value.abs() }
-    }
-}
-
-impl Into<f64> for Fitness {
-    fn into(self) -> f64 {
-        self.value
-    }
-}
-
-impl Eq for Fitness {}
-
-impl PartialEq for Fitness {
-    fn eq(&self, other: &Fitness) -> bool {
-        (self.value - other.value).abs() < 0.0001
-    }
-}
-
-impl PartialOrd for Fitness {
-    fn partial_cmp(&self, other: &Fitness) -> Option<Ordering> {
-        self.value.partial_cmp(&other.value)
-    }
-}
-
-impl Ord for Fitness {
-    fn cmp(&self, other: &Fitness) -> Ordering {
-        self.partial_cmp(other).unwrap_or(Ordering::Equal)
-    }
-}
-
-impl Add for Fitness {
-    type Output = Fitness;
-
-    fn add(self, other: Fitness) -> Fitness {
-        Fitness { value: self.value + other.value }
-    }
-}
-
-impl Sub for Fitness {
-    type Output = Fitness;
-
-    fn sub(self, other: Fitness) -> Fitness {
-        Fitness { value: self.value - other.value }
-    }
-}
-
-impl fmt::Display for Fitness {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.value.fmt(f)
-    }
+/// A `Fitness` value is used to determine the quality of a `Phenotype`.
+/// `Fitness` values should have an ordering.
+///
+/// **Make sure the following statement holds:**  
+/// A `Phenotype` with a `Fitness` value of `f1` performs better than
+/// another `Phenotype` with a `Fitness` value of `f2` iff `f1 > f2`.
+pub trait Fitness : Ord + Eq {
+    /// Get the zero value of this `Fitness` value.
+    /// The internal value should be 0.
+    fn zero() -> Self;
+    /// Get the absolute difference between two `Fitness` values.
+    fn abs_diff(&self, other: &Self) -> Self;
 }
 
 /// Defines what a Phenotype is.
@@ -93,9 +34,9 @@ impl fmt::Display for Fitness {
 /// Finally, a Phenotype has a certain fitness value associated with it.
 ///
 /// If reasonable, it is recommended to have your implementation derive `Copy`.
-pub trait Phenotype : Clone {
+pub trait Phenotype<F> : Clone where F: Fitness {
     /// Calculate the fitness of this Phenotype.
-    fn fitness(&self) -> Fitness;
+    fn fitness(&self) -> F;
     /// Perform crossover on this Phenotype, returning a new Phenotype.
     fn crossover(&self, &Self) -> Self;
     /// Perform mutation on this Phenotype, returning a new Phenotype.

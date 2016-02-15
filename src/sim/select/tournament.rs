@@ -14,10 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::Phenotype;
+use pheno::{Fitness, Phenotype};
 use super::*;
-use super::super::FitnessType;
-use std::cmp::Ordering;
 use rand::Rng;
 
 /// Runs several tournaments, and selects best performing phenotypes from each tournament.
@@ -43,8 +41,8 @@ impl TournamentSelector {
     }
 }
 
-impl<T: Phenotype> Selector<T> for TournamentSelector {
-    fn select(&self, population: &Vec<T>, fitness_type: FitnessType) -> Result<Parents<T>, String> {
+impl<T, F> Selector<T, F> for TournamentSelector where T: Phenotype<F>, F: Fitness {
+    fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than half the population size.",
@@ -65,17 +63,10 @@ impl<T: Phenotype> Selector<T> for TournamentSelector {
                 tournament.push(population[index].clone());
             }
             tournament.sort_by(|x, y| {
-                (*x).fitness().partial_cmp(&(*y).fitness()).unwrap_or(Ordering::Equal)
+                x.fitness().cmp(&y.fitness())
             });
-            match fitness_type {
-                FitnessType::Maximize => {
                     result.push((tournament[tournament.len() - 1].clone(),
                                  tournament[tournament.len() - 2].clone()));
-                }
-                FitnessType::Minimize => {
-                    result.push((tournament[0].clone(), tournament[1].clone()));
-                }
-            }
         }
         Ok(result)
     }

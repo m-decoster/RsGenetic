@@ -14,9 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::Phenotype;
+use pheno::{Phenotype,Fitness};
 use super::*;
-use super::super::FitnessType;
 use rand::Rng;
 
 /// Selects phenotypes at random, starting from a random index and taking equidistant jumps.
@@ -39,8 +38,8 @@ impl StochasticSelector {
     }
 }
 
-impl<T: Phenotype> Selector<T> for StochasticSelector {
-    fn select(&self, population: &Vec<T>, _: FitnessType) -> Result<Parents<T>, String> {
+impl<T, F> Selector<T, F> for StochasticSelector where T: Phenotype<F>, F: Fitness {
+    fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
         if self.count <= 0 || self.count % 2 != 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than the population size.",
