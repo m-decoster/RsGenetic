@@ -103,8 +103,7 @@ fn main() {
             guess: guess,
         });
     }
-    let mut s = Simulator::builder()
-                    .set_population(&population)
+    let mut s = Simulator::builder(&mut population)
                     .set_selector(Box::new(RouletteSelector::new(40)))
                     .set_max_iters(1000)
                     .set_fitness_type(FitnessType::Minimize)

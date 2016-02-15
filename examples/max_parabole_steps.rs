@@ -64,9 +64,8 @@ impl Clone for MyData {
 }
 
 fn main() {
-    let population = (-300..300).map(|i| MyData { x: i as f64 }).collect();
-    let mut s = Simulator::builder()
-                    .set_population(&population)
+    let mut population = (-300..300).map(|i| MyData { x: i as f64 }).collect();
+    let mut s = Simulator::builder(&mut population)
                     .set_selector(Box::new(StochasticSelector::new(10)))
                     .set_max_iters(50)
                     .build();

@@ -117,8 +117,7 @@ fn main() {
         }
         population.push(LoadingScheme { scheme: pheno });
     }
-    let mut s = Simulator::builder()
-                    .set_population(&population)
+    let mut s = Simulator::builder(&mut population)
                     .set_selector(Box::new(RouletteSelector::new(10)))
                     .set_max_iters(50)
                     .set_fitness_type(FitnessType::Minimize)

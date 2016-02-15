@@ -60,7 +60,10 @@ pub trait Simulation<'a, T: Phenotype> {
     type B: Builder<Self>;
 
     /// Create a `Builder` to create an instance.
-    fn builder() -> Self::B where Self: Sized;
+    ///
+    /// `population` is a required parameter of any `Simulation`, which
+    /// is why it is a parameter of this function.
+    fn builder(population: &'a mut Vec<T>) -> Self::B where Self: Sized;
     /// Run the simulation completely.
     fn run(&mut self) -> RunResult;
     /// Make one step in the simulation. This function returns a `StepResult`:
