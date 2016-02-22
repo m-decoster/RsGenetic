@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `FitnessType` enum in crate `rsgenetic`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, FitnessType">
+    <meta name="description" content="API documentation for the Rust `Fitness` trait in crate `rsgenetic`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Fitness">
 
-    <title>rsgenetic::sim::FitnessType - Rust</title>
+    <title>rsgenetic::pheno::Fitness - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -27,7 +27,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a></p><script>window.sidebarCurrent = {name: 'FitnessType', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>pheno</a></p><script>window.sidebarCurrent = {name: 'Fitness', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -41,22 +41,33 @@
         </form>
     </nav>
 
-    <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>sim</a>::<wbr><a class='enum' href=''>FitnessType</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>rsgenetic</a>::<wbr><a href='index.html'>pheno</a>::<wbr><a class='trait' href=''>Fitness</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-409' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#99-104' title='goto source code'>[src]</a></span></h1>
-<pre class='rust enum'>pub enum FitnessType {
-    Maximize,
-    Minimize,
-}</pre><div class='docblock'><p>Whether to maximize or to minimize the fitness value.</p>
-</div><h2 class='variants'>Variants</h2>
-<table><tr><td id='variant.Maximize'><code>Maximize</code></td><td><div class='docblock'><p>The <code>Simulation</code> will try to increase the fitness value of phenotypes.</p>
-</div></td></tr><tr><td id='variant.Minimize'><code>Minimize</code></td><td><div class='docblock'><p>The <code>Simulation</code> will try to decrease the fitness value of phenotypes.</p>
-</div></td></tr></table><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='enum' href='../../rsgenetic/sim/enum.FitnessType.html' title='rsgenetic::sim::FitnessType'>FitnessType</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.FitnessType.html' title='rsgenetic::sim::FitnessType'>FitnessType</a></code></h4>
-<h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
-</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='enum' href='../../rsgenetic/sim/enum.FitnessType.html' title='rsgenetic::sim::FitnessType'>FitnessType</a></code></h3><div class='impl-items'></div></section>
+        </span><a id='src-8' class='srclink' href='../../src/rsgenetic/pheno.rs.html#23-29' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Fitness: <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> {
+    fn <a href='#tymethod.zero' class='fnname'>zero</a>() -&gt; Self;
+    fn <a href='#tymethod.abs_diff' class='fnname'>abs_diff</a>(&amp;self, other: &amp;Self) -&gt; Self;
+}</pre><div class='docblock'><p>A <code>Fitness</code> value is used to determine the quality of a <code>Phenotype</code>.
+<code>Fitness</code> values should have an ordering.</p>
+
+<p><strong>Make sure the following statement holds:</strong><br>
+A <code>Phenotype</code> with a <code>Fitness</code> value of <code>f1</code> performs better than
+another <code>Phenotype</code> with a <code>Fitness</code> value of <code>f2</code> iff <code>f1 &gt; f2</code>.</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.zero' class='method stab '><code>fn <a href='#tymethod.zero' class='fnname'>zero</a>() -&gt; Self</code></h3><div class='docblock'><p>Get the zero value of this <code>Fitness</code> value.
+The internal value should be 0.</p>
+</div><h3 id='tymethod.abs_diff' class='method stab '><code>fn <a href='#tymethod.abs_diff' class='fnname'>abs_diff</a>(&amp;self, other: &amp;Self) -&gt; Self</code></h3><div class='docblock'><p>Get the absolute difference between two <code>Fitness</code> values.</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    </ul><script type="text/javascript" async
+                              src="../../implementors/rsgenetic/pheno/trait.Fitness.js">
+                      </script></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

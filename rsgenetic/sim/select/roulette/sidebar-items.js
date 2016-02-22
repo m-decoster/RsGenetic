@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["RouletteSelector","Selects phenotypes with a probability based on their fitness value."]]});
