@@ -7,10 +7,6 @@
 ## Summary and Features
 RsGenetic is a framework for executing genetic algorithms in Rust. It is designed to have a simple but modular API.
 
-### Important: Feature requests
-As RsGenetic is nearing a 1.0.0 release, now is the time to request any features that you want to see in the first stable
-version. If you find such a missing feature, please open an issue, describe it, and label the issue `feature-request`.
-
 ## Examples and Documentation
 Documentation is available [here](http://m-decoster.github.io/RsGenetic).  
 Examples are available in the `examples` directory. Execute `cargo run --example $EXAMPLE_NAME`
