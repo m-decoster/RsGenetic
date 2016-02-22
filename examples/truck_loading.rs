@@ -38,13 +38,28 @@ const NUM_TRUCKS: usize = 5;
 const CAPACITY: i32 = 10;
 const PACKAGES: &'static [i32] = &[3, 8, 2, 7, 6, 1, 3];
 
+#[derive(PartialOrd,Ord,PartialEq,Eq)]
+struct SchemeFitness {
+    f: i32,
+}
+
+impl Fitness for SchemeFitness {
+    fn zero() -> SchemeFitness {
+        SchemeFitness { f: 0 }
+    }
+
+    fn abs_diff(&self, other: &Self) -> Self {
+        SchemeFitness { f: (self.f - other.f).abs() }
+    }
+}
+
 struct LoadingScheme {
     scheme: Scheme,
 }
 
-impl Phenotype for LoadingScheme {
-    fn fitness(&self) -> Fitness {
-        let mut ret: f64 = 0.0;
+impl Phenotype<SchemeFitness> for LoadingScheme {
+    fn fitness(&self) -> SchemeFitness {
+        let mut ret: i32 = 100;
         // Calculate for each truck the total load.
         let mut trucks: Vec<PackageSize> = vec![0; NUM_TRUCKS];
         for load in self.scheme.clone() {
@@ -54,20 +69,20 @@ impl Phenotype for LoadingScheme {
             let space_left = CAPACITY - load;
             if space_left < 0 {
                 // We have overfilled a truck: penalize this solution heavily.
-                return Fitness::new(std::f64::INFINITY);
+                return SchemeFitness { f: 0 };
             }
             if space_left == CAPACITY {
                 // We have an empty truck: give this solution a little boost.
                 // Normally, the contribution to the fitness value is 0, but now we
-                // detract 3 to make this an even fitter solution.
+                // add 3 to make this an even fitter solution.
                 // Note that this is an empirically found value. We could even optimize this value
                 // with a separate genetic algorithm!
-                ret -= 3.0;
+                ret += 10;
             } else {
-                ret += space_left as f64;
+                ret -= space_left;
             }
         }
-        Fitness::new(ret)
+        SchemeFitness { f: ret }
     }
 
     fn crossover(&self, other: &LoadingScheme) -> LoadingScheme {
@@ -118,9 +133,8 @@ fn main() {
         population.push(LoadingScheme { scheme: pheno });
     }
     let mut s = Simulator::builder(&mut population)
-                    .set_selector(Box::new(RouletteSelector::new(10)))
+                    .set_selector(Box::new(MaximizeSelector::new(10)))
                     .set_max_iters(50)
-                    .set_fitness_type(FitnessType::Minimize)
                     .build();
     s.run();
     let result = s.get().unwrap();
@@ -128,7 +142,7 @@ fn main() {
     println!("Execution time: {} ns.", time.unwrap());
     println!("Result: {:?} | Fitness: {}.",
              result.scheme,
-             result.fitness());
+             result.fitness().f);
     let mut trucks: Vec<_> = vec![0; NUM_TRUCKS];
     for &(index, size) in &result.scheme {
         trucks[index] += size;

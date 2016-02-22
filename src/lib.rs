@@ -45,7 +45,6 @@
 //! * Maximize
 //! * Tournament
 //! * Stochastic
-//! * Roulette
 //!
 //! There is a short explanation for each of these below. For more information, look at the
 //! documentation of individual selectors.
@@ -65,10 +64,6 @@
 //!
 //! Stochastic takes 1 parameter: the count. The resulting number of parents is `count`.
 //!
-//! ### Roulette
-//!
-//! Roulette takes 1 parameter: the count. The resulting number of parents is `count`.
-//!
 //! ## Early Stopping
 //!
 //! If you wish, you can stop early if the fitness value of the best performing Phenotype
@@ -77,61 +72,7 @@
 //!
 //! # Examples
 //!
-//! ## Implementing Phenotype
-//!
-//! ```ignore
-//! // Define the structure of your Phenotype
-//! #[derive(Clone)]
-//! struct Test {
-//!     i: i32,
-//! }
-//!
-//! // Implement the Phenotype trait.
-//! impl pheno::Phenotype for Test {
-//!     fn fitness(&self) -> Fitness {
-//!         Fitness::new((self.i - 0).abs() as f64)
-//!     }
-//!
-//!     fn crossover(&self, t: &Test) -> Test {
-//!         Test { i: cmp::min(self.i, t.i) }
-//!     }
-//!
-//!     fn mutate(&self) -> Self {
-//!         if self.i < 0 {
-//!             Test { i: self.i + 1 }
-//!         } else {
-//!             Test { i: self.i - 1}
-//!         }
-//!     }
-//! }
-//! ```
-//!
-//! ## Running a Simulation
-//!
-//! ```ignore
-//! // Generate a random population.
-//! let mut tests: Vec<Test> = Vec::new();
-//! for i in 0..100 {
-//!     tests.push(Test { i: i + 10 });
-//! }
-//! // Create a simulator using a builder.
-//! let mut s = *seq::Simulator::builder(&mut tests)
-//!                   .set_selector(Box::new(sim::select::TournamentSelector::new(4,4)))
-//!                   .set_max_iters(1000)
-//!                   .set_fitness_type(sim::FitnessType::Minimize)
-//!                   .build();
-//! // We can now run the simulator.
-//! s.run();
-//! // This will fail if the result was an error:
-//! let best = s.get().unwrap();
-//! // For this simple example, we should always get 0.
-//! assert!((*best).i == 0);
-//! // We can also get the time spent running:
-//! let time = match s.time() {
-//!     Some(x) => x, // Contains the time in ns
-//!     None    => -1 // Overflow occured
-//! };
-//! ```
+//! See the `examples` directory in the repository for examples.
 
 #![warn(missing_docs)]
 
@@ -142,3 +83,5 @@ extern crate time;
 pub mod pheno;
 /// Contains implementations of Simulators, which can run genetic algorithms.
 pub mod sim;
+/// Contains code used by unit tests.
+mod test;
