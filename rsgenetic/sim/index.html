@@ -46,7 +46,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-22' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#17-95' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-22' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#17-96' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Contains implementations of Simulators, which can run genetic algorithms.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
@@ -67,6 +67,19 @@ of useful selection algorithms.</p>
                         <td class='docblock short'>
                              <p>Contains a sequential implementation of <code>::sim::Simulation</code>,
 called a <code>Simulator</code>.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='types/index.html'
+                               title='rsgenetic::sim::types'>types</a></td>
+                        <td class='docblock short'>
+                             <p>This module provides implementations of the <code>Fitness</code> trait for
+some primitive types, such as <code>i32</code>, <code>i64</code> etcetera.
+This is because Rust does not allow programmers to implement
+a foreign trait for a foreign type, which would stop you as a library user
+from using primitive types as fitness values.</p>
 
                         </td>
                     </tr>
