@@ -18,6 +18,7 @@ use pheno::{Fitness, Phenotype};
 
 pub mod seq;
 pub mod select;
+pub mod types;
 mod iterlimit;
 mod earlystopper;
 

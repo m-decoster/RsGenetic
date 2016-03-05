@@ -33,25 +33,12 @@ use rand::Rng;
 type TruckIndex = usize;
 type PackageSize = i32;
 type Scheme = Vec<(TruckIndex, PackageSize)>;
+// Fitness is implemented for i32 by RsGenetic!
+type SchemeFitness = i32;
 
 const NUM_TRUCKS: usize = 5;
 const CAPACITY: i32 = 10;
 const PACKAGES: &'static [i32] = &[3, 8, 2, 7, 6, 1, 3];
-
-#[derive(PartialOrd,Ord,PartialEq,Eq)]
-struct SchemeFitness {
-    f: i32,
-}
-
-impl Fitness for SchemeFitness {
-    fn zero() -> SchemeFitness {
-        SchemeFitness { f: 0 }
-    }
-
-    fn abs_diff(&self, other: &Self) -> Self {
-        SchemeFitness { f: (self.f - other.f).abs() }
-    }
-}
 
 struct LoadingScheme {
     scheme: Scheme,
@@ -69,7 +56,7 @@ impl Phenotype<SchemeFitness> for LoadingScheme {
             let space_left = CAPACITY - load;
             if space_left < 0 {
                 // We have overfilled a truck: penalize this solution heavily.
-                return SchemeFitness { f: 0 };
+                return 0;
             }
             if space_left == CAPACITY {
                 // We have an empty truck: give this solution a little boost.
@@ -82,7 +69,7 @@ impl Phenotype<SchemeFitness> for LoadingScheme {
                 ret -= space_left;
             }
         }
-        SchemeFitness { f: ret }
+        ret
     }
 
     fn crossover(&self, other: &LoadingScheme) -> LoadingScheme {
@@ -142,7 +129,7 @@ fn main() {
     println!("Execution time: {} ns.", time.unwrap());
     println!("Result: {:?} | Fitness: {}.",
              result.scheme,
-             result.fitness().f);
+             result.fitness());
     let mut trucks: Vec<_> = vec![0; NUM_TRUCKS];
     for &(index, size) in &result.scheme {
         trucks[index] += size;
