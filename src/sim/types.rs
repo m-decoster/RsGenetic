@@ -21,6 +21,7 @@
 //! from using primitive types as fitness values.
 //!
 //! Implemented types:
+//!
 //! * `i32`
 //! * `i64`
 //! * `u32`
