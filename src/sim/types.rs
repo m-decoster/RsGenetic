@@ -19,6 +19,13 @@
 //! This is because Rust does not allow programmers to implement
 //! a foreign trait for a foreign type, which would stop you as a library user
 //! from using primitive types as fitness values.
+//!
+//! Implemented types:
+//! * `i32`
+//! * `i64`
+//! * `u32`
+//! * `u64`
+//! * `usize`
 
 use pheno::Fitness;
 
