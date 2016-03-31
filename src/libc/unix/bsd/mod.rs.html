@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/Users/mathieu/.cargo/registry/src/github.com-88ac128001ac3a9a/libc-0.2.7/src/unix/bsd/mod.rs`.">
+    <meta name="description" content="Source to the Rust file `/Users/mathieu/.cargo/registry/src/github.com-88ac128001ac3a9a/libc-0.2.9/src/unix/bsd/mod.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>mod.rs.html -- source</title>
@@ -378,6 +378,24 @@
 <span id="335">335</span>
 <span id="336">336</span>
 <span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>dox</span>::<span class='ident'>mem</span>;
 
@@ -444,10 +462,10 @@
 
     <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>fd_set</span> {
         <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>all</span>(<span class='ident'>target_pointer_width</span> <span class='op'>=</span> <span class='string'>&quot;64&quot;</span>,
-                  <span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;freebsd&quot;</span>))]</span>
+                  <span class='ident'>any</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;freebsd&quot;</span>, <span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>)))]</span>
         <span class='ident'>fds_bits</span>: [<span class='ident'>i64</span>; <span class='ident'>FD_SETSIZE</span> <span class='op'>/</span> <span class='number'>64</span>],
         <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>all</span>(<span class='ident'>target_pointer_width</span> <span class='op'>=</span> <span class='string'>&quot;64&quot;</span>,
-                      <span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;freebsd&quot;</span>)))]</span>
+                      <span class='ident'>any</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;freebsd&quot;</span>, <span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>))))]</span>
         <span class='ident'>fds_bits</span>: [<span class='ident'>i32</span>; <span class='ident'>FD_SETSIZE</span> <span class='op'>/</span> <span class='number'>32</span>],
     }
 
@@ -466,11 +484,26 @@
     }
 
     <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>utsname</span> {
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>))]</span>
         <span class='kw'>pub</span> <span class='ident'>sysname</span>: [::<span class='ident'>c_char</span>; <span class='number'>256</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>)]</span>
+        <span class='kw'>pub</span> <span class='ident'>sysname</span>: [::<span class='ident'>c_char</span>; <span class='number'>32</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>))]</span>
         <span class='kw'>pub</span> <span class='ident'>nodename</span>: [::<span class='ident'>c_char</span>; <span class='number'>256</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>)]</span>
+        <span class='kw'>pub</span> <span class='ident'>nodename</span>: [::<span class='ident'>c_char</span>; <span class='number'>32</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>))]</span>
         <span class='kw'>pub</span> <span class='ident'>release</span>: [::<span class='ident'>c_char</span>; <span class='number'>256</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>)]</span>
+        <span class='kw'>pub</span> <span class='ident'>release</span>: [::<span class='ident'>c_char</span>; <span class='number'>32</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>))]</span>
         <span class='kw'>pub</span> <span class='ident'>version</span>: [::<span class='ident'>c_char</span>; <span class='number'>256</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>)]</span>
+        <span class='kw'>pub</span> <span class='ident'>version</span>: [::<span class='ident'>c_char</span>; <span class='number'>32</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>))]</span>
         <span class='kw'>pub</span> <span class='ident'>machine</span>: [::<span class='ident'>c_char</span>; <span class='number'>256</span>],
+        <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>target_os</span> <span class='op'>=</span> <span class='string'>&quot;dragonfly&quot;</span>)]</span>
+        <span class='kw'>pub</span> <span class='ident'>machine</span>: [::<span class='ident'>c_char</span>; <span class='number'>32</span>],
     }
 
     <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>msghdr</span> {
@@ -500,6 +533,9 @@
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SA_NOCLDSTOP</span>: ::<span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>0x0008</span>;
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SA_NODEFER</span>: ::<span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>0x0010</span>;
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SA_NOCLDWAIT</span>: ::<span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>0x0020</span>;
+
+<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SS_ONSTACK</span>: ::<span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>1</span>;
+<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SS_DISABLE</span>: ::<span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>4</span>;
 
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SIGCHLD</span>: ::<span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>20</span>;
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SIGBUS</span>: ::<span class='ident'>c_int</span> <span class='op'>=</span> <span class='number'>10</span>;
@@ -713,7 +749,7 @@
         <span class='kw'>mod</span> <span class='ident'>freebsdlike</span>;
         <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>freebsdlike</span>::<span class='op'>*</span>;
     } <span class='kw'>else</span> {
-        <span class='comment'>// ...</span>
+        <span class='comment'>// Unknown target_os</span>
     }
 }
 </pre>
