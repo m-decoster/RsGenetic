@@ -27,7 +27,7 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! rsgenetic = "1.1.0"
+//! rsgenetic = "1.2.0"
 //! ```
 //!
 //! and adding `extern crate rsgenetic;` to your crate root.

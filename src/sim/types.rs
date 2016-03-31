@@ -22,72 +22,57 @@
 //!
 //! Implemented types:
 //!
+//! * `i8`
+//! * `i16`
 //! * `i32`
 //! * `i64`
+//! * `u8`
+//! * `u16`
 //! * `u32`
 //! * `u64`
 //! * `usize`
 
 use pheno::Fitness;
 
-impl Fitness for i32 {
-    fn zero() -> i32 {
-        0
-    }
+macro_rules! signed_int {
+    ( $t:ty ) => {
+        impl Fitness for $t {
+            fn zero() -> $t {
+                0
+            }
 
-    fn abs_diff(&self, other: &i32) -> i32 {
-        (self - other).abs()
-    }
-}
-
-impl Fitness for i64 {
-    fn zero() -> i64 {
-        0
-    }
-
-    fn abs_diff(&self, other: &i64) -> i64 {
-        (self - other).abs()
-    }
-}
-
-impl Fitness for u32 {
-    fn zero() -> u32 {
-        0
-    }
-
-    fn abs_diff(&self, other: &u32) -> u32 {
-        if self > other {
-            self - other
-        } else {
-            other - self
+            fn abs_diff(&self, other: &$t) -> $t {
+                (self - other).abs()
+            }
         }
-    }
+    };
 }
 
-impl Fitness for u64 {
-    fn zero() -> u64 {
-        0
-    }
+signed_int!(i8);
+signed_int!(i16);
+signed_int!(i32);
+signed_int!(i64);
 
-    fn abs_diff(&self, other: &u64) -> u64 {
-        if self > other {
-            self - other
-        } else {
-            other - self
+macro_rules! unsigned_int {
+    ( $t:ty ) => {
+        impl Fitness for $t {
+            fn zero() -> $t {
+                0
+            }
+
+            fn abs_diff(&self, other: &$t) -> $t {
+                if self > other {
+                    self - other
+                } else {
+                    other - self
+                }
+            }
         }
-    }
+    };
 }
 
-impl Fitness for usize {
-    fn zero() -> usize {
-        0
-    }
-
-    fn abs_diff(&self, other: &usize) -> usize {
-        if self > other {
-            self - other
-        } else {
-            other - self
-        }
-    }
-}
+unsigned_int!(u8);
+unsigned_int!(u16);
+unsigned_int!(u32);
+unsigned_int!(u64);
+unsigned_int!(usize);
