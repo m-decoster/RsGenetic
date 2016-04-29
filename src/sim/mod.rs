@@ -93,4 +93,9 @@ pub trait Simulation<'a, T, F> where T: Phenotype<F>, F: Fitness {
     /// When `Self` is `par::Simulator`, i.e. a parallel simulator is used,
     /// this returns the number of iterations made by the parallel simulator itself.
     fn iterations(&self) -> u64;
+    /// Get the current population.
+    ///
+    /// Using this function clones the population out of the `Simulation`, so use
+    /// it sparingly.
+    fn population(&self) -> Vec<T>;
 }

@@ -147,6 +147,10 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
     fn time(&self) -> Option<NanoSecond> {
         self.duration
     }
+
+    fn population(&self) -> Vec<T> {
+        self.population.clone()
+    }
 }
 
 impl<'a, T, F> Simulator<'a, T, F>
@@ -269,5 +273,17 @@ mod tests {
                         .build();
         s.run();
         assert!(s.get().is_err());
+    }
+
+    #[test]
+    fn test_population_get() {
+        let selector = MaximizeSelector::new(0);
+        let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
+        let population_len = population.len();
+        let s = seq::Simulator::builder(&mut population)
+                        .set_selector(Box::new(selector))
+                        .build();
+        let gotten_population = s.population();
+        assert!(gotten_population.len() == population_len);
     }
 }
