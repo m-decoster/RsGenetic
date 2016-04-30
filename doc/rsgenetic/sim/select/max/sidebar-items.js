@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["MaximizeSelector","Selects best performing phenotypes from the population."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["TournamentSelector","Runs several tournaments, and selects best performing phenotypes from each tournament."]]});

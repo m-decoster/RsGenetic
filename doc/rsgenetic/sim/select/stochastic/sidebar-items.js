@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["StochasticSelector","Selects phenotypes at random, starting from a random index and taking equidistant jumps."]]});
