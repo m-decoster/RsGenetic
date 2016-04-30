@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["pheno","Contains the definition of a Phenotype."],["sim","Contains implementations of Simulators, which can run genetic algorithms."]]});

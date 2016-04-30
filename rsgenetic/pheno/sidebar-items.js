@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["Fitness","A `Fitness` value is used to determine the quality of a `Phenotype`. `Fitness` values should have an ordering."],["Phenotype","Defines what a Phenotype is. A Phenotype can breed with other Phenotypes, resulting in a single child. A Phenotype can also be mutated. Finally, a Phenotype has a certain fitness value associated with it."]]});
