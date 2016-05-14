@@ -90,19 +90,19 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
             };
             // Create children from the selected parents and mutate them.
             let mut children: Vec<T> = parents.iter()
-                                              .map(|&(ref a, ref b)| a.crossover(b))
-                                              .map(|c| c.mutate())
-                                              .collect();
+                .map(|&(ref a, ref b)| a.crossover(b))
+                .map(|c| c.mutate())
+                .collect();
             // Kill off parts of the population at random to make room for the children
             self.kill_off(children.len());
             self.population.append(&mut children);
 
             if let Some(ref mut stopper) = self.earlystopper {
                 let highest_fitness = self.population
-                                          .iter()
-                                          .max_by_key(|x| x.fitness())
-                                          .unwrap()
-                                          .fitness();
+                    .iter()
+                    .max_by_key(|x| x.fitness())
+                    .unwrap()
+                    .fitness();
                 stopper.update(highest_fitness);
             }
 
@@ -233,8 +233,8 @@ mod tests {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let mut s = seq::Simulator::builder(&mut population)
-                        .set_selector(Box::new(selector))
-                        .build();
+            .set_selector(Box::new(selector))
+            .build();
         s.kill_off(10);
         assert_eq!(s.population.len(), 90);
     }
@@ -244,9 +244,9 @@ mod tests {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let mut s = seq::Simulator::builder(&mut population)
-                        .set_selector(Box::new(selector))
-                        .set_max_iters(2)
-                        .build();
+            .set_selector(Box::new(selector))
+            .set_max_iters(2)
+            .build();
         s.run();
         assert!(s.iterations() <= 2);
     }
@@ -256,10 +256,10 @@ mod tests {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|_| Test { f: 0 }).collect();
         let mut s = seq::Simulator::builder(&mut population)
-                        .set_selector(Box::new(selector))
-                        .set_early_stop(MyFitness { f: 10 }, 5)
-                        .set_max_iters(10)
-                        .build();
+            .set_selector(Box::new(selector))
+            .set_early_stop(MyFitness { f: 10 }, 5)
+            .set_max_iters(10)
+            .build();
         s.run();
         assert!(s.iterations() <= 5);
     }
@@ -269,8 +269,8 @@ mod tests {
         let selector = MaximizeSelector::new(0);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let mut s = seq::Simulator::builder(&mut population)
-                        .set_selector(Box::new(selector))
-                        .build();
+            .set_selector(Box::new(selector))
+            .build();
         s.run();
         assert!(s.get().is_err());
     }
@@ -281,8 +281,8 @@ mod tests {
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let population_len = population.len();
         let s = seq::Simulator::builder(&mut population)
-                        .set_selector(Box::new(selector))
-                        .build();
+            .set_selector(Box::new(selector))
+            .build();
         let gotten_population = s.population();
         assert!(gotten_population.len() == population_len);
     }

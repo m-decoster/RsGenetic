@@ -17,10 +17,10 @@
 /// A `Fitness` value is used to determine the quality of a `Phenotype`.
 /// `Fitness` values should have an ordering.
 ///
-/// **Make sure the following statement holds:**  
+/// **Make sure the following statement holds:**
 /// A `Phenotype` with a `Fitness` value of `f1` performs better than
 /// another `Phenotype` with a `Fitness` value of `f2` iff `f1 > f2`.
-pub trait Fitness : Ord + Eq {
+pub trait Fitness: Ord + Eq {
     /// Get the zero value of this `Fitness` value.
     /// The internal value should be 0.
     fn zero() -> Self;
@@ -34,7 +34,9 @@ pub trait Fitness : Ord + Eq {
 /// Finally, a Phenotype has a certain fitness value associated with it.
 ///
 /// If reasonable, it is recommended to have your implementation derive `Copy`.
-pub trait Phenotype<F> : Clone where F: Fitness {
+pub trait Phenotype<F>: Clone
+    where F: Fitness
+{
     /// Calculate the fitness of this Phenotype.
     fn fitness(&self) -> F;
     /// Perform crossover on this Phenotype, returning a new Phenotype.

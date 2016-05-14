@@ -56,7 +56,10 @@ pub enum RunResult {
 }
 
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<'a, T, F> where T: Phenotype<F>, F: Fitness {
+pub trait Simulation<'a, T, F>
+    where T: Phenotype<F>,
+          F: Fitness
+{
     /// A `Builder` is used to create instances of a `Simulation`.
     type B: Builder<Self>;
 

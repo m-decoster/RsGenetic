@@ -35,7 +35,10 @@ pub use self::stochastic::StochasticSelector;
 pub type Parents<T> = Vec<(T, T)>;
 
 /// A `Selector` can select `Parents` for a new iteration of a `Simulation`.
-pub trait Selector<T, F> where T: Phenotype<F>, F: Fitness {
+pub trait Selector<T, F>
+    where T: Phenotype<F>,
+          F: Fitness
+{
     /// Select elements from a `population` for breeding.
     ///
     /// If invalid parameters are supplied or the algorithm fails, this function returns an
