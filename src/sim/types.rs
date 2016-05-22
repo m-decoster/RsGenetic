@@ -34,26 +34,7 @@
 
 use pheno::Fitness;
 
-macro_rules! signed_int {
-    ( $t:ty ) => {
-        impl Fitness for $t {
-            fn zero() -> $t {
-                0
-            }
-
-            fn abs_diff(&self, other: &$t) -> $t {
-                (self - other).abs()
-            }
-        }
-    };
-}
-
-signed_int!(i8);
-signed_int!(i16);
-signed_int!(i32);
-signed_int!(i64);
-
-macro_rules! unsigned_int {
+macro_rules! implement_fitness_int {
     ( $t:ty ) => {
         impl Fitness for $t {
             fn zero() -> $t {
@@ -71,8 +52,12 @@ macro_rules! unsigned_int {
     };
 }
 
-unsigned_int!(u8);
-unsigned_int!(u16);
-unsigned_int!(u32);
-unsigned_int!(u64);
-unsigned_int!(usize);
+implement_fitness_int!(i8);
+implement_fitness_int!(i16);
+implement_fitness_int!(i32);
+implement_fitness_int!(i64);
+implement_fitness_int!(u8);
+implement_fitness_int!(u16);
+implement_fitness_int!(u32);
+implement_fitness_int!(u64);
+implement_fitness_int!(usize);
