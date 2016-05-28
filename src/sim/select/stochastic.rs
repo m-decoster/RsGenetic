@@ -42,8 +42,8 @@ impl<T, F> Selector<T, F> for StochasticSelector
     where T: Phenotype<F>,
           F: Fitness
 {
-    fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
-        if self.count <= 0 || self.count % 2 != 0 || self.count >= population.len() {
+    fn select(&self, population: &[T]) -> Result<Parents<T>, String> {
+        if self.count == 0 || self.count % 2 != 0 || self.count >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than the population size.",
                                self.count));
@@ -57,7 +57,7 @@ impl<T, F> Selector<T, F> for StochasticSelector
             result.push((population[i].clone(),
                          population[(i + ratio - 1) % population.len()].clone()));
             i += ratio - 1;
-            i = i % population.len();
+            i %= population.len();
             selected += 2;
         }
         Ok(result)

@@ -16,7 +16,7 @@
 
 //! # RsGenetic
 //!
-//! RsGenetic provides a simple framework for genetic algorithms.
+//! `RsGenetic` provides a simple framework for genetic algorithms.
 //! You need to provide the definition of a Phenotype (also known as an Individual),
 //! define how crossover and mutation work, present a fitness function, choose some settings
 //! and this library takes care of the rest.
@@ -57,8 +57,9 @@
 //!
 //! ### Tournament
 //!
-//! Tournament takes 2 parameters: the number of tournaments (`count`) and `participators`, which indicates how
-//! many phenotypes participate in a tournament. The resulting number of parents is `count`.
+//! Tournament takes 2 parameters: the number of tournaments (`count`) and `participators`,
+//! which indicates how many phenotypes participate in a tournament.
+//! The resulting number of parents is `count`.
 //!
 //! ### Stochastic
 //!

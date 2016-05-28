@@ -68,8 +68,9 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
 
     fn step(&mut self) -> StepResult {
         if self.population.is_empty() {
-            self.error = Some(format!("Tried to run a simulator without a population, or the \
-                                       population was empty."));
+            self.error = Some("Tried to run a simulator without a population, or the \
+                                       population was empty."
+                .to_string());
             return StepResult::Failure;
         }
         let time_start = SteadyTime::now();
@@ -81,7 +82,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
             return StepResult::Done;
         } else {
             // Perform selection
-            let parents = match self.selector.select(&self.population) {
+            let parents = match self.selector.select(self.population) {
                 Ok(parents) => parents,
                 Err(e) => {
                     self.error = Some(e);
@@ -165,7 +166,7 @@ impl<'a, T, F> Simulator<'a, T, F>
         while selected < count {
             self.population.remove(i);
             i += ratio - 1;
-            i = i % self.population.len();
+            i %= self.population.len();
 
             selected += 1;
         }

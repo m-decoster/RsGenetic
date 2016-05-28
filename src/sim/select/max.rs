@@ -38,14 +38,14 @@ impl<T, F> Selector<T, F> for MaximizeSelector
     where T: Phenotype<F>,
           F: Fitness
 {
-    fn select(&self, population: &Vec<T>) -> Result<Parents<T>, String> {
-        if self.count <= 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
+    fn select(&self, population: &[T]) -> Result<Parents<T>, String> {
+        if self.count == 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than half the population size.",
                                self.count));
         }
 
-        let mut cloned = population.clone();
+        let mut cloned = population.to_vec();
         cloned.sort_by(|x, y| x.fitness().cmp(&y.fitness()));
         let sorted: Vec<&T> = cloned.iter().take(self.count).collect();
         let mut index = 0;
