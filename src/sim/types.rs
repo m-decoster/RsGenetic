@@ -35,29 +35,23 @@
 use pheno::Fitness;
 
 macro_rules! implement_fitness_int {
-    ( $t:ty ) => {
-        impl Fitness for $t {
-            fn zero() -> $t {
-                0
-            }
-
-            fn abs_diff(&self, other: &$t) -> $t {
-                if self > other {
-                    self - other
-                } else {
-                    other - self
+    ( $($t:ty),* ) => {
+        $(
+            impl Fitness for $t {
+                fn zero() -> $t {
+                    0
+                }
+    
+                fn abs_diff(&self, other: &$t) -> $t {
+                    if self > other {
+                        self - other
+                    } else {
+                        other - self
+                    }
                 }
             }
-        }
-    };
+        )*
+    }
 }
 
-implement_fitness_int!(i8);
-implement_fitness_int!(i16);
-implement_fitness_int!(i32);
-implement_fitness_int!(i64);
-implement_fitness_int!(u8);
-implement_fitness_int!(u16);
-implement_fitness_int!(u32);
-implement_fitness_int!(u64);
-implement_fitness_int!(usize);
+implement_fitness_int!(i8, i16, i32, i64, u8, u16, u32, u64, usize);
