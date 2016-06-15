@@ -15,6 +15,7 @@
 // limitations under the License.
 
 /// An iteration limiter.
+#[derive(Copy, Clone)]
 pub struct IterLimit {
     /// Maximum number of iterations allowed.
     max: u64,

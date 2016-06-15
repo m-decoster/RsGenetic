@@ -18,6 +18,7 @@ use super::iterlimit::*;
 use pheno::Fitness;
 
 /// Used for early stopping.
+#[derive(Copy, Clone)]
 pub struct EarlyStopper<F: Fitness> {
     /// Minimum difference required for early stopping.
     delta: F,
