@@ -21,6 +21,7 @@ use rand::Rng;
 /// Selects phenotypes at random, starting from a random index and taking equidistant jumps.
 ///
 /// Commonly known as *Stochastic Universal Sampling*.
+#[derive(Clone, Copy)]
 pub struct StochasticSelector {
     count: usize,
 }

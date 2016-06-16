@@ -36,7 +36,7 @@ pub type NanoSecond = i64;
 pub type SimResult<'a, T> = Result<&'a T, &'a str>;
 
 /// The result of running a single step.
-#[derive(PartialEq,Eq,Debug)]
+#[derive(Clone, Copy, PartialEq,Eq,Debug)]
 pub enum StepResult {
     /// The step was successful, but the simulation has not finished.
     Success,
@@ -47,7 +47,7 @@ pub enum StepResult {
 }
 
 /// The result of running an entire simulation.
-#[derive(PartialEq,Eq,Debug)]
+#[derive(Clone, Copy, PartialEq,Eq,Debug)]
 pub enum RunResult {
     /// An error occurred somewhere during simulation.
     Failure,

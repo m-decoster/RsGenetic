@@ -18,6 +18,7 @@ use pheno::{Fitness, Phenotype};
 use super::*;
 
 /// Selects best performing phenotypes from the population.
+#[derive(Clone, Copy)]
 pub struct MaximizeSelector {
     count: usize,
 }

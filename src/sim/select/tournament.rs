@@ -19,6 +19,7 @@ use super::*;
 use rand::Rng;
 
 /// Runs several tournaments, and selects best performing phenotypes from each tournament.
+#[derive(Copy, Clone)]
 pub struct TournamentSelector {
     count: usize,
     participants: usize,

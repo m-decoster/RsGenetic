@@ -1,7 +1,7 @@
 use pheno::*;
 use std::cmp;
 
-#[derive(PartialOrd,Ord,PartialEq,Eq)]
+#[derive(Clone, Copy, PartialOrd, Ord, PartialEq, Eq)]
 pub struct MyFitness {
     pub f: i64,
 }
@@ -16,7 +16,7 @@ impl Fitness for MyFitness {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Test {
     pub f: i64,
 }
