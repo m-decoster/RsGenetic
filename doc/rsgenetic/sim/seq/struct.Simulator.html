@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
 
     
     
@@ -43,22 +44,22 @@
 
     <section id='main' class="content struct">
 <h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>rsgenetic</a>::<wbr><a href='../index.html'>sim</a>::<wbr><a href='index.html'>seq</a>::<wbr><a class='struct' href=''>Simulator</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-36' class='srclink' href='../../../src/rsgenetic/sim/seq.rs.html#35-46' title='goto source code'>[src]</a></span></h1>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-36' class='srclink' href='../../../src/rsgenetic/src/sim/seq.rs.html#35-46' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Simulator&lt;'a, T, F&gt; <span class='where'>where T: 'a + <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span> {
     // some fields omitted
 }</pre><div class='docblock'><p>A sequential implementation of <code>::sim::Simulation</code>.
 The genetic algorithm is run in a single thread.</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;'a, T, F&gt; <a class='trait' href='../../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>Simulation</a>&lt;'a, T, F&gt; for <a class='struct' href='../../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a, T, F&gt; <span class='where'>where T: <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></h3><div class='impl-items'><h4 id='assoc_type.B' class='type'><code>type B = <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a, T, F&gt;</code></h4>
-<h4 id='method.builder' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#method.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a, T, F&gt;</code></h4>
-<h4 id='method.step' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#method.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a></code></h4>
-<h4 id='method.run' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#method.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a></code></h4>
-<h4 id='method.get' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#method.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a, T&gt;</code></h4>
-<h4 id='method.iterations' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#method.iterations' class='fnname'>iterations</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></h4>
-<h4 id='method.time' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#method.time' class='fnname'>time</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../../rsgenetic/sim/type.NanoSecond.html' title='rsgenetic::sim::NanoSecond'>NanoSecond</a>&gt;</code></h4>
-<h4 id='method.population' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#method.population' class='fnname'>population</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;</code></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;'a, T, F&gt; <a class='trait' href='../../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>Simulation</a>&lt;'a, T, F&gt; for <a class='struct' href='../../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a, T, F&gt; <span class='where'>where T: <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></h3><div class='impl-items'><h4 id='associatedtype.B' class='type'><code>type <a href='../../../rsgenetic/sim/trait.Simulation.html#associatedtype.B' class='type'>B</a> = <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a, T, F&gt;</code></h4>
+<h4 id='method.builder' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a, T, F&gt;</code></h4>
+<h4 id='method.step' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#tymethod.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a></code></h4>
+<h4 id='method.run' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#tymethod.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a></code></h4>
+<h4 id='method.get' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a, T&gt;</code></h4>
+<h4 id='method.iterations' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#tymethod.iterations' class='fnname'>iterations</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></h4>
+<h4 id='method.time' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#tymethod.time' class='fnname'>time</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../../rsgenetic/sim/type.NanoSecond.html' title='rsgenetic::sim::NanoSecond'>NanoSecond</a>&gt;</code></h4>
+<h4 id='method.population' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Simulation.html#tymethod.population' class='fnname'>population</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;</code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -102,7 +103,7 @@ The genetic algorithm is run in a single thread.</p>
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>

@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
+    
 
     
     
@@ -43,106 +44,88 @@
 
     <section id='main' class="content mod">
 <h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>rsgenetic</a>::<wbr><a class='mod' href=''>sim</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-22' class='srclink' href='../../src/rsgenetic/sim/mod.rs.html#17-101' title='goto source code'>[src]</a></span></h1>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-22' class='srclink' href='../../src/rsgenetic/src/sim/mod.rs.html#17-104' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Contains implementations of Simulators, which can run genetic algorithms.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='mod' href='select/index.html'
-                               title='rsgenetic::sim::select'>select</a></td>
-                        <td class='docblock short'>
-                             <p>The selection module provides a trait that can be implemented
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='select/index.html'
+                                  title='rsgenetic::sim::select'>select</a></td>
+                           <td class='docblock short'>
+                                <p>The selection module provides a trait that can be implemented
 to implement new selection algorithms. This module also provides a couple
 of useful selection algorithms.</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='mod' href='seq/index.html'
-                               title='rsgenetic::sim::seq'>seq</a></td>
-                        <td class='docblock short'>
-                             <p>Contains a sequential implementation of <code>::sim::Simulation</code>,
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='seq/index.html'
+                                  title='rsgenetic::sim::seq'>seq</a></td>
+                           <td class='docblock short'>
+                                <p>Contains a sequential implementation of <code>::sim::Simulation</code>,
 called a <code>Simulator</code>.</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='mod' href='types/index.html'
-                               title='rsgenetic::sim::types'>types</a></td>
-                        <td class='docblock short'>
-                             <p>This module provides implementations of the <code>Fitness</code> trait for
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='types/index.html'
+                                  title='rsgenetic::sim::types'>types</a></td>
+                           <td class='docblock short'>
+                                <p>This module provides implementations of the <code>Fitness</code> trait for
 some primitive types, such as <code>i32</code>, <code>i64</code> etcetera.
 This is because Rust does not allow programmers to implement
 a foreign trait for a foreign type, which would stop you as a library user
 from using primitive types as fitness values.</p>
-
-                        </td>
-                    </tr>
-                </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.RunResult.html'
-                               title='rsgenetic::sim::RunResult'>RunResult</a></td>
-                        <td class='docblock short'>
-                             <p>The result of running an entire simulation.</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='enum' href='enum.StepResult.html'
-                               title='rsgenetic::sim::StepResult'>StepResult</a></td>
-                        <td class='docblock short'>
-                             <p>The result of running a single step.</p>
-
-                        </td>
-                    </tr>
-                </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.RunResult.html'
+                                  title='rsgenetic::sim::RunResult'>RunResult</a></td>
+                           <td class='docblock short'>
+                                <p>The result of running an entire simulation.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.StepResult.html'
+                                  title='rsgenetic::sim::StepResult'>StepResult</a></td>
+                           <td class='docblock short'>
+                                <p>The result of running a single step.</p>
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='trait' href='trait.Builder.html'
-                               title='rsgenetic::sim::Builder'>Builder</a></td>
-                        <td class='docblock short'>
-                             <p>A <code>Builder</code> can create new instances of an object.
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.Builder.html'
+                                  title='rsgenetic::sim::Builder'>Builder</a></td>
+                           <td class='docblock short'>
+                                <p>A <code>Builder</code> can create new instances of an object.
 For this library, only <code>Simulation</code> objects use this <code>Builder</code>.</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='trait' href='trait.Simulation.html'
-                               title='rsgenetic::sim::Simulation'>Simulation</a></td>
-                        <td class='docblock short'>
-                             <p>A <code>Simulation</code> is an execution of a genetic algorithm.</p>
-
-                        </td>
-                    </tr>
-                </table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.Simulation.html'
+                                  title='rsgenetic::sim::Simulation'>Simulation</a></td>
+                           <td class='docblock short'>
+                                <p>A <code>Simulation</code> is an execution of a genetic algorithm.</p>
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
-                    <tr class=' module-item'>
-                        <td><a class='type' href='type.NanoSecond.html'
-                               title='rsgenetic::sim::NanoSecond'>NanoSecond</a></td>
-                        <td class='docblock short'>
-                             <p>Simulation run time is defined in nanoseconds.</p>
-
-                        </td>
-                    </tr>
-                
-                    <tr class=' module-item'>
-                        <td><a class='type' href='type.SimResult.html'
-                               title='rsgenetic::sim::SimResult'>SimResult</a></td>
-                        <td class='docblock short'>
-                             <p>The result of a simulation, containing the best phenotype
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.NanoSecond.html'
+                                  title='rsgenetic::sim::NanoSecond'>NanoSecond</a></td>
+                           <td class='docblock short'>
+                                <p>Simulation run time is defined in nanoseconds.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.SimResult.html'
+                                  title='rsgenetic::sim::SimResult'>SimResult</a></td>
+                           <td class='docblock short'>
+                                <p>The result of a simulation, containing the best phenotype
 or an error message.</p>
-
-                        </td>
-                    </tr>
-                </table></section>
+                           </td>
+                       </tr></table></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
@@ -185,7 +168,7 @@ or an error message.</p>
 
                 <p>
                     Search functions by type signature (e.g.
-                    <code>vec -> usize</code>)
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
                 </p>
             </div>
         </div>
