@@ -11,4 +11,3 @@ documentation = "http://m-decoster.github.io/RsGenetic"
 
 [dependencies]
 rand = "0.3"
-time = "0.1"
