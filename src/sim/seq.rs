@@ -27,7 +27,7 @@ use super::*;
 use super::select::*;
 use super::iterlimit::*;
 use super::earlystopper::*;
-use time::SteadyTime;
+use std::time::Instant;
 use std::marker::PhantomData;
 
 /// A sequential implementation of `::sim::Simulation`.
@@ -73,7 +73,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
                 .to_string());
             return StepResult::Failure;
         }
-        let time_start = SteadyTime::now();
+        let time_start = Instant::now();
         let should_stop = match self.earlystopper {
             Some(ref x) => self.iter_limit.reached() || x.reached(),
             None => self.iter_limit.reached(),
@@ -109,13 +109,12 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
 
             self.iter_limit.inc();
         }
-        let this_time = (SteadyTime::now() - time_start).num_nanoseconds();
         self.duration = match self.duration {
             Some(x) => {
-                match this_time {
-                    Some(y) => Some(x + y),
-                    None => None,
-                }
+                let elapsed = time_start.elapsed();
+                let y = elapsed.as_secs() as NanoSecond * 1000_000_000 +
+                    elapsed.subsec_nanos() as NanoSecond;
+                Some(x + y)
             }
             None => None,
         };
