@@ -331,7 +331,6 @@
 <span id="287">287</span>
 <span id="288">288</span>
 <span id="289">289</span>
-<span id="290">290</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: seq.rs</span>
 <span class='comment'>//</span>
@@ -362,7 +361,7 @@
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>select</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>iterlimit</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>earlystopper</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>time</span>::<span class='ident'>SteadyTime</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Instant</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>;
 
 <span class='doccomment'>/// A sequential implementation of `::sim::Simulation`.</span>
@@ -408,7 +407,7 @@
                 .<span class='ident'>to_string</span>());
             <span class='kw'>return</span> <span class='ident'>StepResult</span>::<span class='ident'>Failure</span>;
         }
-        <span class='kw'>let</span> <span class='ident'>time_start</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>();
+        <span class='kw'>let</span> <span class='ident'>time_start</span> <span class='op'>=</span> <span class='ident'>Instant</span>::<span class='ident'>now</span>();
         <span class='kw'>let</span> <span class='ident'>should_stop</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>earlystopper</span> {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>ref</span> <span class='ident'>x</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>reached</span>() <span class='op'>||</span> <span class='ident'>x</span>.<span class='ident'>reached</span>(),
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>reached</span>(),
@@ -444,13 +443,12 @@
 
             <span class='self'>self</span>.<span class='ident'>iter_limit</span>.<span class='ident'>inc</span>();
         }
-        <span class='kw'>let</span> <span class='ident'>this_time</span> <span class='op'>=</span> (<span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>-</span> <span class='ident'>time_start</span>).<span class='ident'>num_nanoseconds</span>();
         <span class='self'>self</span>.<span class='ident'>duration</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>duration</span> {
             <span class='prelude-val'>Some</span>(<span class='ident'>x</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>match</span> <span class='ident'>this_time</span> {
-                    <span class='prelude-val'>Some</span>(<span class='ident'>y</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>x</span> <span class='op'>+</span> <span class='ident'>y</span>),
-                    <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
-                }
+                <span class='kw'>let</span> <span class='ident'>elapsed</span> <span class='op'>=</span> <span class='ident'>time_start</span>.<span class='ident'>elapsed</span>();
+                <span class='kw'>let</span> <span class='ident'>y</span> <span class='op'>=</span> <span class='ident'>elapsed</span>.<span class='ident'>as_secs</span>() <span class='kw'>as</span> <span class='ident'>NanoSecond</span> <span class='op'>*</span> <span class='number'>1000_000_000</span> <span class='op'>+</span>
+                    <span class='ident'>elapsed</span>.<span class='ident'>subsec_nanos</span>() <span class='kw'>as</span> <span class='ident'>NanoSecond</span>;
+                <span class='prelude-val'>Some</span>(<span class='ident'>x</span> <span class='op'>+</span> <span class='ident'>y</span>)
             }
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
         };
