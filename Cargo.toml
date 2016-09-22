@@ -6,7 +6,7 @@ description = "A library providing genetic algorithm execution."
 repository = "https://github.com/m-decoster/RsGenetic"
 readme = "README.md"
 keywords = ["genetic", "algorithm", "evolution"]
-license = "Apache-2.0"
+license = "MIT/Apache-2.0"
 documentation = "http://m-decoster.github.io/RsGenetic"
 
 [dependencies]
