@@ -73,7 +73,105 @@
 //!
 //! # Examples
 //!
-//! See the `examples` directory in the repository for examples.
+//! ## Implementing the `Fitness` trait
+//!
+//! Note that, if your fitness type is an integer type, you
+//! do not need to write a wrapper struct around this integer. See
+//! the `types` module documentation for more details.
+//!
+//! ```
+//! use rsgenetic::pheno::*;
+//! use std::cmp::Ordering;
+//!
+//! #[derive(Eq, PartialEq, PartialOrd, Ord)]
+//! struct MyFitness {
+//!     value: i32,
+//! }
+//!
+//! impl Fitness for MyFitness {
+//!     // The zero value for our custom type
+//!     fn zero() -> MyFitness {
+//!         MyFitness { value: 0 }
+//!     }
+//!
+//!     // The absolute difference between two instances
+//!     fn abs_diff(&self, other: &MyFitness) -> MyFitness {
+//!         MyFitness {
+//!             value: (self.value - other.value).abs()
+//!         }
+//!     }
+//! }
+//! ```
+//!
+//! ## Implementing the `Phenotype` trait
+//!
+//! Note that we use an integer type as the fitness type parameter
+//! to make this example more simple. Replace it with your custom type
+//! if needed. In this example, we try to find individuals with
+//! two integer components that sum to a target value.
+//!
+//! This example is far-fetched, but simplified to show how
+//! easy it is to define new individuals and implement
+//! the `Phenotype` trait.
+//!
+//! ```
+//! use rsgenetic::pheno::*;
+//!
+//! const TARGET: i32 = 100;
+//!
+//! #[derive(Copy, Clone)]
+//! struct MyPheno {
+//!     x: i32,
+//!     y: i32,
+//! }
+//!
+//! impl Phenotype<i32> for MyPheno {
+//!     // How fit is this individual?
+//!     fn fitness(&self) -> i32 {
+//!         TARGET - (self.x + self.y)
+//!     }
+//!
+//!     // Have two individuals create a new individual
+//!     fn crossover(&self, other: &MyPheno) -> MyPheno {
+//!         MyPheno {
+//!             x: self.x,
+//!             y: other.y,
+//!         }
+//!     }
+//!
+//!     // Mutate an individual, changing its state
+//!     fn mutate(&self) -> MyPheno {
+//!         MyPheno {
+//!             x: self.x + 1,
+//!             y: self.y - 1,
+//!         }
+//!     }
+//! }
+//! ```
+//!
+//! ## Creating and running a `Simulator`
+//!
+//! ```ignore
+//!
+//! use rsgenetic::sim::*;
+//! use rsgenetic::sim::seq::Simulator;
+//! use rsgenetic::sim::select::*;
+//!
+//! // (Assuming the above definition of `MyPheno` is in scope)
+//! // [ ... ]
+//!
+//! fn main() {
+//!     let mut population = (0..100).map(|i| MyPheno { x: i, y: 100 - i }).collect();
+//!     let mut s = Simulator::builder(&mut population)
+//!                     .set_selector(Box::new(StochasticSelector::new(10)))
+//!                     .set_max_iters(50)
+//!                     .build();
+//!     s.run();
+//!     let result = s.get().unwrap(); // The best individual
+//! }
+//! ```
+//!
+//! See the `examples` directory in the repository for more elaborate examples.
 
 #![warn(missing_docs)]
 
