@@ -16,7 +16,7 @@ Note that, if your fitness type is an integer type, you
 do not need to write a wrapper struct around this integer. See
 the `types` module documentation for more details.
 
-```
+```rust
 use rsgenetic::pheno::*;
 use std::cmp::Ordering;
 
@@ -51,7 +51,7 @@ This example is far-fetched, but simplified to show how
 easy it is to define new individuals and implement
 the `Phenotype` trait.
 
-```
+```rust
 use rsgenetic::pheno::*;
 
 const TARGET: i32 = 100;
@@ -88,8 +88,7 @@ impl Phenotype<i32> for MyPheno {
 
 ### Creating and running a `Simulator`
 
-```
-
+```rust
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
