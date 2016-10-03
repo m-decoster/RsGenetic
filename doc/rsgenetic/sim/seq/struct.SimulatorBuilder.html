@@ -47,11 +47,12 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-100' class='srclink' href='../../../src/rsgenetic/src/sim/seq.rs.html#176-181' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct SimulatorBuilder&lt;'a, T, F&gt; <span class='where'>where T: 'a + <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span> {
+               </span><a id='src-97' class='srclink' href='../../../src/rsgenetic/src/sim/seq.rs.html#176-181' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct SimulatorBuilder&lt;'a,&nbsp;T,&nbsp;F&gt; <span class='where'>where T: 'a + <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span> {
     // some fields omitted
 }</pre><div class='docblock'><p>A <code>Builder</code> for the <code>Simulator</code> type.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;'a, T, F&gt; <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a, T, F&gt; <span class='where'>where T: <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></h3><div class='impl-items'><h4 id='method.set_selector' class='method'><code>fn <a href='#method.set_selector' class='fnname'>set_selector</a>(self, sel: <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='../../../rsgenetic/sim/select/trait.Selector.html' title='rsgenetic::sim::select::Selector'>Selector</a>&lt;T, F&gt;&gt;) -&gt; Self</code></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a,&nbsp;T,&nbsp;F&gt; <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a,&nbsp;T,&nbsp;F&gt; <span class='where'>where T: <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-102' class='srclink' href='../../../src/rsgenetic/src/sim/seq.rs.html#183-213' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.set_selector' class='method'><code>fn <a href='#method.set_selector' class='fnname'>set_selector</a>(self, sel: <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='../../../rsgenetic/sim/select/trait.Selector.html' title='rsgenetic::sim::select::Selector'>Selector</a>&lt;T,&nbsp;F&gt;&gt;) -&gt; Self</code></h4>
 <div class='docblock'><p>Set the selector of the resulting <code>Simulator</code>.</p>
 
 <p>Returns itself for chaining purposes.</p>
@@ -66,8 +67,10 @@
 is smaller than <code>delta</code>, the simulator will stop running.</p>
 
 <p>Returns itself for chaining purposes.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;'a, T, F&gt; <a class='trait' href='../../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;<a class='struct' href='../../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a, T, F&gt;&gt; for <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a, T, F&gt; <span class='where'>where T: <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></h3><div class='impl-items'><h4 id='method.build' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Builder.html#tymethod.build' class='fnname'>build</a>(self) -&gt; <a class='struct' href='../../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a, T, F&gt;</code></h4>
-</div></section>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a,&nbsp;T,&nbsp;F&gt; <a class='trait' href='../../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;<a class='struct' href='../../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a,&nbsp;T,&nbsp;F&gt;&gt; for <a class='struct' href='../../../rsgenetic/sim/seq/struct.SimulatorBuilder.html' title='rsgenetic::sim::seq::SimulatorBuilder'>SimulatorBuilder</a>&lt;'a,&nbsp;T,&nbsp;F&gt; <span class='where'>where T: <a class='trait' href='../../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-116' class='srclink' href='../../../src/rsgenetic/src/sim/seq.rs.html#215-222' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.build' class='method'><code>fn <a href='../../../rsgenetic/sim/trait.Builder.html#tymethod.build' class='fnname'>build</a>(self) -&gt; <a class='struct' href='../../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a,&nbsp;T,&nbsp;F&gt;</code></h4>
+<div class='docblock'><p>Return the result.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
@@ -90,6 +93,8 @@ is smaller than <code>delta</code>, the simulator will stop running.</p>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 

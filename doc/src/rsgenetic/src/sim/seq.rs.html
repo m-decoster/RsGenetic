@@ -357,10 +357,10 @@
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Phenotype</span>;
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Fitness</span>;
 <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>Rng</span>;
-<span class='kw'>use</span> <span class='ident'>super</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>select</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>iterlimit</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>earlystopper</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>select</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>iterlimit</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>earlystopper</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Instant</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>;
 
@@ -521,7 +521,7 @@
     <span class='doccomment'>/// Set the selector of the resulting `Simulator`.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns itself for chaining purposes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_selector</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>sel</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Selector</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>F</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_selector</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>sel</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Selector</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>F</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>selector</span> <span class='op'>=</span> <span class='ident'>sel</span>;
         <span class='self'>self</span>
     }
@@ -531,7 +531,7 @@
     <span class='doccomment'>/// The `Simulator` will stop running after this number of iterations.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns itself for chaining purposes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_max_iters</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>i</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_max_iters</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>i</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>iter_limit</span> <span class='op'>=</span> <span class='ident'>IterLimit</span>::<span class='ident'>new</span>(<span class='ident'>i</span>);
         <span class='self'>self</span>
     }
@@ -540,7 +540,7 @@
     <span class='doccomment'>/// is smaller than `delta`, the simulator will stop running.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns itself for chaining purposes.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_early_stop</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>delta</span>: <span class='ident'>F</span>, <span class='ident'>n_iters</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_early_stop</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>delta</span>: <span class='ident'>F</span>, <span class='ident'>n_iters</span>: <span class='ident'>u64</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='self'>self</span>.<span class='ident'>sim</span>.<span class='ident'>earlystopper</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>EarlyStopper</span>::<span class='ident'>new</span>(<span class='ident'>delta</span>, <span class='ident'>n_iters</span>));
         <span class='self'>self</span>
     }
@@ -645,6 +645,8 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 

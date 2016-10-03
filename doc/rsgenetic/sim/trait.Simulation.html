@@ -47,13 +47,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-386' class='srclink' href='../../src/rsgenetic/src/sim/mod.rs.html#59-104' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait Simulation&lt;'a, T, F&gt; <span class='where'>where T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span> {
+               </span><a id='src-372' class='srclink' href='../../src/rsgenetic/src/sim/mod.rs.html#59-104' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Simulation&lt;'a,&nbsp;T,&nbsp;F&gt; <span class='where'>where T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span> {
     type <a href='#associatedtype.B' class='type'>B</a>: <a class='trait' href='../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;Self&gt;;
-    fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; Self::<a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>B</a> <span class='where'>where Self: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a></span>;
+    fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; Self::B <span class='where'>where Self: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a></span>;
     fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a>;
     fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a>;
-    fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a, T&gt;;
+    fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a,&nbsp;T&gt;;
     fn <a href='#tymethod.time' class='fnname'>time</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../rsgenetic/sim/type.NanoSecond.html' title='rsgenetic::sim::NanoSecond'>NanoSecond</a>&gt;;
     fn <a href='#tymethod.iterations' class='fnname'>iterations</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>;
     fn <a href='#tymethod.population' class='fnname'>population</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;;
@@ -65,7 +65,7 @@
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.builder' class='method stab '><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; Self::<a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>B</a> <span class='where'>where Self: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a></span></code></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.</p>
+        <h3 id='tymethod.builder' class='method stab '><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; Self::B <span class='where'>where Self: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a></span></code></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.</p>
 
 <p><code>population</code> is a required parameter of any <code>Simulation</code>, which
 is why it is a parameter of this function.</p>
@@ -82,7 +82,7 @@ is why it is a parameter of this function.</p>
 to avoid infinite loops. To run the simulation until convergence or until
 reaching a maximum number of iterations, consider using <code>run()</code> instead:
 This function is mostly useful for making illustrations of the evolution.</p>
-</div><h3 id='tymethod.get' class='method stab '><code>fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a, T&gt;</code></h3><div class='docblock'><p>Get the result of the latest step or of a complete run.</p>
+</div><h3 id='tymethod.get' class='method stab '><code>fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a,&nbsp;T&gt;</code></h3><div class='docblock'><p>Get the result of the latest step or of a complete run.</p>
 
 <p>This function will either return the best performing individual,
 or an error string indicating what went wrong.</p>
@@ -101,7 +101,7 @@ it sparingly.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl&lt;'a, T, F&gt; <a class='trait' href='../../rsgenetic/sim/trait.Simulation.html' title='rsgenetic::sim::Simulation'>Simulation</a>&lt;'a, T, F&gt; for <a class='struct' href='../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a, T, F&gt; <span class='where'>where T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></li>
+    <li><code>impl&lt;'a,&nbsp;T,&nbsp;F&gt; Simulation&lt;'a,&nbsp;T,&nbsp;F&gt; for <a class='struct' href='../../rsgenetic/sim/seq/struct.Simulator.html' title='rsgenetic::sim::seq::Simulator'>Simulator</a>&lt;'a,&nbsp;T,&nbsp;F&gt; <span class='where'>where T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/rsgenetic/sim/trait.Simulation.js">
                  </script></section>
@@ -127,6 +127,8 @@ it sparingly.</p>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 

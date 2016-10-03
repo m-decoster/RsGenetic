@@ -178,7 +178,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>IterLimit</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>IterLimit</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_iter_limit_reset</span>() {
@@ -186,9 +186,9 @@
         <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span> {
             <span class='ident'>limit</span>.<span class='ident'>inc</span>();
         }
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>limit</span>.<span class='ident'>reached</span>(), <span class='boolval'>false</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>limit</span>.<span class='ident'>reached</span>(), <span class='bool-val'>false</span>);
         <span class='ident'>limit</span>.<span class='ident'>reset</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>limit</span>.<span class='ident'>reached</span>(), <span class='boolval'>false</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>limit</span>.<span class='ident'>reached</span>(), <span class='bool-val'>false</span>);
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -229,6 +229,8 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
