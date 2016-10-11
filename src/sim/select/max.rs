@@ -47,7 +47,7 @@ impl<T, F> Selector<T, F> for MaximizeSelector
         }
 
         let mut cloned = population.to_vec();
-        cloned.sort_by(|x, y| x.fitness().cmp(&y.fitness()));
+        cloned.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
         let sorted: Vec<&T> = cloned.iter().take(self.count).collect();
         let mut index = 0;
         let mut result: Parents<T> = Vec::new();
