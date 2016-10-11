@@ -97,7 +97,7 @@ mod tests {
     fn test_result_ok() {
         let selector = MaximizeSelector::new(20);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        // The lowest fitness should be zero.
-        assert!(selector.select(&population).unwrap()[0].0.fitness().f == 0);
+        // The greatest fitness should be 99.
+        assert!(selector.select(&population).unwrap()[0].0.fitness().f == 99);
     }
 }
