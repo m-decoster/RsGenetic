@@ -66,9 +66,8 @@ impl<T, F> Selector<T, F> for TournamentSelector
                 let index = rng.gen_range::<usize>(0, population.len());
                 tournament.push(population[index].clone());
             }
-            tournament.sort_by(|x, y| x.fitness().cmp(&y.fitness()));
-            result.push((tournament[tournament.len() - 1].clone(),
-                         tournament[tournament.len() - 2].clone()));
+            tournament.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
+            result.push((tournament[0].clone(), tournament[1].clone()));
         }
         Ok(result)
     }

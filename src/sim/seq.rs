@@ -113,7 +113,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
             Some(x) => {
                 let elapsed = time_start.elapsed();
                 let y = elapsed.as_secs() as NanoSecond * 1000_000_000 +
-                    elapsed.subsec_nanos() as NanoSecond;
+                        elapsed.subsec_nanos() as NanoSecond;
                 Some(x + y)
             }
             None => None,
