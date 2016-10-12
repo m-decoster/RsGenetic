@@ -46,7 +46,7 @@ struct LoadingScheme {
 
 impl Phenotype<SchemeFitness> for LoadingScheme {
     fn fitness(&self) -> SchemeFitness {
-        let mut ret: i32 = 100;
+        let mut ret: i32 = 0;
         // Calculate for each truck the total load.
         let mut trucks: Vec<PackageSize> = vec![0; NUM_TRUCKS];
         for load in self.scheme.clone() {
@@ -56,15 +56,15 @@ impl Phenotype<SchemeFitness> for LoadingScheme {
             let space_left = CAPACITY - load;
             if space_left < 0 {
                 // We have overfilled a truck: penalize this solution heavily.
-                return 0;
+                return i32::min_value();
             }
             if space_left == CAPACITY {
                 // We have an empty truck: give this solution a little boost.
                 // Normally, the contribution to the fitness value is 0, but now we
-                // add 3 to make this an even fitter solution.
+                // add 1000 to make this an even fitter solution.
                 // Note that this is an empirically found value. We could even optimize this value
                 // with a separate genetic algorithm!
-                ret += 10;
+                ret += 1000;
             } else {
                 ret -= space_left;
             }
@@ -121,7 +121,7 @@ fn main() {
     }
     let mut s = Simulator::builder(&mut population)
                     .set_selector(Box::new(MaximizeSelector::new(10)))
-                    .set_max_iters(50)
+                    .set_max_iters(100)
                     .build();
     s.run();
     let result = s.get().unwrap();
