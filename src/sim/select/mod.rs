@@ -26,6 +26,7 @@ mod tournament;
 mod stochastic;
 
 use pheno::{Fitness, Phenotype};
+use std::fmt::Debug;
 
 pub use self::max::MaximizeSelector;
 pub use self::tournament::TournamentSelector;
@@ -35,7 +36,7 @@ pub use self::stochastic::StochasticSelector;
 pub type Parents<T> = Vec<(T, T)>;
 
 /// A `Selector` can select `Parents` for a new iteration of a `Simulation`.
-pub trait Selector<T, F>
+pub trait Selector<T, F> : Debug
     where T: Phenotype<F>,
           F: Fitness
 {

@@ -32,6 +32,7 @@ use std::marker::PhantomData;
 
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
+#[derive(Debug)]
 pub struct Simulator<'a, T, F>
     where T: 'a + Phenotype<F>,
           F: Fitness
@@ -173,6 +174,7 @@ impl<'a, T, F> Simulator<'a, T, F>
 }
 
 /// A `Builder` for the `Simulator` type.
+#[derive(Debug)]
 pub struct SimulatorBuilder<'a, T, F>
     where T: 'a + Phenotype<F>,
           F: Fitness
