@@ -1,9 +1,10 @@
 [package]
 name = "rsgenetic"
-version = "1.6.5"
+version = "1.6.6"
 authors = ["Mathieu De Coster <mth.decoster@gmail.com>"]
 description = "A library providing genetic algorithm execution."
 repository = "https://github.com/m-decoster/RsGenetic"
+homepage = "https://github.com/m-decoster/RsGenetic"
 readme = "README.md"
 keywords = ["genetic", "algorithm", "evolution"]
 license = "MIT/Apache-2.0"
