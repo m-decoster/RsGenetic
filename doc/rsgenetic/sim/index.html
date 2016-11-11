@@ -47,14 +47,14 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-20' class='srclink' href='../../src/rsgenetic/src/sim/mod.rs.html#17-104' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-20' class='srclink' href='../../src/rsgenetic/src/sim/mod.rs.html#17-113' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Contains implementations of Simulators, which can run genetic algorithms.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='mod' href='select/index.html'
                                   title='rsgenetic::sim::select'>select</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The selection module provides a trait that can be implemented
 to implement new selection algorithms. This module also provides a couple
 of useful selection algorithms.</p>
@@ -63,7 +63,7 @@ of useful selection algorithms.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='seq/index.html'
                                   title='rsgenetic::sim::seq'>seq</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Contains a sequential implementation of <code>::sim::Simulation</code>,
 called a <code>Simulator</code>.</p>
                            </td>
@@ -71,7 +71,7 @@ called a <code>Simulator</code>.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='types/index.html'
                                   title='rsgenetic::sim::types'>types</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>This module provides implementations of the <code>Fitness</code> trait for
 some primitive types, such as <code>i32</code>, <code>i64</code> etcetera.
 This is because Rust does not allow programmers to implement
@@ -83,14 +83,14 @@ from using primitive types as fitness values.</p>
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.RunResult.html'
                                   title='rsgenetic::sim::RunResult'>RunResult</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The result of running an entire simulation.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.StepResult.html'
                                   title='rsgenetic::sim::StepResult'>StepResult</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The result of running a single step.</p>
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
@@ -98,7 +98,7 @@ from using primitive types as fitness values.</p>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.Builder.html'
                                   title='rsgenetic::sim::Builder'>Builder</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A <code>Builder</code> can create new instances of an object.
 For this library, only <code>Simulation</code> objects use this <code>Builder</code>.</p>
                            </td>
@@ -106,7 +106,7 @@ For this library, only <code>Simulation</code> objects use this <code>Builder</c
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.Simulation.html'
                                   title='rsgenetic::sim::Simulation'>Simulation</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A <code>Simulation</code> is an execution of a genetic algorithm.</p>
                            </td>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
@@ -114,14 +114,14 @@ For this library, only <code>Simulation</code> objects use this <code>Builder</c
                        <tr class=' module-item'>
                            <td><a class='type' href='type.NanoSecond.html'
                                   title='rsgenetic::sim::NanoSecond'>NanoSecond</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Simulation run time is defined in nanoseconds.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='type' href='type.SimResult.html'
                                   title='rsgenetic::sim::SimResult'>SimResult</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The result of a simulation, containing the best phenotype
 or an error message.</p>
                            </td>

@@ -146,6 +146,15 @@
 <span id="102">102</span>
 <span id="103">103</span>
 <span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: mod.rs</span>
 <span class='comment'>//</span>
@@ -228,8 +237,17 @@
     <span class='doccomment'>/// Be careful to check for failures when running `step()` in a loop,</span>
     <span class='doccomment'>/// to avoid infinite loops. To run the simulation until convergence or until</span>
     <span class='doccomment'>/// reaching a maximum number of iterations, consider using `run()` instead:</span>
-    <span class='doccomment'>/// This function is mostly useful for making illustrations of the evolution.</span>
+    <span class='attribute'>#[<span class='ident'>deprecated</span>(<span class='ident'>note</span><span class='op'>=</span><span class='string'>&quot;To encourage checking the `StepResult` while maintaining backwards compatibility, this function has been deprecated in favour if `checked_step`.&quot;</span>, <span class='ident'>since</span><span class='op'>=</span><span class='string'>&quot;1.7.0&quot;</span>)]</span>
     <span class='kw'>fn</span> <span class='ident'>step</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>StepResult</span>;
+    <span class='doccomment'>/// Make one step in the simulation. This function returns a `StepResult`:</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// * `StepResult::Success` when a step was successful, but the simulation is not done.</span>
+    <span class='doccomment'>/// * `StepResult::Failure` when an error occurred. Check the result of `get()`.</span>
+    <span class='doccomment'>/// * `StepResult::Done` on convergence or reaching the maximum iterations.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Unlike `step`, this function will panic if it is called after a failure.</span>
+    <span class='doccomment'>/// To avoid this panic, match `StepResult` for `StepResult::Failure` and exit gracefully.</span>
+    <span class='kw'>fn</span> <span class='ident'>checked_step</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>StepResult</span>;
     <span class='doccomment'>/// Get the result of the latest step or of a complete run.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This function will either return the best performing individual,</span>

@@ -47,12 +47,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-372' class='srclink' href='../../src/rsgenetic/src/sim/mod.rs.html#59-104' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-429' class='srclink' href='../../src/rsgenetic/src/sim/mod.rs.html#59-113' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Simulation&lt;'a,&nbsp;T,&nbsp;F&gt; <span class='where'>where T: <a class='trait' href='../../rsgenetic/pheno/trait.Phenotype.html' title='rsgenetic::pheno::Phenotype'>Phenotype</a>&lt;F&gt;, F: <a class='trait' href='../../rsgenetic/pheno/trait.Fitness.html' title='rsgenetic::pheno::Fitness'>Fitness</a></span> {
     type <a href='#associatedtype.B' class='type'>B</a>: <a class='trait' href='../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;Self&gt;;
     fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; Self::B <span class='where'>where Self: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a></span>;
     fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a>;
     fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a>;
+    fn <a href='#tymethod.checked_step' class='fnname'>checked_step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a>;
     fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a,&nbsp;T&gt;;
     fn <a href='#tymethod.time' class='fnname'>time</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../rsgenetic/sim/type.NanoSecond.html' title='rsgenetic::sim::NanoSecond'>NanoSecond</a>&gt;;
     fn <a href='#tymethod.iterations' class='fnname'>iterations</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>;
@@ -61,16 +62,17 @@
 </div>
             <h2 id='associated-types'>Associated Types</h2>
             <div class='methods'>
-        <h3 id='associatedtype.B' class='method stab '><code>type <a href='#associatedtype.B' class='type'>B</a>: <a class='trait' href='../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;Self&gt;</code></h3><div class='docblock'><p>A <code>Builder</code> is used to create instances of a <code>Simulation</code>.</p>
+        <h3 id='associatedtype.B' class='method stab '><span id='B.t' class='invisible'><code>type <a href='#associatedtype.B' class='type'>B</a>: <a class='trait' href='../../rsgenetic/sim/trait.Builder.html' title='rsgenetic::sim::Builder'>Builder</a>&lt;Self&gt;</code></span></h3><div class='docblock'><p>A <code>Builder</code> is used to create instances of a <code>Simulation</code>.</p>
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.builder' class='method stab '><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; Self::B <span class='where'>where Self: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a></span></code></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.</p>
+        <h3 id='tymethod.builder' class='method stab '><span id='builder.v' class='invisible'><code>fn <a href='#tymethod.builder' class='fnname'>builder</a>(population: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;) -&gt; Self::B <span class='where'>where Self: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a></span></code></span></h3><div class='docblock'><p>Create a <code>Builder</code> to create an instance.</p>
 
 <p><code>population</code> is a required parameter of any <code>Simulation</code>, which
 is why it is a parameter of this function.</p>
-</div><h3 id='tymethod.run' class='method stab '><code>fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a></code></h3><div class='docblock'><p>Run the simulation completely.</p>
-</div><h3 id='tymethod.step' class='method stab '><code>fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a></code></h3><div class='docblock'><p>Make one step in the simulation. This function returns a <code>StepResult</code>:</p>
+</div><h3 id='tymethod.run' class='method stab '><span id='run.v' class='invisible'><code>fn <a href='#tymethod.run' class='fnname'>run</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.RunResult.html' title='rsgenetic::sim::RunResult'>RunResult</a></code></span></h3><div class='docblock'><p>Run the simulation completely.</p>
+</div><h3 id='tymethod.step' class='method stab '><span id='step.v' class='invisible'><code>fn <a href='#tymethod.step' class='fnname'>step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a></code></span></h3><div class='stability'><em class='stab deprecated'>Deprecated since 1.7.0<p>: To encourage checking the <code>StepResult</code> while maintaining backwards compatibility, this function has been deprecated in favour if <code>checked_step</code>.</p>
+</em></div><div class='docblock'><p>Make one step in the simulation. This function returns a <code>StepResult</code>:</p>
 
 <ul>
 <li><code>StepResult::Success</code> when a step was successful, but the simulation is not done.</li>
@@ -80,21 +82,30 @@ is why it is a parameter of this function.</p>
 
 <p>Be careful to check for failures when running <code>step()</code> in a loop,
 to avoid infinite loops. To run the simulation until convergence or until
-reaching a maximum number of iterations, consider using <code>run()</code> instead:
-This function is mostly useful for making illustrations of the evolution.</p>
-</div><h3 id='tymethod.get' class='method stab '><code>fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a,&nbsp;T&gt;</code></h3><div class='docblock'><p>Get the result of the latest step or of a complete run.</p>
+reaching a maximum number of iterations, consider using <code>run()</code> instead:</p>
+</div><h3 id='tymethod.checked_step' class='method stab '><span id='checked_step.v' class='invisible'><code>fn <a href='#tymethod.checked_step' class='fnname'>checked_step</a>(&amp;mut self) -&gt; <a class='enum' href='../../rsgenetic/sim/enum.StepResult.html' title='rsgenetic::sim::StepResult'>StepResult</a></code></span></h3><div class='docblock'><p>Make one step in the simulation. This function returns a <code>StepResult</code>:</p>
+
+<ul>
+<li><code>StepResult::Success</code> when a step was successful, but the simulation is not done.</li>
+<li><code>StepResult::Failure</code> when an error occurred. Check the result of <code>get()</code>.</li>
+<li><code>StepResult::Done</code> on convergence or reaching the maximum iterations.</li>
+</ul>
+
+<p>Unlike <code>step</code>, this function will panic if it is called after a failure.
+To avoid this panic, match <code>StepResult</code> for <code>StepResult::Failure</code> and exit gracefully.</p>
+</div><h3 id='tymethod.get' class='method stab '><span id='get.v' class='invisible'><code>fn <a href='#tymethod.get' class='fnname'>get</a>(&amp;'a self) -&gt; <a class='type' href='../../rsgenetic/sim/type.SimResult.html' title='rsgenetic::sim::SimResult'>SimResult</a>&lt;'a,&nbsp;T&gt;</code></span></h3><div class='docblock'><p>Get the result of the latest step or of a complete run.</p>
 
 <p>This function will either return the best performing individual,
 or an error string indicating what went wrong.</p>
-</div><h3 id='tymethod.time' class='method stab '><code>fn <a href='#tymethod.time' class='fnname'>time</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../rsgenetic/sim/type.NanoSecond.html' title='rsgenetic::sim::NanoSecond'>NanoSecond</a>&gt;</code></h3><div class='docblock'><p>Get the number of nanoseconds spent running, or <code>None</code> in case of an overflow.</p>
+</div><h3 id='tymethod.time' class='method stab '><span id='time.v' class='invisible'><code>fn <a href='#tymethod.time' class='fnname'>time</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../rsgenetic/sim/type.NanoSecond.html' title='rsgenetic::sim::NanoSecond'>NanoSecond</a>&gt;</code></span></h3><div class='docblock'><p>Get the number of nanoseconds spent running, or <code>None</code> in case of an overflow.</p>
 
 <p>When <code>Self</code> is <code>par::Simulator</code>, i.e. a parallel simulator is used,
 the duration is the average duration of all child simulators.</p>
-</div><h3 id='tymethod.iterations' class='method stab '><code>fn <a href='#tymethod.iterations' class='fnname'>iterations</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></h3><div class='docblock'><p>Get the number of iterations the <code>Simulator</code> has executed so far.</p>
+</div><h3 id='tymethod.iterations' class='method stab '><span id='iterations.v' class='invisible'><code>fn <a href='#tymethod.iterations' class='fnname'>iterations</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></span></h3><div class='docblock'><p>Get the number of iterations the <code>Simulator</code> has executed so far.</p>
 
 <p>When <code>Self</code> is <code>par::Simulator</code>, i.e. a parallel simulator is used,
 this returns the number of iterations made by the parallel simulator itself.</p>
-</div><h3 id='tymethod.population' class='method stab '><code>fn <a href='#tymethod.population' class='fnname'>population</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;</code></h3><div class='docblock'><p>Get the current population.</p>
+</div><h3 id='tymethod.population' class='method stab '><span id='population.v' class='invisible'><code>fn <a href='#tymethod.population' class='fnname'>population</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;</code></span></h3><div class='docblock'><p>Get the current population.</p>
 
 <p>Using this function clones the population out of the <code>Simulation</code>, so use
 it sparingly.</p>

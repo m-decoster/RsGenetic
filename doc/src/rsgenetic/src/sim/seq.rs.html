@@ -331,6 +331,17 @@
 <span id="287">287</span>
 <span id="288">288</span>
 <span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: seq.rs</span>
 <span class='comment'>//</span>
@@ -366,6 +377,7 @@
 
 <span class='doccomment'>/// A sequential implementation of `::sim::Simulation`.</span>
 <span class='doccomment'>/// The genetic algorithm is run in a single thread.</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Simulator</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>T</span>: <span class='lifetime'>&#39;a</span> <span class='op'>+</span> <span class='ident'>Phenotype</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>,
           <span class='ident'>F</span>: <span class='ident'>Fitness</span>
@@ -447,7 +459,7 @@
             <span class='prelude-val'>Some</span>(<span class='ident'>x</span>) <span class='op'>=&gt;</span> {
                 <span class='kw'>let</span> <span class='ident'>elapsed</span> <span class='op'>=</span> <span class='ident'>time_start</span>.<span class='ident'>elapsed</span>();
                 <span class='kw'>let</span> <span class='ident'>y</span> <span class='op'>=</span> <span class='ident'>elapsed</span>.<span class='ident'>as_secs</span>() <span class='kw'>as</span> <span class='ident'>NanoSecond</span> <span class='op'>*</span> <span class='number'>1000_000_000</span> <span class='op'>+</span>
-                    <span class='ident'>elapsed</span>.<span class='ident'>subsec_nanos</span>() <span class='kw'>as</span> <span class='ident'>NanoSecond</span>;
+                        <span class='ident'>elapsed</span>.<span class='ident'>subsec_nanos</span>() <span class='kw'>as</span> <span class='ident'>NanoSecond</span>;
                 <span class='prelude-val'>Some</span>(<span class='ident'>x</span> <span class='op'>+</span> <span class='ident'>y</span>)
             }
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
@@ -455,7 +467,16 @@
         <span class='ident'>StepResult</span>::<span class='ident'>Success</span> <span class='comment'>// Not done yet, but successful</span>
     }
 
-    <span class='doccomment'>/// Run.</span>
+    <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>deprecated</span>)]</span>
+    <span class='kw'>fn</span> <span class='ident'>checked_step</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>StepResult</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>error</span>.<span class='ident'>is_some</span>() {
+            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Attemped to step a Simulator after an error!&quot;</span>)
+        } <span class='kw'>else</span> {
+            <span class='self'>self</span>.<span class='ident'>step</span>()
+        }
+    }
+
+    <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>deprecated</span>)]</span>
     <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>RunResult</span> {
         <span class='comment'>// Loop until Failure or Done.</span>
         <span class='kw'>loop</span> {
@@ -507,6 +528,7 @@
 }
 
 <span class='doccomment'>/// A `Builder` for the `Simulator` type.</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SimulatorBuilder</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>T</span>: <span class='lifetime'>&#39;a</span> <span class='op'>+</span> <span class='ident'>Phenotype</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>,
           <span class='ident'>F</span>: <span class='ident'>Fitness</span>

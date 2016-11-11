@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/rsgenetic/src/lib.rs.html#17-185' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-0' class='srclink' href='../src/rsgenetic/src/lib.rs.html#17-190' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='rsgenetic' class='section-header'><a href='#rsgenetic'>RsGenetic</a></h1>
 <p><code>RsGenetic</code> provides a simple framework for genetic algorithms.
@@ -60,7 +60,7 @@ and this library takes care of the rest.</p>
 
 <pre class='rust rust-example-rendered'>
 [<span class='ident'>dependencies</span>]
-<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;^1.6.0&quot;</span></pre>
+<span class='ident'>rsgenetic</span> <span class='op'>=</span> <span class='string'>&quot;^1.7.0&quot;</span><a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <p>and adding <code>extern crate rsgenetic;</code> to your crate root.</p>
 
@@ -126,7 +126,7 @@ the <code>types</code> module documentation for more details.</p>
             <span class='ident'>value</span>: (<span class='self'>self</span>.<span class='ident'>value</span> <span class='op'>-</span> <span class='ident'>other</span>.<span class='ident'>value</span>).<span class='ident'>abs</span>()
         }
     }
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h2 id='implementing-the-phenotype-trait' class='section-header'><a href='#implementing-the-phenotype-trait'>Implementing the <code>Phenotype</code> trait</a></h2>
 <p>Note that we use an integer type as the fitness type parameter
@@ -170,7 +170,7 @@ the <code>Phenotype</code> trait.</p>
             <span class='ident'>y</span>: <span class='self'>self</span>.<span class='ident'>y</span> <span class='op'>-</span> <span class='number'>1</span>,
         }
     }
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h2 id='creating-and-running-a-simulator' class='section-header'><a href='#creating-and-running-a-simulator'>Creating and running a <code>Simulator</code></a></h2>
 <pre class='rust rust-example-rendered'>
@@ -190,7 +190,7 @@ the <code>Phenotype</code> trait.</p>
                     .<span class='ident'>build</span>();
     <span class='ident'>s</span>.<span class='ident'>run</span>();
     <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>get</span>().<span class='ident'>unwrap</span>(); <span class='comment'>// The best individual</span>
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <p>See the <code>examples</code> directory in the repository for more elaborate examples.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
@@ -198,14 +198,14 @@ the <code>Phenotype</code> trait.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='pheno/index.html'
                                   title='rsgenetic::pheno'>pheno</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Contains the definition of a Phenotype.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='sim/index.html'
                                   title='rsgenetic::sim'>sim</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Contains implementations of Simulators, which can run genetic algorithms.</p>
                            </td>
                        </tr></table></section>

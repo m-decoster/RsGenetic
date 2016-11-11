@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors["rand"] = [];
+implementors["libc"] = [];implementors["rand"] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);

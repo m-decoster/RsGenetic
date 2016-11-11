@@ -91,6 +91,7 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
+<span id="50">50</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: mod.rs</span>
 <span class='comment'>//</span>
@@ -120,6 +121,7 @@
 <span class='kw'>mod</span> <span class='ident'>stochastic</span>;
 
 <span class='kw'>use</span> <span class='ident'>pheno</span>::{<span class='ident'>Fitness</span>, <span class='ident'>Phenotype</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='ident'>Debug</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>max</span>::<span class='ident'>MaximizeSelector</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>tournament</span>::<span class='ident'>TournamentSelector</span>;
@@ -129,7 +131,7 @@
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Parents</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>T</span>, <span class='ident'>T</span>)<span class='op'>&gt;</span>;
 
 <span class='doccomment'>/// A `Selector` can select `Parents` for a new iteration of a `Simulation`.</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Selector</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
+<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Selector</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>F</span><span class='op'>&gt;</span> : <span class='ident'>Debug</span>
     <span class='kw'>where</span> <span class='ident'>T</span>: <span class='ident'>Phenotype</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>,
           <span class='ident'>F</span>: <span class='ident'>Fitness</span>
 {

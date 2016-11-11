@@ -227,6 +227,11 @@
 <span id="183">183</span>
 <span id="184">184</span>
 <span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: lib.rs</span>
 <span class='comment'>//</span>
@@ -257,7 +262,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```ignore</span>
 <span class='doccomment'>//! [dependencies]</span>
-<span class='doccomment'>//! rsgenetic = &quot;^1.6.0&quot;</span>
+<span class='doccomment'>//! rsgenetic = &quot;^1.7.0&quot;</span>
 <span class='doccomment'>//! ```</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! and adding `extern crate rsgenetic;` to your crate root.</span>
@@ -403,7 +408,12 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! See the `examples` directory in the repository for more elaborate examples.</span>
 
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>deny</span>(<span class='ident'>missing_docs</span>,
+        <span class='ident'>missing_debug_implementations</span>, <span class='ident'>missing_copy_implementations</span>,
+        <span class='ident'>trivial_casts</span>, <span class='ident'>trivial_numeric_casts</span>,
+        <span class='ident'>unsafe_code</span>,
+        <span class='ident'>unstable_features</span>,
+        <span class='ident'>unused_import_braces</span>, <span class='ident'>unused_qualifications</span>)]</span>
 
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
 

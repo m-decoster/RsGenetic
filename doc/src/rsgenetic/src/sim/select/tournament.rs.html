@@ -164,7 +164,6 @@
 <span id="120">120</span>
 <span id="121">121</span>
 <span id="122">122</span>
-<span id="123">123</span>
 </pre><pre class='rust '>
 <span class='comment'>// file: tournament.rs</span>
 <span class='comment'>//</span>
@@ -187,7 +186,7 @@
 <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>Rng</span>;
 
 <span class='doccomment'>/// Runs several tournaments, and selects best performing phenotypes from each tournament.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TournamentSelector</span> {
     <span class='ident'>count</span>: <span class='ident'>usize</span>,
     <span class='ident'>participants</span>: <span class='ident'>usize</span>,
@@ -234,9 +233,8 @@
                 <span class='kw'>let</span> <span class='ident'>index</span> <span class='op'>=</span> <span class='ident'>rng</span>.<span class='ident'>gen_range</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>(<span class='number'>0</span>, <span class='ident'>population</span>.<span class='ident'>len</span>());
                 <span class='ident'>tournament</span>.<span class='ident'>push</span>(<span class='ident'>population</span>[<span class='ident'>index</span>].<span class='ident'>clone</span>());
             }
-            <span class='ident'>tournament</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>x</span>, <span class='ident'>y</span><span class='op'>|</span> <span class='ident'>x</span>.<span class='ident'>fitness</span>().<span class='ident'>cmp</span>(<span class='kw-2'>&amp;</span><span class='ident'>y</span>.<span class='ident'>fitness</span>()));
-            <span class='ident'>result</span>.<span class='ident'>push</span>((<span class='ident'>tournament</span>[<span class='ident'>tournament</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>].<span class='ident'>clone</span>(),
-                         <span class='ident'>tournament</span>[<span class='ident'>tournament</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>2</span>].<span class='ident'>clone</span>()));
+            <span class='ident'>tournament</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>x</span>, <span class='ident'>y</span><span class='op'>|</span> <span class='ident'>y</span>.<span class='ident'>fitness</span>().<span class='ident'>cmp</span>(<span class='kw-2'>&amp;</span><span class='ident'>x</span>.<span class='ident'>fitness</span>()));
+            <span class='ident'>result</span>.<span class='ident'>push</span>((<span class='ident'>tournament</span>[<span class='number'>0</span>].<span class='ident'>clone</span>(), <span class='ident'>tournament</span>[<span class='number'>1</span>].<span class='ident'>clone</span>()));
         }
         <span class='prelude-val'>Ok</span>(<span class='ident'>result</span>)
     }

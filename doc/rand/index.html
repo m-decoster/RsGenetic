@@ -70,7 +70,7 @@ rand = &quot;0.3&quot;
 <p>and this to your crate root:</p>
 
 <pre class='rust rust-example-rendered'>
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;</pre>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h1 id='thread-local-rng' class='section-header'><a href='#thread-local-rng'>Thread-local RNG</a></h1>
 <p>There is built-in support for a RNG associated with each thread stored
@@ -120,11 +120,11 @@ the CSPRNG has not seeded yet.)</li>
 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>thread_rng</span>();
 <span class='kw'>if</span> <span class='ident'>rng</span>.<span class='ident'>gen</span>() { <span class='comment'>// random bool</span>
     <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;i32: {}, u32: {}&quot;</span>, <span class='ident'>rng</span>.<span class='ident'>gen</span>::<span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>(), <span class='ident'>rng</span>.<span class='ident'>gen</span>::<span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span>())
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <pre class='rust rust-example-rendered'>
 <span class='kw'>let</span> <span class='ident'>tuple</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>random</span>::<span class='op'>&lt;</span>(<span class='ident'>f64</span>, <span class='ident'>char</span>)<span class='op'>&gt;</span>();
-<span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}&quot;</span>, <span class='ident'>tuple</span>)</pre>
+<span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}&quot;</span>, <span class='ident'>tuple</span>)<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h2 id='monte-carlo-estimation-of-π' class='section-header'><a href='#monte-carlo-estimation-of-π'>Monte Carlo estimation of π</a></h2>
 <p>For this example, imagine we have a square with sides of length 2 and a unit
@@ -161,7 +161,7 @@ and multiply this fraction by 4.</p>
 
    <span class='comment'>// prints something close to 3.14159...</span>
    <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='number'>4.</span> <span class='op'>*</span> (<span class='ident'>in_circle</span> <span class='kw'>as</span> <span class='ident'>f64</span>) <span class='op'>/</span> (<span class='ident'>total</span> <span class='kw'>as</span> <span class='ident'>f64</span>));
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h2 id='monty-hall-problem' class='section-header'><a href='#monty-hall-problem'>Monty Hall Problem</a></h2>
 <p>This is a simulation of the <a href="http://en.wikipedia.org/wiki/Monty_Hall_problem">Monty Hall Problem</a>:</p>
@@ -264,35 +264,35 @@ steps it will indeed confirm that it is better to switch.</p>
              <span class='ident'>switch_wins</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>/</span> <span class='ident'>total_switches</span> <span class='kw'>as</span> <span class='ident'>f32</span>);
     <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Estimated chance to win if we don&#39;t: {}&quot;</span>,
              <span class='ident'>keep_wins</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>/</span> <span class='ident'>total_keeps</span> <span class='kw'>as</span> <span class='ident'>f32</span>);
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
 <table><tr><td><code>pub use os::<a class='struct' href='../rand/os/struct.OsRng.html' title='rand::os::OsRng'>OsRng</a>;</code></td></tr><tr><td><code>pub use isaac::{<a class='struct' href='../rand/isaac/struct.IsaacRng.html' title='rand::isaac::IsaacRng'>IsaacRng</a>, <a class='struct' href='../rand/isaac/struct.Isaac64Rng.html' title='rand::isaac::Isaac64Rng'>Isaac64Rng</a>};</code></td></tr><tr><td><code>pub use chacha::<a class='struct' href='../rand/chacha/struct.ChaChaRng.html' title='rand::chacha::ChaChaRng'>ChaChaRng</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='mod' href='chacha/index.html'
                                   title='rand::chacha'>chacha</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The ChaCha random number generator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='distributions/index.html'
                                   title='rand::distributions'>distributions</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Sampling from random distributions.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='isaac/index.html'
                                   title='rand::isaac'>isaac</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The ISAAC random number generator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='os/index.html'
                                   title='rand::os'>os</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Interfaces to the operating system provided random number
 generators.</p>
                            </td>
@@ -300,14 +300,14 @@ generators.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='read/index.html'
                                   title='rand::read'>read</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A wrapper around any Read to treat it as an RNG.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='reseeding/index.html'
                                   title='rand::reseeding'>reseeding</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A wrapper around another RNG that reseeds it after it
 generates a certain number of random bytes.</p>
                            </td>
@@ -316,14 +316,14 @@ generates a certain number of random bytes.</p>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.AsciiGenerator.html'
                                   title='rand::AsciiGenerator'>AsciiGenerator</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Iterator which will continuously generate random ascii characters.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.Closed01.html'
                                   title='rand::Closed01'>Closed01</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A wrapper for generating floating point numbers uniformly in the
 closed interval <code>[0,1]</code> (including both endpoints).</p>
                            </td>
@@ -331,14 +331,14 @@ closed interval <code>[0,1]</code> (including both endpoints).</p>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.Generator.html'
                                   title='rand::Generator'>Generator</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Iterator which will generate a stream of random items.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.Open01.html'
                                   title='rand::Open01'>Open01</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A wrapper for generating floating point numbers uniformly in the
 open interval <code>(0,1)</code> (not including either endpoint).</p>
                            </td>
@@ -346,7 +346,7 @@ open interval <code>(0,1)</code> (not including either endpoint).</p>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.StdRng.html'
                                   title='rand::StdRng'>StdRng</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The standard RNG. This is designed to be efficient on the current
 platform.</p>
                            </td>
@@ -354,14 +354,14 @@ platform.</p>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.ThreadRng.html'
                                   title='rand::ThreadRng'>ThreadRng</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>The thread-local RNG.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.XorShiftRng.html'
                                   title='rand::XorShiftRng'>XorShiftRng</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>An Xorshift[1] random number
 generator.</p>
                            </td>
@@ -370,21 +370,21 @@ generator.</p>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.Rand.html'
                                   title='rand::Rand'>Rand</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A type that can be randomly generated using an <code>Rng</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.Rng.html'
                                   title='rand::Rng'>Rng</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A random number generator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='trait' href='trait.SeedableRng.html'
                                   title='rand::SeedableRng'>SeedableRng</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>A random number generator that can be explicitly seeded to produce
 the same stream of randomness multiple times.</p>
                            </td>
@@ -393,21 +393,21 @@ the same stream of randomness multiple times.</p>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.random.html'
                                   title='rand::random'>random</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Generates a random value using the thread-local random number generator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.sample.html'
                                   title='rand::sample'>sample</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Randomly sample up to <code>amount</code> elements from an iterator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.thread_rng.html'
                                   title='rand::thread_rng'>thread_rng</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Retrieve the lazily-initialized thread-local random number
 generator, seeded by the system. Intended to be used in method
 chaining style, e.g. <code>thread_rng().gen::&lt;i32&gt;()</code>.</p>
@@ -416,7 +416,7 @@ chaining style, e.g. <code>thread_rng().gen::&lt;i32&gt;()</code>.</p>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.weak_rng.html'
                                   title='rand::weak_rng'>weak_rng</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Create a weak random number generator with a default algorithm and seed.</p>
                            </td>
                        </tr></table></section>

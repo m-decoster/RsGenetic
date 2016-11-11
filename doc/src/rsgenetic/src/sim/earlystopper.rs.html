@@ -150,7 +150,7 @@
 <span class='kw'>use</span> <span class='ident'>pheno</span>::<span class='ident'>Fitness</span>;
 
 <span class='doccomment'>/// Used for early stopping.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>EarlyStopper</span><span class='op'>&lt;</span><span class='ident'>F</span>: <span class='ident'>Fitness</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Minimum difference required for early stopping.</span>
     <span class='ident'>delta</span>: <span class='ident'>F</span>,
