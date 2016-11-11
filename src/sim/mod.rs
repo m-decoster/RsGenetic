@@ -79,7 +79,7 @@ pub trait Simulation<'a, T, F>
     /// Be careful to check for failures when running `step()` in a loop,
     /// to avoid infinite loops. To run the simulation until convergence or until
     /// reaching a maximum number of iterations, consider using `run()` instead:
-    #[deprecated(note="To encourage checking the `StepResult` while maintaining backwards compatibility, this function has been deprecated in favour if `checked_step`.", since="1.7.0")]
+    #[deprecated(note="To encourage checking the `StepResult` while maintaining backwards compatibility, this function has been deprecated in favour of `checked_step`.", since="1.7.0")]
     fn step(&mut self) -> StepResult;
     /// Make one step in the simulation. This function returns a `StepResult`:
     ///
