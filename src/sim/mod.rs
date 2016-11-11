@@ -79,8 +79,17 @@ pub trait Simulation<'a, T, F>
     /// Be careful to check for failures when running `step()` in a loop,
     /// to avoid infinite loops. To run the simulation until convergence or until
     /// reaching a maximum number of iterations, consider using `run()` instead:
-    /// This function is mostly useful for making illustrations of the evolution.
+    #[deprecated(note="To encourage checking the `StepResult` while maintaining backwards compatibility, this function has been deprecated in favour if `checked_step`.", since="1.7.0")]
     fn step(&mut self) -> StepResult;
+    /// Make one step in the simulation. This function returns a `StepResult`:
+    ///
+    /// * `StepResult::Success` when a step was successful, but the simulation is not done.
+    /// * `StepResult::Failure` when an error occurred. Check the result of `get()`.
+    /// * `StepResult::Done` on convergence or reaching the maximum iterations.
+    ///
+    /// Unlike `step`, this function will panic if it is called after a failure.
+    /// To avoid this panic, match `StepResult` for `StepResult::Failure` and exit gracefully.
+    fn checked_step(&mut self) -> StepResult;
     /// Get the result of the latest step or of a complete run.
     ///
     /// This function will either return the best performing individual,

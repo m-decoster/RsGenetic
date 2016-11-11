@@ -104,7 +104,7 @@ fn main() {
                     .set_selector(Box::new(StochasticSelector::new(10)))
                     .set_max_iters(50)
                     .build();
-    while let StepResult::Success = s.step() {
+    while let StepResult::Success = s.checked_step() {
         let result = s.get().unwrap();
         println!("Intermediate result: ({}, {}).",
                  result.x,

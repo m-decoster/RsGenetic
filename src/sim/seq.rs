@@ -122,7 +122,16 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
         StepResult::Success // Not done yet, but successful
     }
 
-    /// Run.
+    #[allow(deprecated)]
+    fn checked_step(&mut self) -> StepResult {
+        if self.error.is_some() {
+            panic!("Attemped to step a Simulator after an error!")
+        } else {
+            self.step()
+        }
+    }
+
+    #[allow(deprecated)]
     fn run(&mut self) -> RunResult {
         // Loop until Failure or Done.
         loop {
