@@ -36,7 +36,7 @@ pub use self::stochastic::StochasticSelector;
 pub type Parents<T> = Vec<(T, T)>;
 
 /// A `Selector` can select `Parents` for a new iteration of a `Simulation`.
-pub trait Selector<T, F> : Debug
+pub trait Selector<T, F>: Debug
     where T: Phenotype<F>,
           F: Fitness
 {
