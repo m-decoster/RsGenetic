@@ -1,5 +1,6 @@
 # RsGenetic
 [![Build Status](https://travis-ci.org/m-decoster/RsGenetic.svg?branch=master)](https://travis-ci.org/m-decoster/RsGenetic)
+[![Clippy Linting Result](https://clippy.bashy.io/github/m-decoster/RsGenetic/master/badge.svg)](https://clippy.bashy.io/github/m-decoster/RsGenetic/master/log)
 [![Crates Version](https://img.shields.io/crates/v/rsgenetic.svg)](https://crates.io/crates/rsgenetic/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![License Apache](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
