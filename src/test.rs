@@ -55,7 +55,7 @@ impl Phenotype<MyFitness> for Test {
         } else if self.f > 0 {
             Test { f: self.f - 1 }
         } else {
-            self.clone()
+            *self
         }
     }
 }
