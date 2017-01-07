@@ -1,9 +1,8 @@
 # RsGenetic
-[![Build Status](https://travis-ci.org/m-decoster/RsGenetic.svg?branch=master&style=flat-square)](https://travis-ci.org/m-decoster/RsGenetic)
-[![Clippy Linting Result](https://clippy.bashy.io/github/m-decoster/RsGenetic/master/badge.svg?style=flat-square)](https://clippy.bashy.io/github/m-decoster/RsGenetic/master/log)
-[![Crates Version](https://img.shields.io/crates/v/rsgenetic.svg?style=flat-square)](https://crates.io/crates/rsgenetic/)
-[![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![License Apache](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](./LICENSE)
+[![Build Status](https://travis-ci.org/m-decoster/RsGenetic.svg?branch=master)](https://travis-ci.org/m-decoster/RsGenetic)
+[![Crates Version](https://img.shields.io/crates/v/rsgenetic.svg)](https://crates.io/crates/rsgenetic/)
+[![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![License Apache](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 
 ## Summary and Features
 RsGenetic is a framework for executing genetic algorithms in Rust. It is designed to have a simple but modular API.
