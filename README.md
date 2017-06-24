@@ -8,7 +8,7 @@
 RsGenetic is a framework for executing genetic algorithms in Rust. It is designed to have a simple but modular API.
 
 ## Examples and Documentation
-Documentation is available [here](http://m-decoster.github.io/RsGenetic).  
+Documentation is available [here](https://docs.rs/rsgenetic/1.7.0/rsgenetic/).  
 
 ### Implementing the `Fitness` trait
 
