@@ -1,6 +1,6 @@
 // file: earlystopper.rs
 //
-// Copyright 2015-2016 The RsGenetic Developers
+// Copyright 2015-2017 The RsGenetic Developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
