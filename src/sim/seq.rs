@@ -68,20 +68,23 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
     }
 
     fn step(&mut self) -> StepResult {
+        let time_start;
+
         if self.population.is_empty() {
             self.error = Some("Tried to run a simulator without a population, or the \
                                        population was empty."
-                .to_string());
+                                      .to_string());
             return StepResult::Failure;
         }
-        let time_start = Instant::now();
+
         let should_stop = match self.earlystopper {
             Some(ref x) => self.iter_limit.reached() || x.reached(),
             None => self.iter_limit.reached(),
         };
-        if should_stop {
-            return StepResult::Done;
-        } else {
+
+        if !should_stop {
+            time_start = Instant::now();
+
             // Perform selection
             let parents = match self.selector.select(self.population) {
                 Ok(parents) => parents,
@@ -91,7 +94,8 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
                 }
             };
             // Create children from the selected parents and mutate them.
-            let mut children: Vec<T> = parents.iter()
+            let mut children: Vec<T> = parents
+                .iter()
                 .map(|&(ref a, ref b)| a.crossover(b))
                 .map(|c| c.mutate())
                 .collect();
@@ -109,17 +113,21 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
             }
 
             self.iter_limit.inc();
+            self.duration = match self.duration {
+                Some(x) => {
+                    let elapsed = time_start.elapsed();
+                    let y = elapsed.as_secs() as NanoSecond * 1000_000_000 +
+                            elapsed.subsec_nanos() as NanoSecond;
+                    Some(x + y)
+                }
+                None => None,
+            };
+
+            StepResult::Success // Not done yet, but successful
+        } else {
+            StepResult::Done
         }
-        self.duration = match self.duration {
-            Some(x) => {
-                let elapsed = time_start.elapsed();
-                let y = elapsed.as_secs() as NanoSecond * 1000_000_000 +
-                        elapsed.subsec_nanos() as NanoSecond;
-                Some(x + y)
-            }
-            None => None,
-        };
-        StepResult::Success // Not done yet, but successful
+
     }
 
     #[allow(deprecated)]
@@ -234,8 +242,8 @@ impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F>
 
 #[cfg(test)]
 mod tests {
-    use ::sim::*;
-    use ::sim::select::*;
+    use sim::*;
+    use sim::select::*;
     use test::Test;
     use test::MyFitness;
 
