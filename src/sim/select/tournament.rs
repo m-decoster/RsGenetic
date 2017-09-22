@@ -61,10 +61,10 @@ impl<T, F> Selector<T, F> for TournamentSelector
         let mut result: Parents<T> = Vec::new();
         let mut rng = ::rand::thread_rng();
         for _ in 0..(self.count / 2) {
-            let mut tournament: Vec<T> = Vec::with_capacity(self.participants);
+            let mut tournament: Vec<&T> = Vec::with_capacity(self.participants);
             for _ in 0..self.participants {
                 let index = rng.gen_range::<usize>(0, population.len());
-                tournament.push(population[index].clone());
+                tournament.push(&population[index]);
             }
             tournament.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
             result.push((tournament[0].clone(), tournament[1].clone()));
