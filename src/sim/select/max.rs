@@ -46,13 +46,12 @@ impl<T, F> Selector<T, F> for MaximizeSelector
                                self.count));
         }
 
-        let mut cloned = population.to_vec();
-        cloned.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
-        let sorted: Vec<&T> = cloned.iter().take(self.count).collect();
+        let mut borrowed: Vec<&T> = population.iter().collect();
+        borrowed.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
         let mut index = 0;
         let mut result: Parents<T> = Vec::new();
-        while index < sorted.len() {
-            result.push((sorted[index].clone(), sorted[index + 1].clone()));
+        while index < self.count {
+            result.push((borrowed[index].clone(), borrowed[index + 1].clone()));
             index += 2;
         }
         Ok(result)
