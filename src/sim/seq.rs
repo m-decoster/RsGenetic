@@ -179,13 +179,10 @@ impl<'a, T, F> Simulator<'a, T, F>
     fn kill_off(&mut self, count: usize) {
         let ratio = self.population.len() / count;
         let mut i = ::rand::thread_rng().gen_range::<usize>(0, self.population.len());
-        let mut selected = 0;
-        while selected < count {
-            self.population.remove(i);
-            i += ratio - 1;
+        for _ in 0..count {
+            self.population.swap_remove(i);
+            i += ratio;
             i %= self.population.len();
-
-            selected += 1;
         }
     }
 }
