@@ -39,20 +39,19 @@ impl<T, F> Selector<T, F> for MaximizeSelector
     where T: Phenotype<F>,
           F: Fitness
 {
-    fn select(&self, population: &[T]) -> Result<Parents<T>, String> {
+    fn select<'a>(&self, population: &'a [T]) -> Result<Parents<&'a T>, String> {
         if self.count == 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than half the population size.",
                                self.count));
         }
 
-        let mut cloned = population.to_vec();
-        cloned.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
-        let sorted: Vec<&T> = cloned.iter().take(self.count).collect();
+        let mut borrowed: Vec<&T> = population.iter().collect();
+        borrowed.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
         let mut index = 0;
-        let mut result: Parents<T> = Vec::new();
-        while index < sorted.len() {
-            result.push((sorted[index].clone(), sorted[index + 1].clone()));
+        let mut result: Parents<&T> = Vec::new();
+        while index < self.count {
+            result.push((borrowed[index], borrowed[index + 1]));
             index += 2;
         }
         Ok(result)
