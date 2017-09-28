@@ -46,7 +46,7 @@ impl<T, F> Selector<T, F> for TournamentSelector
     where T: Phenotype<F>,
           F: Fitness
 {
-    fn select(&self, population: &[T]) -> Result<Parents<T>, String> {
+    fn select<'a>(&self, population: &'a [T]) -> Result<Parents<&'a T>, String> {
         if self.count == 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
             return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
                                 multiple of two and less than half the population size.",
@@ -58,7 +58,7 @@ impl<T, F> Selector<T, F> for TournamentSelector
                                self.participants));
         }
 
-        let mut result: Parents<T> = Vec::new();
+        let mut result: Parents<&T> = Vec::new();
         let mut rng = ::rand::thread_rng();
         for _ in 0..(self.count / 2) {
             let mut tournament: Vec<&T> = Vec::with_capacity(self.participants);
@@ -67,7 +67,7 @@ impl<T, F> Selector<T, F> for TournamentSelector
                 tournament.push(&population[index]);
             }
             tournament.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
-            result.push((tournament[0].clone(), tournament[1].clone()));
+            result.push((tournament[0], tournament[1]));
         }
         Ok(result)
     }

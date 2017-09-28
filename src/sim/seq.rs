@@ -85,20 +85,23 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
         if !should_stop {
             time_start = Instant::now();
 
-            // Perform selection
-            let parents = match self.selector.select(self.population) {
-                Ok(parents) => parents,
-                Err(e) => {
-                    self.error = Some(e);
-                    return StepResult::Failure;
-                }
-            };
-            // Create children from the selected parents and mutate them.
-            let mut children: Vec<T> = parents
-                .iter()
-                .map(|&(ref a, ref b)| a.crossover(b))
-                .map(|c| c.mutate())
-                .collect();
+            let mut children: Vec<T>;
+            {
+                // Perform selection
+                let parents = match self.selector.select(self.population) {
+                    Ok(parents) => parents,
+                    Err(e) => {
+                        self.error = Some(e);
+                        return StepResult::Failure;
+                    }
+                };
+                // Create children from the selected parents and mutate them.
+                children = parents
+                    .iter()
+                    .map(|&(ref a, ref b)| a.crossover(b))
+                    .map(|c| c.mutate())
+                    .collect();
+            }
             // Kill off parts of the population at random to make room for the children
             self.kill_off(children.len());
             self.population.append(&mut children);
