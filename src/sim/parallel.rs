@@ -1,4 +1,4 @@
-// file: seq.rs
+// file: parallel.rs
 //
 // Copyright 2015-2017 The RsGenetic Developers
 //
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Contains a sequential implementation of `::sim::Simulation`,
+//! Contains a parallel implementation of `::sim::Simulation`,
 //! called a `Simulator`.
 //!
 //! To use a `Simulator`, you need a `SimulatorBuilder`, which you can
@@ -31,7 +31,7 @@ use std::time::Instant;
 use std::marker::PhantomData;
 use rayon::prelude::*;
 
-/// A sequential implementation of `::sim::Simulation`.
+/// A parallel implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
 #[derive(Debug)]
 pub struct Simulator<'a, T, F>
@@ -56,7 +56,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
     where T: Phenotype<F>,
           T: Sync,
           T: Send,
-F: Send,
+          F: Send,
           F: Fitness
 {
     type B = SimulatorBuilder<'a, T, F>;
@@ -271,7 +271,7 @@ mod tests {
     fn test_kill_off_count() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s = parallel::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .build();
         s.kill_off(10);
@@ -282,7 +282,7 @@ mod tests {
     fn test_max_iters() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s = parallel::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .set_max_iters(2)
                         .build();
@@ -294,7 +294,7 @@ mod tests {
     fn test_early_stopping() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|_| Test { f: 0 }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s = parallel::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .set_early_stop(MyFitness { f: 10 }, 5)
                         .set_max_iters(10)
@@ -307,7 +307,7 @@ mod tests {
     fn test_selector_error_propagate() {
         let selector = MaximizeSelector::new(0);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s = parallel::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .build();
         s.run();
@@ -319,7 +319,7 @@ mod tests {
         let selector = MaximizeSelector::new(0);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let population_len = population.len();
-        let s = seq::Simulator::builder(&mut population)
+        let s = parallel::Simulator::builder(&mut population)
                     .set_selector(Box::new(selector))
                     .build();
         let gotten_population = s.population();
