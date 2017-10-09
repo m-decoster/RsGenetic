@@ -32,13 +32,11 @@ use std::marker::PhantomData;
 use rayon::prelude::*;
 
 /// A parallel implementation of `::sim::Simulation`.
-/// The genetic algorithm is run in a single thread.
 #[derive(Debug)]
 pub struct Simulator<'a, T, F>
     where T: 'a + Phenotype<F>,
           T: Sync,
           T: Send,
-          F: Send,
           F: Send,
           F: Fitness
 {
@@ -217,7 +215,7 @@ impl<'a, T, F> SimulatorBuilder<'a, T, F>
     where T: Phenotype<F>,
           T: Sync,
           T: Send,
-F: Send,
+          F: Send,
           F: Fitness
 {
     /// Set the selector of the resulting `Simulator`.
@@ -252,7 +250,7 @@ impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F>
     where T: Phenotype<F>,
           T: Sync,
           T: Send,
-F: Send,
+          F: Send,
           F: Fitness
 {
     fn build(self) -> Simulator<'a, T, F> {
