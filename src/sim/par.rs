@@ -1,4 +1,4 @@
-// file: parallel.rs
+// file: par.rs
 //
 // Copyright 2015-2017 The RsGenetic Developers
 //
@@ -271,7 +271,7 @@ mod tests {
     fn test_kill_off_count() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = parallel::Simulator::builder(&mut population)
+        let mut s = par::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .build();
         s.kill_off(10);
@@ -282,7 +282,7 @@ mod tests {
     fn test_max_iters() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = parallel::Simulator::builder(&mut population)
+        let mut s = par::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .set_max_iters(2)
                         .build();
@@ -294,7 +294,7 @@ mod tests {
     fn test_early_stopping() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|_| Test { f: 0 }).collect();
-        let mut s = parallel::Simulator::builder(&mut population)
+        let mut s = par::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .set_early_stop(MyFitness { f: 10 }, 5)
                         .set_max_iters(10)
@@ -307,7 +307,7 @@ mod tests {
     fn test_selector_error_propagate() {
         let selector = MaximizeSelector::new(0);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = parallel::Simulator::builder(&mut population)
+        let mut s = par::Simulator::builder(&mut population)
                         .set_selector(Box::new(selector))
                         .build();
         s.run();
@@ -319,7 +319,7 @@ mod tests {
         let selector = MaximizeSelector::new(0);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let population_len = population.len();
-        let s = parallel::Simulator::builder(&mut population)
+        let s = par::Simulator::builder(&mut population)
                     .set_selector(Box::new(selector))
                     .build();
         let gotten_population = s.population();
