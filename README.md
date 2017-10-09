@@ -109,8 +109,7 @@ fn main() {
 
 See the `examples` directory in the repository for more elaborate examples.
 Substitute `rsgenetic::sim::seq::Simulator` for `rsgenetic::sim::par::Simulator` for a
-parallel version of the simulator. Note that you will not notice a big difference unless
-the fitness function is non-trivial. 
+parallel version of the simulator. Note that you will only notice a performance improvement if the fitness function is non-trivial.
 
 ## License
 
