@@ -22,6 +22,7 @@
 //! number of selected parents.
 
 mod max;
+mod max_unstable;
 mod tournament;
 mod stochastic;
 
@@ -29,6 +30,7 @@ use pheno::{Fitness, Phenotype};
 use std::fmt::Debug;
 
 pub use self::max::MaximizeSelector;
+pub use self::max_unstable::UnstableMaximizeSelector;
 pub use self::tournament::TournamentSelector;
 pub use self::stochastic::StochasticSelector;
 

@@ -181,6 +181,7 @@
         unused_import_braces, unused_qualifications)]
 
 extern crate rand;
+extern crate rayon;
 
 /// Contains the definition of a Phenotype.
 pub mod pheno;

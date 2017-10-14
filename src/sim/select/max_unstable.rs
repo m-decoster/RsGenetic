@@ -16,31 +16,31 @@
 
 use pheno::{Fitness, Phenotype};
 use super::*;
+use rayon::prelude::*;
 
 /// Selects best performing phenotypes from the population.
 #[derive(Clone, Copy, Debug)]
-pub struct MaximizeSelector {
+pub struct UnstableMaximizeSelector {
     count: usize,
 }
 
-impl MaximizeSelector {
-    /// Create and return a maximizing selector.
+impl UnstableMaximizeSelector {
+    /// Create and return a maximizing selector with unstable parallel sorting.
     ///
     /// Such a selector selects only the `count` best performing phenotypes
     /// as parents.
     ///
     /// * `count`: must be larger than zero, a multiple of two and less than the population size.
-    pub fn new(count: usize) -> MaximizeSelector {
-        MaximizeSelector { count: count }
+    pub fn new(count: usize) -> UnstableMaximizeSelector {
+        UnstableMaximizeSelector { count: count }
     }
 }
 
-#[deprecated(note="The `MaximizeSelector` has bad performance due to sorting. For better performance with potentially different results, \
-                   use the `UnstableMaximizeSelector`.",
-                 since="1.8.0")]
-impl<T, F> Selector<T, F> for MaximizeSelector
+impl<T, F> Selector<T, F> for UnstableMaximizeSelector
     where T: Phenotype<F>,
-          F: Fitness
+          F: Fitness,
+          T: Send,
+          T: Sync
 {
     fn select<'a>(&self, population: &'a [T]) -> Result<Parents<&'a T>, String> {
         if self.count == 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
@@ -50,7 +50,7 @@ impl<T, F> Selector<T, F> for MaximizeSelector
         }
 
         let mut borrowed: Vec<&T> = population.iter().collect();
-        borrowed.sort_by(|x, y| y.fitness().cmp(&x.fitness()));
+        borrowed.par_sort_unstable_by(|x, y| y.fitness().cmp(&x.fitness()));
         let mut index = 0;
         let mut result: Parents<&T> = Vec::new();
         while index < self.count {
@@ -69,35 +69,35 @@ mod tests {
 
     #[test]
     fn test_count_zero() {
-        let selector = MaximizeSelector::new(0);
+        let selector = UnstableMaximizeSelector::new(0);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population).is_err());
     }
 
     #[test]
     fn test_count_odd() {
-        let selector = MaximizeSelector::new(5);
+        let selector = UnstableMaximizeSelector::new(5);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population).is_err());
     }
 
     #[test]
     fn test_count_too_large() {
-        let selector = MaximizeSelector::new(100);
+        let selector = UnstableMaximizeSelector::new(100);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert!(selector.select(&population).is_err());
     }
 
     #[test]
     fn test_result_size() {
-        let selector = MaximizeSelector::new(20);
+        let selector = UnstableMaximizeSelector::new(20);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert_eq!(20, selector.select(&population).unwrap().len() * 2);
     }
 
     #[test]
     fn test_result_ok() {
-        let selector = MaximizeSelector::new(20);
+        let selector = UnstableMaximizeSelector::new(20);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         // The greatest fitness should be 99.
         assert!(selector.select(&population).unwrap()[0].0.fitness().f == 99);
@@ -105,7 +105,7 @@ mod tests {
 
     #[test]
     fn test_contains_best() {
-        let selector = MaximizeSelector::new(2);
+        let selector = UnstableMaximizeSelector::new(2);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let parents = selector.select(&population).unwrap()[0];
         assert!(parents.0.fitness() ==
