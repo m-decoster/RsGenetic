@@ -37,7 +37,7 @@ impl MaximizeSelector {
 
 #[deprecated(note="The `MaximizeSelector` has bad performance due to sorting. For better performance with potentially different results, \
                    use the `UnstableMaximizeSelector`.",
-                 since="1.8.0")]
+                 since="1.7.7")]
 impl<T, F> Selector<T, F> for MaximizeSelector
     where T: Phenotype<F>,
           F: Fitness
