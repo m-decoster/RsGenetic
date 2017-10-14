@@ -53,6 +53,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
     type B = SimulatorBuilder<'a, T, F>;
 
     /// Create builder.
+    #[allow(deprecated)]
     fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F> {
         SimulatorBuilder {
             sim: Simulator {

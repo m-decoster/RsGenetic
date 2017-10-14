@@ -29,6 +29,7 @@ mod stochastic;
 use pheno::{Fitness, Phenotype};
 use std::fmt::Debug;
 
+#[allow(deprecated)]
 pub use self::max::MaximizeSelector;
 pub use self::max_unstable::UnstableMaximizeSelector;
 pub use self::tournament::TournamentSelector;
