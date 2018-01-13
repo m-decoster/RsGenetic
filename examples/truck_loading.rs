@@ -38,7 +38,7 @@ type SchemeFitness = i32;
 
 const NUM_TRUCKS: usize = 5;
 const CAPACITY: i32 = 10;
-const PACKAGES: &'static [i32] = &[3, 8, 2, 7, 6, 1, 3];
+const PACKAGES: &[i32] = &[3, 8, 2, 7, 6, 1, 3];
 
 struct LoadingScheme {
     scheme: Scheme,
@@ -113,12 +113,13 @@ fn main() {
     let mut rng = ::rand::thread_rng();
     for _ in 0..300 {
         let mut pheno: Scheme = Vec::with_capacity(PACKAGES.len());
-        for j in 0..PACKAGES.len() {
+        for package in PACKAGES {
             let index = rng.gen::<usize>() % NUM_TRUCKS;
-            pheno.push((index, PACKAGES[j]));
+            pheno.push((index, *package));
         }
         population.push(LoadingScheme { scheme: pheno });
     }
+    #[allow(deprecated)]
     let mut s = Simulator::builder(&mut population)
                     .set_selector(Box::new(MaximizeSelector::new(10)))
                     .set_max_iters(100)

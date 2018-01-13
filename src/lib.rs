@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! # RsGenetic
+//! # `RsGenetic`
 //!
 //! `RsGenetic` provides a simple framework for genetic algorithms.
 //! You need to provide the definition of a Phenotype (also known as an Individual),

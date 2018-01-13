@@ -1,6 +1,6 @@
 [package]
 name = "rsgenetic"
-version = "1.7.9"
+version = "1.7.10"
 authors = ["Mathieu De Coster <mth.decoster@gmail.com>"]
 description = "A library providing genetic algorithm execution."
 repository = "https://github.com/m-decoster/RsGenetic"

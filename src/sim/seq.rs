@@ -99,7 +99,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
                 // Create children from the selected parents and mutate them.
                 children = parents
                     .iter()
-                    .map(|&(ref a, ref b)| a.crossover(b))
+                    .map(|&(a, b)| a.crossover(b))
                     .map(|c| c.mutate())
                     .collect();
             }
@@ -120,8 +120,8 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
             self.duration = match self.duration {
                 Some(x) => {
                     let elapsed = time_start.elapsed();
-                    let y = elapsed.as_secs() as NanoSecond * 1000_000_000 +
-                            elapsed.subsec_nanos() as NanoSecond;
+                    let y = elapsed.as_secs() as NanoSecond * 1_000_000_000 +
+                            u64::from(elapsed.subsec_nanos()) as NanoSecond;
                     Some(x + y)
                 }
                 None => None,
