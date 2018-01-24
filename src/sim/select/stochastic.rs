@@ -55,8 +55,7 @@ impl<T, F> Selector<T, F> for StochasticSelector
         let mut i = ::rand::thread_rng().gen_range::<usize>(0, population.len());
         let mut selected = 0;
         while selected < self.count {
-            result.push((&population[i],
-                         &population[(i + ratio - 1) % population.len()]));
+            result.push((&population[i], &population[(i + ratio - 1) % population.len()]));
             i += ratio - 1;
             i %= population.len();
             selected += 2;
@@ -67,7 +66,7 @@ impl<T, F> Selector<T, F> for StochasticSelector
 
 #[cfg(test)]
 mod tests {
-    use ::sim::select::*;
+    use sim::select::*;
     use test::Test;
 
     #[test]

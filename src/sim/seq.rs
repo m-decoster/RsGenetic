@@ -242,6 +242,7 @@ impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F>
 }
 
 #[cfg(test)]
+#[allow(deprecated)]
 mod tests {
     use sim::*;
     use sim::select::*;

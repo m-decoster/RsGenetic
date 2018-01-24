@@ -63,8 +63,8 @@ impl<T, F> Selector<T, F> for UnstableMaximizeSelector
 
 #[cfg(test)]
 mod tests {
-    use ::sim::select::*;
-    use ::pheno::*;
+    use sim::select::*;
+    use pheno::*;
     use test::Test;
 
     #[test]
@@ -109,9 +109,10 @@ mod tests {
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let parents = selector.select(&population).unwrap()[0];
         assert!(parents.0.fitness() ==
-                population.iter()
-            .max_by_key(|x| x.fitness())
-            .unwrap()
-            .fitness());
+                population
+                    .iter()
+                    .max_by_key(|x| x.fitness())
+                    .unwrap()
+                    .fitness());
     }
 }

@@ -33,11 +33,33 @@ impl TournamentSelector {
     /// `count` parents.
     ///
     /// * `count`: must be larger than zero, a multiple of two and less than the population size.
-    /// * `participants`: must be larger than zero and less than the population size.
+    /// * `participants`: must be larger than one and less than the population size.
+    #[deprecated(note="The `TournamentSelector` requires at least 2 participants. This is not enforced
+                       by the `new` function. You should use `new_checked` instead.",
+                 since="1.7.11")]
     pub fn new(count: usize, participants: usize) -> TournamentSelector {
         TournamentSelector {
             count: count,
             participants: participants,
+        }
+    }
+
+    /// Create and return a tournament selector.
+    ///
+    /// Such a selector runs `count / 2` tournaments, each with `participants` participants.
+    /// From each tournament, the best 2 phenotypes are selected, yielding
+    /// `count` parents.
+    ///
+    /// * `count`: must be larger than zero, a multiple of two and less than the population size.
+    /// * `participants`: must be larger than one and less than the population size.
+    pub fn new_checked(count: usize, participants: usize) -> Result<TournamentSelector, String> {
+        if count == 0 || count % 2 != 0 || participants < 2 {
+            Err(String::from("count must be larger than zero and a multiple of two; participants must be larger than one",),)
+        } else {
+            Ok(TournamentSelector {
+                   count: count,
+                   participants: participants,
+               })
         }
     }
 }
@@ -74,8 +96,9 @@ impl<T, F> Selector<T, F> for TournamentSelector
 }
 
 #[cfg(test)]
+#[allow(deprecated)]
 mod tests {
-    use ::sim::select::*;
+    use sim::select::*;
     use test::Test;
 
     #[test]
@@ -118,5 +141,29 @@ mod tests {
         let selector = TournamentSelector::new(20, 5);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         assert_eq!(20, selector.select(&population).unwrap().len() * 2);
+    }
+
+    #[test]
+    fn test_new_checked_count_0() {
+        let selector = TournamentSelector::new_checked(0, 2);
+        assert!(selector.is_err());
+    }
+
+    #[test]
+    fn test_new_checked_count_odd() {
+        let selector = TournamentSelector::new_checked(3, 2);
+        assert!(selector.is_err());
+    }
+
+    #[test]
+    fn test_new_checked_participants() {
+        let selector = TournamentSelector::new_checked(2, 1);
+        assert!(selector.is_err());
+    }
+
+    #[test]
+    fn test_new_checked_ok() {
+        let selector = TournamentSelector::new_checked(2, 2);
+        assert!(selector.is_ok());
     }
 }
