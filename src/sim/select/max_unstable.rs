@@ -100,7 +100,7 @@ mod tests {
         let selector = UnstableMaximizeSelector::new(20);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         // The greatest fitness should be 99.
-        assert!(selector.select(&population).unwrap()[0].0.fitness().f == 99);
+        assert_eq!(selector.select(&population).unwrap()[0].0.fitness().f, 99);
     }
 
     #[test]
@@ -108,11 +108,7 @@ mod tests {
         let selector = UnstableMaximizeSelector::new(2);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let parents = selector.select(&population).unwrap()[0];
-        assert!(parents.0.fitness() ==
-                population
-                    .iter()
-                    .max_by_key(|x| x.fitness())
-                    .unwrap()
-                    .fitness());
+        assert_eq!(parents.0.fitness(),
+                   population.iter().max_by_key(|x| x.fitness()).unwrap().fitness());
     }
 }

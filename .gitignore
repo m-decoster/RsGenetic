@@ -3,3 +3,6 @@ Cargo.lock
 *.rs.bk
 .DS_Store
 update_docs.sh
+
+/.idea/
+/RsGenetic.iml

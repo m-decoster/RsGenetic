@@ -40,7 +40,7 @@ pub trait Phenotype<F>: Clone
     /// Calculate the fitness of this Phenotype.
     fn fitness(&self) -> F;
     /// Perform crossover on this Phenotype, returning a new Phenotype.
-    fn crossover(&self, &Self) -> Self;
+    fn crossover(&self, other: &Self) -> Self;
     /// Perform mutation on this Phenotype, returning a new Phenotype.
     fn mutate(&self) -> Self;
 }

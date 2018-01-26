@@ -99,8 +99,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
                 // Create children from the selected parents and mutate them.
                 children = parents
                     .iter()
-                    .map(|&(a, b)| a.crossover(b))
-                    .map(|c| c.mutate())
+                    .map(|&(a, b)| a.crossover(b).mutate())
                     .collect();
             }
             // Kill off parts of the population at random to make room for the children
@@ -137,7 +136,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
     #[allow(deprecated)]
     fn checked_step(&mut self) -> StepResult {
         if self.error.is_some() {
-            panic!("Attemped to step a Simulator after an error!")
+            panic!("Attempt to step a Simulator after an error!")
         } else {
             self.step()
         }
