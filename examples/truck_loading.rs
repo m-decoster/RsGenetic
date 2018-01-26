@@ -21,8 +21,8 @@
 //! several items on these trucks, with weights in the range [1,8].
 //! We would like to use as little trucks as possible, and minimize
 //! the lost space.
-extern crate rsgenetic;
 extern crate rand;
+extern crate rsgenetic;
 
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
@@ -75,8 +75,10 @@ impl Phenotype<SchemeFitness> for LoadingScheme {
     fn crossover(&self, other: &LoadingScheme) -> LoadingScheme {
         // 2-way crossover
         let mut rng = ::rand::thread_rng();
-        let crossover_indices = (rng.gen::<usize>() % PACKAGES.len(),
-                                 rng.gen::<usize>() % PACKAGES.len());
+        let crossover_indices = (
+            rng.gen::<usize>() % PACKAGES.len(),
+            rng.gen::<usize>() % PACKAGES.len(),
+        );
         let mut crossed_over: Scheme = vec![(0, 0); PACKAGES.len()];
         for i in 0..crossover_indices.0 {
             crossed_over[i] = self.scheme[i];
@@ -87,7 +89,9 @@ impl Phenotype<SchemeFitness> for LoadingScheme {
         for i in crossover_indices.1..PACKAGES.len() {
             crossed_over[i] = self.scheme[i];
         }
-        LoadingScheme { scheme: crossed_over }
+        LoadingScheme {
+            scheme: crossed_over,
+        }
     }
 
     fn mutate(&self) -> LoadingScheme {
@@ -95,16 +99,18 @@ impl Phenotype<SchemeFitness> for LoadingScheme {
         let mut rng = ::rand::thread_rng();
         LoadingScheme {
             scheme: self.scheme
-                        .iter()
-                        .map(|&(_, size)| (rng.gen::<usize>() % NUM_TRUCKS, size))
-                        .collect(),
+                .iter()
+                .map(|&(_, size)| (rng.gen::<usize>() % NUM_TRUCKS, size))
+                .collect(),
         }
     }
 }
 
 impl Clone for LoadingScheme {
     fn clone(&self) -> LoadingScheme {
-        LoadingScheme { scheme: self.scheme.clone() }
+        LoadingScheme {
+            scheme: self.scheme.clone(),
+        }
     }
 }
 
@@ -121,16 +127,18 @@ fn main() {
     }
     #[allow(deprecated)]
     let mut s = Simulator::builder(&mut population)
-                    .set_selector(Box::new(MaximizeSelector::new(10)))
-                    .set_max_iters(100)
-                    .build();
+        .set_selector(Box::new(MaximizeSelector::new(10)))
+        .set_max_iters(100)
+        .build();
     s.run();
     let result = s.get().unwrap();
     let time = s.time();
     println!("Execution time: {} ns.", time.unwrap());
-    println!("Result: {:?} | Fitness: {}.",
-             result.scheme,
-             result.fitness());
+    println!(
+        "Result: {:?} | Fitness: {}.",
+        result.scheme,
+        result.fitness()
+    );
     let mut trucks: Vec<_> = vec![0; NUM_TRUCKS];
     for &(index, size) in &result.scheme {
         trucks[index] += size;

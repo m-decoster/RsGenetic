@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::{Phenotype, Fitness};
+use pheno::{Fitness, Phenotype};
 use super::*;
 use rand::Rng;
 
@@ -40,14 +40,17 @@ impl StochasticSelector {
 }
 
 impl<T, F> Selector<T, F> for StochasticSelector
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     fn select<'a>(&self, population: &'a [T]) -> Result<Parents<&'a T>, String> {
         if self.count == 0 || self.count % 2 != 0 || self.count >= population.len() {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
-                                multiple of two and less than the population size.",
-                               self.count));
+            return Err(format!(
+                "Invalid parameter `count`: {}. Should be larger than zero, a \
+                 multiple of two and less than the population size.",
+                self.count
+            ));
         }
 
         let ratio = population.len() / self.count;
@@ -55,7 +58,10 @@ impl<T, F> Selector<T, F> for StochasticSelector
         let mut i = ::rand::thread_rng().gen_range::<usize>(0, population.len());
         let mut selected = 0;
         while selected < self.count {
-            result.push((&population[i], &population[(i + ratio - 1) % population.len()]));
+            result.push((
+                &population[i],
+                &population[(i + ratio - 1) % population.len()],
+            ));
             i += ratio - 1;
             i %= population.len();
             selected += 2;

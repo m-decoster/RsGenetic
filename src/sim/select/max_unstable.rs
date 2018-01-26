@@ -37,16 +37,19 @@ impl UnstableMaximizeSelector {
 }
 
 impl<T, F> Selector<T, F> for UnstableMaximizeSelector
-    where T: Phenotype<F>,
-          F: Fitness,
-          T: Send,
-          T: Sync
+where
+    T: Phenotype<F>,
+    F: Fitness,
+    T: Send,
+    T: Sync,
 {
     fn select<'a>(&self, population: &'a [T]) -> Result<Parents<&'a T>, String> {
         if self.count == 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
-                                multiple of two and less than half the population size.",
-                               self.count));
+            return Err(format!(
+                "Invalid parameter `count`: {}. Should be larger than zero, a \
+                 multiple of two and less than half the population size.",
+                self.count
+            ));
         }
 
         let mut borrowed: Vec<&T> = population.iter().collect();
@@ -108,7 +111,13 @@ mod tests {
         let selector = UnstableMaximizeSelector::new(2);
         let population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let parents = selector.select(&population).unwrap()[0];
-        assert_eq!(parents.0.fitness(),
-                   population.iter().max_by_key(|x| x.fitness()).unwrap().fitness());
+        assert_eq!(
+            parents.0.fitness(),
+            population
+                .iter()
+                .max_by_key(|x| x.fitness())
+                .unwrap()
+                .fitness()
+        );
     }
 }

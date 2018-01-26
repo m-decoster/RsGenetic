@@ -41,7 +41,7 @@ macro_rules! implement_fitness_int {
                 fn zero() -> $t {
                     0
                 }
-    
+
                 fn abs_diff(&self, other: &$t) -> $t {
                     if self > other {
                         self - other

@@ -31,7 +31,9 @@ impl Fitness for MyFitness {
     }
 
     fn abs_diff(&self, other: &Self) -> Self {
-        MyFitness { f: (self.f - other.f).abs() }
+        MyFitness {
+            f: (self.f - other.f).abs(),
+        }
     }
 }
 
@@ -46,7 +48,9 @@ impl Phenotype<MyFitness> for Test {
     }
 
     fn crossover(&self, t: &Test) -> Test {
-        Test { f: cmp::min(self.f, t.f) }
+        Test {
+            f: cmp::min(self.f, t.f),
+        }
     }
 
     fn mutate(&self) -> Test {
