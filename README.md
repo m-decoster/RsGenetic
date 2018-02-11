@@ -109,6 +109,13 @@ fn main() {
 
 See the `examples` directory in the repository for more elaborate examples.
 
+## Note
+
+This library is currently in maintenance mode. There have been some indications that the API
+needs an update to be more flexible, which would require an incrementation of the major version number (#23, #30).
+Unfortunately, I currently do not have the time to implement such a redesign. I will however continue to reply to issues
+and merge pull requests, but features might not be implemented by me, depending on their size.
+
 ## License
 
 Licensed under either of
@@ -117,13 +124,6 @@ Licensed under either of
  * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
-
-## Note
-
-This library is currently in maintenance mode. There have been some indications that the API
-needs an update to be more flexible, which would require an incrementation of the major version number (#23, #30).
-Unfortunately, I currently do not have the time to implement such a redesign. I will however continue to reply to issues
-and merge pull requests, but features might not be implemented by me, depending on their size.
 
 ### Contribution
 
