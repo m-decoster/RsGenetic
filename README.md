@@ -118,6 +118,13 @@ Licensed under either of
 
 at your option.
 
+## Note
+
+This library is currently in maintenance mode. There have been some indications that the API
+needs an update to be more flexible, which would require an incrementation of the major version number (#23, #30).
+Unfortunately, I currently do not have the time to implement such a redesign. I will however continue to reply to issues
+and merge pull requests, but features might not be implemented by me, depending on their size.
+
 ### Contribution
 
 Contributions are always welcome. Take a look at the issues for any enhancements that need to be
