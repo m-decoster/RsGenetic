@@ -35,12 +35,13 @@ pub trait Fitness: Ord + Eq {
 ///
 /// If reasonable, it is recommended to have your implementation derive `Copy`.
 pub trait Phenotype<F>: Clone
-    where F: Fitness
+where
+    F: Fitness,
 {
     /// Calculate the fitness of this Phenotype.
     fn fitness(&self) -> F;
     /// Perform crossover on this Phenotype, returning a new Phenotype.
-    fn crossover(&self, &Self) -> Self;
+    fn crossover(&self, other: &Self) -> Self;
     /// Perform mutation on this Phenotype, returning a new Phenotype.
     fn mutate(&self) -> Self;
 }

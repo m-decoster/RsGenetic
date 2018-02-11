@@ -26,7 +26,9 @@ mod earlystopper;
 /// For this library, only `Simulation` objects use this `Builder`.
 pub trait Builder<T: ?Sized> {
     /// Return the result.
-    fn build(self) -> T where T: Sized;
+    fn build(self) -> T
+    where
+        T: Sized;
 }
 
 /// Simulation run time is defined in nanoseconds.
@@ -36,7 +38,7 @@ pub type NanoSecond = i64;
 pub type SimResult<'a, T> = Result<&'a T, &'a str>;
 
 /// The result of running a single step.
-#[derive(Clone, Copy, PartialEq,Eq,Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum StepResult {
     /// The step was successful, but the simulation has not finished.
     Success,
@@ -47,7 +49,7 @@ pub enum StepResult {
 }
 
 /// The result of running an entire simulation.
-#[derive(Clone, Copy, PartialEq,Eq,Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum RunResult {
     /// An error occurred somewhere during simulation.
     Failure,
@@ -57,8 +59,9 @@ pub enum RunResult {
 
 /// A `Simulation` is an execution of a genetic algorithm.
 pub trait Simulation<'a, T, F>
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     /// A `Builder` is used to create instances of a `Simulation`.
     type B: Builder<Self>;
@@ -67,7 +70,9 @@ pub trait Simulation<'a, T, F>
     ///
     /// `population` is a required parameter of any `Simulation`, which
     /// is why it is a parameter of this function.
-    fn builder(population: &'a mut Vec<T>) -> Self::B where Self: Sized;
+    fn builder(population: &'a mut Vec<T>) -> Self::B
+    where
+        Self: Sized;
     /// Run the simulation completely.
     fn run(&mut self) -> RunResult;
     /// Make one step in the simulation. This function returns a `StepResult`:

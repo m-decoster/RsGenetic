@@ -18,8 +18,8 @@
 //! that finds the maximum of the function f(x) = 10-(x+3)^2 (which is (-3,10)).
 //! This example is the same as the `max_parabole` example, but it runs in steps
 //! and prints out intermediate results.
-extern crate rsgenetic;
 extern crate rand;
+extern crate rsgenetic;
 
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
@@ -58,7 +58,9 @@ impl Fitness for MyFitness {
     }
 
     fn abs_diff(&self, other: &MyFitness) -> MyFitness {
-        MyFitness { f: (self.f - other.f).abs() }
+        MyFitness {
+            f: (self.f - other.f).abs(),
+        }
     }
 }
 
@@ -69,12 +71,16 @@ struct MyData {
 impl Phenotype<MyFitness> for MyData {
     fn fitness(&self) -> MyFitness {
         // Calculate the function here, because it's what we wish to maximize.
-        MyFitness { f: 10.0 - ((self.x + 3.0) * (self.x + 3.0)) }
+        MyFitness {
+            f: 10.0 - ((self.x + 3.0) * (self.x + 3.0)),
+        }
     }
 
     fn crossover(&self, other: &MyData) -> MyData {
         // We take the average for crossover.
-        MyData { x: (self.x + other.x) / 2.0 }
+        MyData {
+            x: (self.x + other.x) / 2.0,
+        }
     }
 
     fn mutate(&self) -> MyData {
@@ -101,14 +107,16 @@ impl Clone for MyData {
 fn main() {
     let mut population = (-300..300).map(|i| MyData { x: f64::from(i) }).collect();
     let mut s = Simulator::builder(&mut population)
-                    .set_selector(Box::new(StochasticSelector::new(10)))
-                    .set_max_iters(50)
-                    .build();
+        .set_selector(Box::new(StochasticSelector::new(10)))
+        .set_max_iters(50)
+        .build();
     while let StepResult::Success = s.checked_step() {
         let result = s.get().unwrap();
-        println!("Intermediate result: ({}, {}).",
-                 result.x,
-                 result.fitness().f);
+        println!(
+            "Intermediate result: ({}, {}).",
+            result.x,
+            result.fitness().f
+        );
     }
     let result = s.get().unwrap();
     let time = s.time();

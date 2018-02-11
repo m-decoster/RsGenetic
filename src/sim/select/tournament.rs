@@ -57,27 +57,32 @@ impl TournamentSelector {
             Err(String::from("count must be larger than zero and a multiple of two; participants must be larger than one",),)
         } else {
             Ok(TournamentSelector {
-                   count: count,
-                   participants: participants,
-               })
+                count: count,
+                participants: participants,
+            })
         }
     }
 }
 
 impl<T, F> Selector<T, F> for TournamentSelector
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     fn select<'a>(&self, population: &'a [T]) -> Result<Parents<&'a T>, String> {
         if self.count == 0 || self.count % 2 != 0 || self.count * 2 >= population.len() {
-            return Err(format!("Invalid parameter `count`: {}. Should be larger than zero, a \
-                                multiple of two and less than half the population size.",
-                               self.count));
+            return Err(format!(
+                "Invalid parameter `count`: {}. Should be larger than zero, a \
+                 multiple of two and less than half the population size.",
+                self.count
+            ));
         }
         if self.participants == 0 || self.participants >= population.len() {
-            return Err(format!("Invalid parameter `participants`: {}. Should be larger than \
-                                zero and less than the population size.",
-                               self.participants));
+            return Err(format!(
+                "Invalid parameter `participants`: {}. Should be larger than \
+                 zero and less than the population size.",
+                self.participants
+            ));
         }
 
         let mut result: Parents<&T> = Vec::new();

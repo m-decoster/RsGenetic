@@ -40,8 +40,9 @@ pub type Parents<T> = Vec<(T, T)>;
 
 /// A `Selector` can select `Parents` for a new iteration of a `Simulation`.
 pub trait Selector<T, F>: Debug
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     /// Select elements from a `population` for breeding.
     ///

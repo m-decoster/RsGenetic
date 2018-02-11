@@ -34,8 +34,9 @@ use std::marker::PhantomData;
 /// The genetic algorithm is run in a single thread.
 #[derive(Debug)]
 pub struct Simulator<'a, T, F>
-    where T: 'a + Phenotype<F>,
-          F: Fitness
+where
+    T: 'a + Phenotype<F>,
+    F: Fitness,
 {
     population: &'a mut Vec<T>,
     iter_limit: IterLimit,
@@ -47,8 +48,9 @@ pub struct Simulator<'a, T, F>
 }
 
 impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     type B = SimulatorBuilder<'a, T, F>;
 
@@ -72,9 +74,11 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
         let time_start;
 
         if self.population.is_empty() {
-            self.error = Some("Tried to run a simulator without a population, or the \
-                                       population was empty."
-                                      .to_string());
+            self.error = Some(
+                "Tried to run a simulator without a population, or the \
+                 population was empty."
+                    .to_string(),
+            );
             return StepResult::Failure;
         }
 
@@ -99,8 +103,7 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
                 // Create children from the selected parents and mutate them.
                 children = parents
                     .iter()
-                    .map(|&(a, b)| a.crossover(b))
-                    .map(|c| c.mutate())
+                    .map(|&(a, b)| a.crossover(b).mutate())
                     .collect();
             }
             // Kill off parts of the population at random to make room for the children
@@ -120,8 +123,8 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
             self.duration = match self.duration {
                 Some(x) => {
                     let elapsed = time_start.elapsed();
-                    let y = elapsed.as_secs() as NanoSecond * 1_000_000_000 +
-                            u64::from(elapsed.subsec_nanos()) as NanoSecond;
+                    let y = elapsed.as_secs() as NanoSecond * 1_000_000_000
+                        + u64::from(elapsed.subsec_nanos()) as NanoSecond;
                     Some(x + y)
                 }
                 None => None,
@@ -131,13 +134,12 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
         } else {
             StepResult::Done
         }
-
     }
 
     #[allow(deprecated)]
     fn checked_step(&mut self) -> StepResult {
         if self.error.is_some() {
-            panic!("Attemped to step a Simulator after an error!")
+            panic!("Attempt to step a Simulator after an error!")
         } else {
             self.step()
         }
@@ -176,8 +178,9 @@ impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
 }
 
 impl<'a, T, F> Simulator<'a, T, F>
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     /// Kill off phenotypes using stochastic universal sampling.
     fn kill_off(&mut self, count: usize) {
@@ -194,15 +197,17 @@ impl<'a, T, F> Simulator<'a, T, F>
 /// A `Builder` for the `Simulator` type.
 #[derive(Debug)]
 pub struct SimulatorBuilder<'a, T, F>
-    where T: 'a + Phenotype<F>,
-          F: Fitness
+where
+    T: 'a + Phenotype<F>,
+    F: Fitness,
 {
     sim: Simulator<'a, T, F>,
 }
 
 impl<'a, T, F> SimulatorBuilder<'a, T, F>
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     /// Set the selector of the resulting `Simulator`.
     ///
@@ -233,8 +238,9 @@ impl<'a, T, F> SimulatorBuilder<'a, T, F>
 }
 
 impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F>
-    where T: Phenotype<F>,
-          F: Fitness
+where
+    T: Phenotype<F>,
+    F: Fitness,
 {
     fn build(self) -> Simulator<'a, T, F> {
         self.sim
