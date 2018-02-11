@@ -20,8 +20,7 @@
 use pheno::*;
 use std::cmp;
 
-#[derive(Clone, Copy, PartialOrd, Ord, PartialEq, Eq)]
-#[cfg_attr(test, derive(Debug))]
+#[derive(Clone, Copy, Debug, PartialOrd, Ord, PartialEq, Eq)]
 pub struct MyFitness {
     pub f: i64,
 }

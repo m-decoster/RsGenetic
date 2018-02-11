@@ -185,4 +185,5 @@ pub mod pheno;
 /// Contains implementations of Simulators, which can run genetic algorithms.
 pub mod sim;
 /// Contains code used by unit tests.
+#[cfg(test)]
 mod test;
