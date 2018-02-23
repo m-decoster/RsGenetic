@@ -12,4 +12,4 @@ documentation = "https://docs.rs/rsgenetic/"
 
 [dependencies]
 rand = "0.3"
-rayon = "0.8.2"
+rayon = "1.0.0"
