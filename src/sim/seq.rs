@@ -27,8 +27,10 @@ use super::*;
 use super::select::*;
 use super::iterlimit::*;
 use super::earlystopper::*;
-use std::time::Instant;
+use std::boxed::Box;
 use std::marker::PhantomData;
+use rand::prng::XorShiftRng;
+
 
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
@@ -42,7 +44,6 @@ where
     iter_limit: IterLimit,
     selector: Box<Selector<T, F>>,
     earlystopper: Option<EarlyStopper<F>>,
-    duration: Option<NanoSecond>,
     error: Option<String>,
     phantom: PhantomData<&'a T>,
 }
@@ -63,7 +64,6 @@ where
                 iter_limit: IterLimit::new(100),
                 selector: Box::new(MaximizeSelector::new(3)),
                 earlystopper: None,
-                duration: Some(0),
                 error: None,
                 phantom: PhantomData::default(),
             },
@@ -71,7 +71,6 @@ where
     }
 
     fn step(&mut self) -> StepResult {
-        let time_start;
 
         if self.population.is_empty() {
             self.error = Some(
@@ -88,8 +87,7 @@ where
         };
 
         if !should_stop {
-            time_start = Instant::now();
-
+    
             let mut children: Vec<T>;
             {
                 // Perform selection
@@ -120,15 +118,6 @@ where
             }
 
             self.iter_limit.inc();
-            self.duration = match self.duration {
-                Some(x) => {
-                    let elapsed = time_start.elapsed();
-                    let y = elapsed.as_secs() as NanoSecond * 1_000_000_000
-                        + u64::from(elapsed.subsec_nanos()) as NanoSecond;
-                    Some(x + y)
-                }
-                None => None,
-            };
 
             StepResult::Success // Not done yet, but successful
         } else {
@@ -169,7 +158,7 @@ where
     }
 
     fn time(&self) -> Option<NanoSecond> {
-        self.duration
+        None
     }
 
     fn population(&self) -> Vec<T> {
@@ -185,7 +174,7 @@ where
     /// Kill off phenotypes using stochastic universal sampling.
     fn kill_off(&mut self, count: usize) {
         let ratio = self.population.len() / count;
-        let mut i = ::rand::thread_rng().gen_range::<usize>(0, self.population.len());
+        let mut i = XorShiftRng::new_unseeded().gen_range::<usize>(0, self.population.len());
         for _ in 0..count {
             self.population.swap_remove(i);
             i += ratio;
