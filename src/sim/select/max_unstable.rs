@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::{Fitness, Phenotype};
 use super::*;
+use pheno::{Fitness, Phenotype};
 use rayon::prelude::*;
 
 /// Selects best performing phenotypes from the population.
@@ -66,8 +66,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use sim::select::*;
     use pheno::*;
+    use sim::select::*;
     use test::Test;
 
     #[test]

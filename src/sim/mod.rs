@@ -16,11 +16,11 @@
 
 use pheno::{Fitness, Phenotype};
 
-pub mod seq;
-pub mod select;
-pub mod types;
-mod iterlimit;
 mod earlystopper;
+mod iterlimit;
+pub mod select;
+pub mod seq;
+pub mod types;
 
 /// A `Builder` can create new instances of an object.
 /// For this library, only `Simulation` objects use this `Builder`.
@@ -84,9 +84,11 @@ where
     /// Be careful to check for failures when running `step()` in a loop,
     /// to avoid infinite loops. To run the simulation until convergence or until
     /// reaching a maximum number of iterations, consider using `run()` instead:
-    #[deprecated(note="To encourage checking the `StepResult` while maintaining backwards \
-                 compatibility, this function has been deprecated in favour of `checked_step`.",
-                 since="1.7.0")]
+    #[deprecated(
+        note = "To encourage checking the `StepResult` while maintaining backwards \
+                compatibility, this function has been deprecated in favour of `checked_step`.",
+        since = "1.7.0"
+    )]
     fn step(&mut self) -> StepResult;
     /// Make one step in the simulation. This function returns a `StepResult`:
     ///
