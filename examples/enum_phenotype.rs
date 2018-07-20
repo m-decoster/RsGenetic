@@ -76,10 +76,10 @@ fn main() {
         population.push(MyPhenotype { variant: MyVariant::Variant2, value: i })
     }
     #[allow(deprecated)]
-    let mut s = Simulator::builder(&mut population)
-        .set_selector(Box::new(MaximizeSelector::new(10)))
-        .set_max_iters(100)
-        .build();
+    let mut builder = Simulator::builder(&mut population);
+    builder.with_selector(Box::new(UnstableMaximizeSelector::new(10)))
+           .with_max_iters(100);
+    let mut s = builder.build();
     s.run();
     let result = s.get().unwrap();
     let time = s.time();

@@ -104,10 +104,10 @@ impl Clone for MyData {
 
 fn main() {
     let mut population = (-300..300).map(|i| MyData { x: f64::from(i) }).collect();
-    let mut s = Simulator::builder(&mut population)
-        .set_selector(Box::new(StochasticSelector::new(10)))
-        .set_max_iters(50)
-        .build();
+    let mut builder = Simulator::builder(&mut population);
+    builder.with_selector(Box::new(StochasticSelector::new(10)))
+           .with_max_iters(50);
+    let mut s = builder.build();
     s.run();
     let result = s.get().unwrap();
     let time = s.time();

@@ -212,7 +212,19 @@ where
     /// Set the selector of the resulting `Simulator`.
     ///
     /// Returns itself for chaining purposes.
+    #[deprecated(note="The consuming builder functions may be removed in a future release.
+                       Use the functions that start with `with_` instead.",
+                 since="1.8.0")]
     pub fn set_selector(mut self, sel: Box<Selector<T, F>>) -> Self {
+        self.sim.selector = sel;
+        self
+    }
+
+    /// Set the selector of the resulting `Simulator`.
+    ///
+    /// Returns a mutable reference to itself for chaining purposes.
+    /// Does not consume the builder.
+    pub fn with_selector(&mut self, sel: Box<Selector<T, F>>) -> &mut Self {
         self.sim.selector = sel;
         self
     }
@@ -222,7 +234,21 @@ where
     /// The `Simulator` will stop running after this number of iterations.
     ///
     /// Returns itself for chaining purposes.
+    #[deprecated(note="The consuming builder functions may be removed in a future release.
+                       Use the functions that start with `with_` instead.",
+                 since="1.8.0")]
     pub fn set_max_iters(mut self, i: u64) -> Self {
+        self.sim.iter_limit = IterLimit::new(i);
+        self
+    }
+
+    /// Set the maximum number of iterations of the resulting `Simulator`.
+    ///
+    /// The `Simulator` will stop running after this number of iterations.
+    ///
+    /// Returns a mutable reference to itself for chaining purposes.
+    /// Does not consume the builder.
+    pub fn with_max_iters(&mut self, i: u64) -> &mut Self {
         self.sim.iter_limit = IterLimit::new(i);
         self
     }
@@ -231,7 +257,20 @@ where
     /// is smaller than `delta`, the simulator will stop running.
     ///
     /// Returns itself for chaining purposes.
+    #[deprecated(note="The consuming builder functions may be removed in a future release.
+                       Use the functions that start with `with_` instead.",
+                 since="1.8.0")]
     pub fn set_early_stop(mut self, delta: F, n_iters: u64) -> Self {
+        self.sim.earlystopper = Some(EarlyStopper::new(delta, n_iters));
+        self
+    }
+
+    /// Set early stopping. If for `n_iters` iterations, the change in the highest fitness
+    /// is smaller than `delta`, the simulator will stop running.
+    ///
+    /// Returns a mutable reference to itself for chaining purposes.
+    /// Does not consume the builder.
+    pub fn with_early_stop(&mut self, delta: F, n_iters: u64) -> &mut Self {
         self.sim.earlystopper = Some(EarlyStopper::new(delta, n_iters));
         self
     }
