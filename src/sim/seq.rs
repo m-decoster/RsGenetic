@@ -67,7 +67,6 @@ where
 
 
 
-#[cfg(not(target="wasm32-unknown-unknown"))]
 impl<'a, T, F, S> Simulation<'a, T, F, S> for Simulator<'a, T, F, S>
 where
     T: Phenotype<F>,
@@ -77,6 +76,7 @@ where
     type B = SimulatorBuilder<'a, T, F, S>;
     
     #[allow(deprecated)]
+    #[cfg(not(target="wasm32-unknown-unknown"))]
     fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S> {
         SimulatorBuilder {
             sim: Simulator {
@@ -92,139 +92,9 @@ where
         }
     }
 
-    /// Create builder.
-    #[allow(deprecated)]
-    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
-        SimulatorBuilder {
-            sim: Simulator {
-                population: population,
-                iter_limit: IterLimit::new(100),
-                selector: Box::new(MaximizeSelector::new(3)),
-                earlystopper: None,
-                error: None,
-                phantom: PhantomData::default(),
-                stats: None,
-                rng: Rc::new(RefCell::new(OsRng::new().unwrap())),
-            },
-        }
-    }
-
-    fn step(&mut self) -> StepResult {
-
-        if self.population.is_empty() {
-            self.error = Some(
-                "Tried to run a simulator without a population, or the \
-                 population was empty."
-                    .to_string(),
-            );
-            return StepResult::Failure;
-        }
-
-        let should_stop = match self.earlystopper {
-            Some(ref x) => self.iter_limit.reached() || x.reached(),
-            None => self.iter_limit.reached(),
-        };
-
-        if let Some(ref mut s) = self.stats {
-            s.borrow_mut().before_step(&self.population.into_iter().map(|p| p.fitness()));
-        }
-
-        if !should_stop {
-    
-            let mut children: Vec<T>;
-            {
-                // Perform selection
-                let parents = match self.selector.select(self.population) {
-                    Ok(parents) => parents,
-                    Err(e) => {
-                        self.error = Some(e);
-                        return StepResult::Failure;
-                    }
-                };
-                // Create children from the selected parents and mutate them.
-                children = parents
-                    .iter()
-                    .map(|&(a, b)| a.crossover(b).mutate())
-                    .collect();
-            }
-            // Kill off parts of the population at random to make room for the children
-            self.kill_off(children.len());
-            self.population.append(&mut children);
-
-            if let Some(ref mut stopper) = self.earlystopper {
-                let highest_fitness = self.population
-                    .iter()
-                    .max_by_key(|x| x.fitness())
-                    .unwrap()
-                    .fitness();
-                stopper.update(highest_fitness);
-            }
-
-            self.iter_limit.inc();
-
-            if let Some(ref mut s) = self.stats {
-                s.borrow_mut().after_step(&self.population.into_iter().map(|p| p.fitness()));
-            }
-
-            StepResult::Success // Not done yet, but successful
-        } else {
-            StepResult::Done
-        }
-    }
-
-    #[allow(deprecated)]
-    fn checked_step(&mut self) -> StepResult {
-        if self.error.is_some() {
-            panic!("Attempt to step a Simulator after an error!")
-        } else {
-            self.step()
-        }
-    }
-
-    #[allow(deprecated)]
-    fn run(&mut self) -> RunResult {
-        // Loop until Failure or Done.
-        loop {
-            match self.step() {
-                StepResult::Success => {}
-                StepResult::Failure => return RunResult::Failure,
-                StepResult::Done => return RunResult::Done,
-            }
-        }
-    }
-
-    fn get(&'a self) -> SimResult<'a, T> {
-        match self.error {
-            Some(ref e) => Err(e),
-            None => Ok(self.population.iter().max_by_key(|x| x.fitness()).unwrap()),
-        }
-    }
-
-    fn iterations(&self) -> u64 {
-        self.iter_limit.get()
-    }
-
-    fn time(&self) -> Option<NanoSecond> {
-        None
-    }
-
-    fn population(&self) -> Vec<T> {
-        self.population.clone()
-    }
-}
-
-#[cfg(target="wasm32-unknown-unknown")]
-impl<'a, T, F, S> Simulation<'a, T, F, S> for Simulator<'a, T, F, S>
-where
-    T: Phenotype<F>,
-    F: Fitness,
-    S: StatsCollector,
-{
-    type B = SimulatorBuilder<'a, T, F, S>;
-
-        /// Create builder.
-    #[allow(deprecated)]
-    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S, XorShiftRng> {
+    #[cfg(target="wasm32-unknown-unknown")]
+    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S> {
+        let seed = [0u32, 0u32, 0u32, 1u32];
         SimulatorBuilder {
             sim: Simulator {
                 population: population,
@@ -234,26 +104,15 @@ where
                 error: None,
                 phantom: PhantomData::default(),
                 stats: sc,
-                rng: XorShiftRng::from_seed([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
+                rng: Rc::new(RefCell::new(XorShiftRng::from_seed(seed).unwrap())),
             },
         }
     }
 
     /// Create builder.
     #[allow(deprecated)]
-    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, NoStats, XorShiftRng> {
-        SimulatorBuilder {
-            sim: Simulator {
-                population: population,
-                iter_limit: IterLimit::new(100),
-                selector: Box::new(MaximizeSelector::new(3)),
-                earlystopper: None,
-                error: None,
-                phantom: PhantomData::default(),
-                stats: None,
-                rng: XorShiftRng::from_seed([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
-            },
-        }
+    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
+        Self::builder_with_stats(population, None)
     }
 
     fn step(&mut self) -> StepResult {
