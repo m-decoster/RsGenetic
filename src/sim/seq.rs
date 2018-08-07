@@ -25,6 +25,7 @@ use pheno::Fitness;
 use stats::StatsCollector;
 
 use rand::prelude::*;
+use rand::rngs::*;
 use stats::NoStats;
 use rand::Rng;
 use rand::SeedableRng;
@@ -35,14 +36,14 @@ use super::iterlimit::*;
 use super::earlystopper::*;
 use std::boxed::Box;
 use std::marker::PhantomData;
-use rand::rngs::OsRng;
+
 use std::rc::Rc;
 use std::cell::RefCell;
 
-#[cfg(not(target="wasm32-unknown-unknown"))]
+#[cfg(not(target_arch="wasm32"))]
 type RandomGenerator = OsRng;
 
-#[cfg(target="wasm32-unknown-unknown")]
+#[cfg(target_arch="wasm32")]
 type RandomGenerator = XorShiftRng;
 
 
@@ -76,7 +77,7 @@ where
     type B = SimulatorBuilder<'a, T, F, S>;
     
     #[allow(deprecated)]
-    #[cfg(not(target="wasm32-unknown-unknown"))]
+    #[cfg(not(target_arch="wasm32"))]
     fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S> {
         SimulatorBuilder {
             sim: Simulator {
@@ -92,9 +93,9 @@ where
         }
     }
 
-    #[cfg(target="wasm32-unknown-unknown")]
+    #[cfg(target_arch="wasm32")]
     fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S> {
-        let seed = [0u32, 0u32, 0u32, 1u32];
+        let seed = [0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 1u8];
         SimulatorBuilder {
             sim: Simulator {
                 population: population,
@@ -104,7 +105,7 @@ where
                 error: None,
                 phantom: PhantomData::default(),
                 stats: sc,
-                rng: Rc::new(RefCell::new(XorShiftRng::from_seed(seed).unwrap())),
+                rng: Rc::new(RefCell::new(XorShiftRng::from_seed(seed))),
             },
         }
     }
@@ -324,7 +325,6 @@ mod tests {
     use sim::select::*;
     use test::Test;
     use test::MyFitness;
-    use rand::OsRng;
     use stats::NoStats;
 
 
