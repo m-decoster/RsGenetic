@@ -65,7 +65,7 @@ pub trait Simulation<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
-    S: StatsCollector,
+    S: StatsCollector<F>,
 {
     /// A `Builder` is used to create instances of a `Simulation`.
     type B: Builder<Self>;

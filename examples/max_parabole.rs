@@ -25,7 +25,8 @@ use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
-use rsgenetic::stats::NoStats;
+use rsgenetic::stats::{StatsCollector, NoStats};
+
 
 struct MyFitness {
     f: f64,
@@ -62,6 +63,8 @@ impl Fitness for MyFitness {
         }
     }
 }
+impl StatsCollector<MyFitness> for NoStats {}
+
 
 struct MyData {
     x: f64,

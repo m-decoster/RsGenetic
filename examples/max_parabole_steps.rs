@@ -24,7 +24,7 @@ extern crate rsgenetic;
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
-use rsgenetic::stats::NoStats;
+use rsgenetic::stats::{NoStats, StatsCollector};
 use rsgenetic::pheno::*;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
@@ -64,6 +64,8 @@ impl Fitness for MyFitness {
         }
     }
 }
+impl StatsCollector<MyFitness> for NoStats {}
+
 
 struct MyData {
     x: f64,

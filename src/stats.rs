@@ -18,21 +18,22 @@ use pheno::Fitness;
 
 /// A collector for potential stats on the population's fitness or timing.
 ///
-pub trait StatsCollector
+pub trait StatsCollector<F: Fitness>
 {
     ///Executed before a step, passing the current population's fitness
     ///
-    fn before_step<F>(&mut self, pop_fitness: &Iterator<Item = F>) where
-    F: Fitness {}
+    fn before_step(&mut self, pop_fitness: &[F]) {}
 
     /// Executed after a step passing in the current population's fitness.
     ///
-    fn after_step<F>(&mut self, pop_fitness: &Iterator<Item = F>) where
-    F: Fitness {}
+    fn after_step(&mut self, pop_fitness: &[F]) {}
 }
 
 /// A NOOP implementation for common fitness types
 /// 
 #[derive(Debug, Clone, Copy)]
 pub struct NoStats {}
-impl StatsCollector for NoStats {}
+impl StatsCollector<i32> for NoStats {}
+impl StatsCollector<i64> for NoStats {}
+impl StatsCollector<u32> for NoStats {}
+impl StatsCollector<u64> for NoStats {}

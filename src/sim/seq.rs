@@ -53,7 +53,7 @@ pub struct Simulator<'a, T, F, S>
 where
     T: 'a + Phenotype<F>,
     F: Fitness,
-    S: StatsCollector,
+    S: StatsCollector<F>,
 {
     population: &'a mut Vec<T>,
     iter_limit: IterLimit,
@@ -71,7 +71,7 @@ impl<'a, T, F, S> Simulation<'a, T, F, S> for Simulator<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
-    S: StatsCollector,
+    S: StatsCollector<F>,
 {
     type B = SimulatorBuilder<'a, T, F, S>;
     
@@ -132,7 +132,8 @@ where
         };
 
         if let Some(ref mut s) = self.stats {
-            s.borrow_mut().before_step(&self.population.into_iter().map(|p| p.fitness()));
+            let fitness: Vec<F> = self.population.into_iter().map(|p| p.fitness()).collect();
+            s.borrow_mut().before_step(&fitness);
         }
 
         if !should_stop {
@@ -169,7 +170,8 @@ where
             self.iter_limit.inc();
 
             if let Some(ref mut s) = self.stats {
-                s.borrow_mut().after_step(&self.population.into_iter().map(|p| p.fitness()));
+                let fitness: Vec<F> = self.population.into_iter().map(|p| p.fitness()).collect();
+                s.borrow_mut().after_step(&fitness);
             }
 
             StepResult::Success // Not done yet, but successful
@@ -223,7 +225,7 @@ impl<'a, T, F, S> Simulator<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
-    S: StatsCollector,
+    S: StatsCollector<F>,
 {
     /// Kill off phenotypes using stochastic universal sampling.
     fn kill_off(&mut self, count: usize) {
@@ -243,7 +245,7 @@ pub struct SimulatorBuilder<'a, T, F, S>
 where
     T: 'a + Phenotype<F>,
     F: Fitness,
-    S: StatsCollector,
+    S: StatsCollector<F>,
 {
     sim: Simulator<'a, T, F, S>,
 }
@@ -252,7 +254,7 @@ impl<'a, T, F, S> SimulatorBuilder<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
-    S: StatsCollector,
+    S: StatsCollector<F>,
 {
     /// Set the selector of the resulting `Simulator`.
     ///
@@ -308,7 +310,7 @@ impl<'a, T, F, S> Builder<Simulator<'a, T, F, S>> for SimulatorBuilder<'a, T, F,
 where
     T: Phenotype<F>,
     F: Fitness,
-    S: StatsCollector,
+    S: StatsCollector<F>,
 {
     fn build(self) -> Simulator<'a, T, F, S> {
         self.sim
