@@ -182,6 +182,10 @@ extern crate rayon;
 
 /// Contains the definition of a Phenotype.
 pub mod pheno;
+
+/// Contains a way to collect information on steps via a trait.
+pub mod stats;
+
 /// Contains implementations of Simulators, which can run genetic algorithms.
 pub mod sim;
 /// Contains code used by unit tests.

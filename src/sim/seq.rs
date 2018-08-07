@@ -22,23 +22,38 @@
 
 use pheno::Phenotype;
 use pheno::Fitness;
+use stats::StatsCollector;
+
+use rand::prelude::*;
+use stats::NoStats;
 use rand::Rng;
+use rand::SeedableRng;
+use rand::prng::XorShiftRng;
 use super::*;
 use super::select::*;
 use super::iterlimit::*;
 use super::earlystopper::*;
 use std::boxed::Box;
 use std::marker::PhantomData;
-use rand::prng::XorShiftRng;
+use rand::rngs::OsRng;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[cfg(not(target="wasm32-unknown-unknown"))]
+type RandomGenerator = OsRng;
+
+#[cfg(target="wasm32-unknown-unknown")]
+type RandomGenerator = XorShiftRng;
 
 
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
 #[derive(Debug)]
-pub struct Simulator<'a, T, F>
+pub struct Simulator<'a, T, F, S>
 where
     T: 'a + Phenotype<F>,
     F: Fitness,
+    S: StatsCollector,
 {
     population: &'a mut Vec<T>,
     iter_limit: IterLimit,
@@ -46,18 +61,23 @@ where
     earlystopper: Option<EarlyStopper<F>>,
     error: Option<String>,
     phantom: PhantomData<&'a T>,
+    stats: Option<Rc<RefCell<S>>>,
+    rng: Rc<RefCell<RandomGenerator>>,
 }
 
-impl<'a, T, F> Simulation<'a, T, F> for Simulator<'a, T, F>
+
+
+#[cfg(not(target="wasm32-unknown-unknown"))]
+impl<'a, T, F, S> Simulation<'a, T, F, S> for Simulator<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
+    S: StatsCollector,
 {
-    type B = SimulatorBuilder<'a, T, F>;
-
-    /// Create builder.
+    type B = SimulatorBuilder<'a, T, F, S>;
+    
     #[allow(deprecated)]
-    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F> {
+    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S> {
         SimulatorBuilder {
             sim: Simulator {
                 population: population,
@@ -66,6 +86,25 @@ where
                 earlystopper: None,
                 error: None,
                 phantom: PhantomData::default(),
+                stats: sc,
+                rng: Rc::new(RefCell::new(OsRng::new().unwrap())),
+            },
+        }
+    }
+
+    /// Create builder.
+    #[allow(deprecated)]
+    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
+        SimulatorBuilder {
+            sim: Simulator {
+                population: population,
+                iter_limit: IterLimit::new(100),
+                selector: Box::new(MaximizeSelector::new(3)),
+                earlystopper: None,
+                error: None,
+                phantom: PhantomData::default(),
+                stats: None,
+                rng: Rc::new(RefCell::new(OsRng::new().unwrap())),
             },
         }
     }
@@ -85,6 +124,10 @@ where
             Some(ref x) => self.iter_limit.reached() || x.reached(),
             None => self.iter_limit.reached(),
         };
+
+        if let Some(ref mut s) = self.stats {
+            s.borrow_mut().before_step(&self.population.into_iter().map(|p| p.fitness()));
+        }
 
         if !should_stop {
     
@@ -118,6 +161,10 @@ where
             }
 
             self.iter_limit.inc();
+
+            if let Some(ref mut s) = self.stats {
+                s.borrow_mut().after_step(&self.population.into_iter().map(|p| p.fitness()));
+            }
 
             StepResult::Success // Not done yet, but successful
         } else {
@@ -166,15 +213,163 @@ where
     }
 }
 
-impl<'a, T, F> Simulator<'a, T, F>
+#[cfg(target="wasm32-unknown-unknown")]
+impl<'a, T, F, S> Simulation<'a, T, F, S> for Simulator<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
+    S: StatsCollector,
+{
+    type B = SimulatorBuilder<'a, T, F, S>;
+
+        /// Create builder.
+    #[allow(deprecated)]
+    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S, XorShiftRng> {
+        SimulatorBuilder {
+            sim: Simulator {
+                population: population,
+                iter_limit: IterLimit::new(100),
+                selector: Box::new(MaximizeSelector::new(3)),
+                earlystopper: None,
+                error: None,
+                phantom: PhantomData::default(),
+                stats: sc,
+                rng: XorShiftRng::from_seed([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
+            },
+        }
+    }
+
+    /// Create builder.
+    #[allow(deprecated)]
+    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, NoStats, XorShiftRng> {
+        SimulatorBuilder {
+            sim: Simulator {
+                population: population,
+                iter_limit: IterLimit::new(100),
+                selector: Box::new(MaximizeSelector::new(3)),
+                earlystopper: None,
+                error: None,
+                phantom: PhantomData::default(),
+                stats: None,
+                rng: XorShiftRng::from_seed([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
+            },
+        }
+    }
+
+    fn step(&mut self) -> StepResult {
+
+        if self.population.is_empty() {
+            self.error = Some(
+                "Tried to run a simulator without a population, or the \
+                 population was empty."
+                    .to_string(),
+            );
+            return StepResult::Failure;
+        }
+
+        let should_stop = match self.earlystopper {
+            Some(ref x) => self.iter_limit.reached() || x.reached(),
+            None => self.iter_limit.reached(),
+        };
+
+        if let Some(ref mut s) = self.stats {
+            s.borrow_mut().before_step(&self.population.into_iter().map(|p| p.fitness()));
+        }
+
+        if !should_stop {
+    
+            let mut children: Vec<T>;
+            {
+                // Perform selection
+                let parents = match self.selector.select(self.population) {
+                    Ok(parents) => parents,
+                    Err(e) => {
+                        self.error = Some(e);
+                        return StepResult::Failure;
+                    }
+                };
+                // Create children from the selected parents and mutate them.
+                children = parents
+                    .iter()
+                    .map(|&(a, b)| a.crossover(b).mutate())
+                    .collect();
+            }
+            // Kill off parts of the population at random to make room for the children
+            self.kill_off(children.len());
+            self.population.append(&mut children);
+
+            if let Some(ref mut stopper) = self.earlystopper {
+                let highest_fitness = self.population
+                    .iter()
+                    .max_by_key(|x| x.fitness())
+                    .unwrap()
+                    .fitness();
+                stopper.update(highest_fitness);
+            }
+
+            self.iter_limit.inc();
+
+            if let Some(ref mut s) = self.stats {
+                s.borrow_mut().after_step(&self.population.into_iter().map(|p| p.fitness()));
+            }
+
+            StepResult::Success // Not done yet, but successful
+        } else {
+            StepResult::Done
+        }
+    }
+
+    #[allow(deprecated)]
+    fn checked_step(&mut self) -> StepResult {
+        if self.error.is_some() {
+            panic!("Attempt to step a Simulator after an error!")
+        } else {
+            self.step()
+        }
+    }
+
+    #[allow(deprecated)]
+    fn run(&mut self) -> RunResult {
+        // Loop until Failure or Done.
+        loop {
+            match self.step() {
+                StepResult::Success => {}
+                StepResult::Failure => return RunResult::Failure,
+                StepResult::Done => return RunResult::Done,
+            }
+        }
+    }
+
+    fn get(&'a self) -> SimResult<'a, T> {
+        match self.error {
+            Some(ref e) => Err(e),
+            None => Ok(self.population.iter().max_by_key(|x| x.fitness()).unwrap()),
+        }
+    }
+
+    fn iterations(&self) -> u64 {
+        self.iter_limit.get()
+    }
+
+    fn time(&self) -> Option<NanoSecond> {
+        None
+    }
+
+    fn population(&self) -> Vec<T> {
+        self.population.clone()
+    }
+}
+
+impl<'a, T, F, S> Simulator<'a, T, F, S>
+where
+    T: Phenotype<F>,
+    F: Fitness,
+    S: StatsCollector,
 {
     /// Kill off phenotypes using stochastic universal sampling.
     fn kill_off(&mut self, count: usize) {
         let ratio = self.population.len() / count;
-        let mut i = XorShiftRng::new_unseeded().gen_range::<usize>(0, self.population.len());
+        let mut i: usize = self.rng.borrow_mut().gen_range(0, self.population.len());
         for _ in 0..count {
             self.population.swap_remove(i);
             i += ratio;
@@ -185,18 +380,20 @@ where
 
 /// A `Builder` for the `Simulator` type.
 #[derive(Debug)]
-pub struct SimulatorBuilder<'a, T, F>
+pub struct SimulatorBuilder<'a, T, F, S>
 where
     T: 'a + Phenotype<F>,
     F: Fitness,
+    S: StatsCollector,
 {
-    sim: Simulator<'a, T, F>,
+    sim: Simulator<'a, T, F, S>,
 }
 
-impl<'a, T, F> SimulatorBuilder<'a, T, F>
+impl<'a, T, F, S> SimulatorBuilder<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
+    S: StatsCollector,
 {
     /// Set the selector of the resulting `Simulator`.
     ///
@@ -206,7 +403,7 @@ where
         self
     }
 
-    /// Set the maximum number of iterations of the resulting `Simulator`.
+        /// Set the maximum number of iterations of the resulting `Simulator`.
     ///
     /// The `Simulator` will stop running after this number of iterations.
     ///
@@ -215,6 +412,28 @@ where
         self.sim.iter_limit = IterLimit::new(i);
         self
     }
+
+    /// Set the maximum number of iterations of the resulting `Simulator`.
+    ///
+    /// The `Simulator` will stop running after this number of iterations.
+    ///
+    /// Returns itself for chaining purposes.
+    pub fn set_stats_collector(mut self, sc: Option<Rc<RefCell<S>>>) -> Self {
+
+        self.sim.stats = sc;
+        self
+    }
+
+        /// Set the maximum number of iterations of the resulting `Simulator`.
+    ///
+    /// The `Simulator` will stop running after this number of iterations.
+    ///
+    /// Returns itself for chaining purposes.
+    pub fn set_rng(mut self, rng: Rc<RefCell<RandomGenerator>>) -> Self {
+        self.sim.rng = rng;
+        self
+    }
+
 
     /// Set early stopping. If for `n_iters` iterations, the change in the highest fitness
     /// is smaller than `delta`, the simulator will stop running.
@@ -226,12 +445,13 @@ where
     }
 }
 
-impl<'a, T, F> Builder<Simulator<'a, T, F>> for SimulatorBuilder<'a, T, F>
+impl<'a, T, F, S> Builder<Simulator<'a, T, F, S>> for SimulatorBuilder<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
+    S: StatsCollector,
 {
-    fn build(self) -> Simulator<'a, T, F> {
+    fn build(self) -> Simulator<'a, T, F, S> {
         self.sim
     }
 }
@@ -243,12 +463,38 @@ mod tests {
     use sim::select::*;
     use test::Test;
     use test::MyFitness;
+    use rand::OsRng;
+    use stats::NoStats;
+
 
     #[test]
     fn test_kill_off_count() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s: seq::Simulator<Test, MyFitness, NoStats> = seq::Simulator::builder(&mut population)
+            .set_selector(Box::new(selector))
+            .build();
+        s.kill_off(10);
+        assert_eq!(s.population.len(), 90);
+    }
+
+
+    #[test]
+    fn test_stats_collector() {
+        let selector = MaximizeSelector::new(2);
+        let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
+        let mut s: seq::Simulator<_, _, NoStats> = seq::Simulator::builder(&mut population)
+            .set_selector(Box::new(selector))
+            .build();
+        s.kill_off(10);
+        assert_eq!(s.population.len(), 90);
+    }
+
+    #[test]
+    fn test_() {
+        let selector = MaximizeSelector::new(2);
+        let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
+        let mut s: seq::Simulator<_, _, NoStats> = seq::Simulator::builder(&mut population)
             .set_selector(Box::new(selector))
             .build();
         s.kill_off(10);
@@ -259,7 +505,7 @@ mod tests {
     fn test_max_iters() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s: seq::Simulator<_, _, NoStats> = seq::Simulator::builder(&mut population)
             .set_selector(Box::new(selector))
             .set_max_iters(2)
             .build();
@@ -271,7 +517,7 @@ mod tests {
     fn test_early_stopping() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|_| Test { f: 0 }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s: seq::Simulator<_, _, NoStats> = seq::Simulator::builder(&mut population)
             .set_selector(Box::new(selector))
             .set_early_stop(MyFitness { f: 10 }, 5)
             .set_max_iters(10)
@@ -284,7 +530,7 @@ mod tests {
     fn test_selector_error_propagate() {
         let selector = MaximizeSelector::new(0);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s = seq::Simulator::builder(&mut population)
+        let mut s: seq::Simulator<_, _, NoStats> = seq::Simulator::builder(&mut population)
             .set_selector(Box::new(selector))
             .build();
         s.run();
@@ -296,7 +542,7 @@ mod tests {
         let selector = MaximizeSelector::new(0);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
         let population_len = population.len();
-        let s = seq::Simulator::builder(&mut population)
+        let s: seq::Simulator<_, _, NoStats> = seq::Simulator::builder(&mut population)
             .set_selector(Box::new(selector))
             .build();
         let gotten_population = s.population();

@@ -24,6 +24,7 @@ extern crate rsgenetic;
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
+use rsgenetic::stats::NoStats;
 use rsgenetic::pheno::*;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
@@ -106,7 +107,7 @@ impl Clone for MyData {
 
 fn main() {
     let mut population = (-300..300).map(|i| MyData { x: f64::from(i) }).collect();
-    let mut s = Simulator::builder(&mut population)
+    let mut s: Simulator<_, _, NoStats> = Simulator::builder(&mut population)
         .set_selector(Box::new(StochasticSelector::new(10)))
         .set_max_iters(50)
         .build();

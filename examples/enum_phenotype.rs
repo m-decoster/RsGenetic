@@ -24,6 +24,7 @@ use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
+use rsgenetic::stats::NoStats;
 
 #[derive(Clone, Copy, Debug)]
 struct MyPhenotype {
@@ -76,7 +77,7 @@ fn main() {
         population.push(MyPhenotype { variant: MyVariant::Variant2, value: i })
     }
     #[allow(deprecated)]
-    let mut s = Simulator::builder(&mut population)
+    let mut s: Simulator<_, _, NoStats> = Simulator::builder(&mut population)
         .set_selector(Box::new(MaximizeSelector::new(10)))
         .set_max_iters(100)
         .build();

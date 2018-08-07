@@ -25,6 +25,7 @@ use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
 use rand::distributions::{IndependentSample, Range};
 use std::cmp::Ordering;
+use rsgenetic::stats::NoStats;
 
 struct MyFitness {
     f: f64,
@@ -104,7 +105,7 @@ impl Clone for MyData {
 
 fn main() {
     let mut population = (-300..300).map(|i| MyData { x: f64::from(i) }).collect();
-    let mut s = Simulator::builder(&mut population)
+    let mut s: Simulator<_,_, NoStats> = Simulator::builder(&mut population)
         .set_selector(Box::new(StochasticSelector::new(10)))
         .set_max_iters(50)
         .build();

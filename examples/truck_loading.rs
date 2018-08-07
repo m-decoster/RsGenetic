@@ -25,6 +25,7 @@ extern crate rand;
 extern crate rsgenetic;
 
 use rsgenetic::sim::*;
+use rsgenetic::stats::NoStats;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
@@ -126,7 +127,7 @@ fn main() {
         population.push(LoadingScheme { scheme: pheno });
     }
     #[allow(deprecated)]
-    let mut s = Simulator::builder(&mut population)
+    let mut s: Simulator<_, _, NoStats> = Simulator::builder(&mut population)
         .set_selector(Box::new(MaximizeSelector::new(10)))
         .set_max_iters(100)
         .build();

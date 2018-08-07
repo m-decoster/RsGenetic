@@ -15,6 +15,9 @@
 // limitations under the License.
 
 use pheno::{Fitness, Phenotype};
+use stats::StatsCollector;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 pub mod seq;
 pub mod select;
@@ -58,13 +61,23 @@ pub enum RunResult {
 }
 
 /// A `Simulation` is an execution of a genetic algorithm.
-pub trait Simulation<'a, T, F>
+pub trait Simulation<'a, T, F, S>
 where
     T: Phenotype<F>,
     F: Fitness,
+    S: StatsCollector,
 {
     /// A `Builder` is used to create instances of a `Simulation`.
     type B: Builder<Self>;
+
+
+    /// Create a `Builder` to create an instance.
+    ///
+    /// `population` is a required parameter of any `Simulation`, which
+    /// is why it is a parameter of this function.
+    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> Self::B
+    where
+        Self: Sized;
 
     /// Create a `Builder` to create an instance.
     ///
