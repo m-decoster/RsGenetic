@@ -29,10 +29,10 @@ use super::iterlimit::*;
 use super::select::*;
 use super::*;
 use rand::prng::XorShiftRng;
-use rand::Rng;
 use rand::SeedableRng;
 use std::boxed::Box;
 use std::marker::PhantomData;
+use rand::{OsRng, Rng};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -81,7 +81,7 @@ where
                 earlystopper: None,
                 error: None,
                 phantom: PhantomData::default(),
-                stats: sc,
+                stats: None,
                 rng: Rc::new(RefCell::new(OsRng::new().unwrap())),
             },
         }
