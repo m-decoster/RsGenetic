@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::{Fitness, Phenotype};
 use super::*;
+use pheno::{Fitness, Phenotype};
 use rand::Rng;
 
 /// Runs several tournaments, and selects best performing phenotypes from each tournament.
@@ -34,9 +34,11 @@ impl TournamentSelector {
     ///
     /// * `count`: must be larger than zero, a multiple of two and less than the population size.
     /// * `participants`: must be larger than one and less than the population size.
-    #[deprecated(note="The `TournamentSelector` requires at least 2 participants. This is not enforced
+    #[deprecated(
+        note = "The `TournamentSelector` requires at least 2 participants. This is not enforced
                        by the `new` function. You should use `new_checked` instead.",
-                 since="1.7.11")]
+        since = "1.7.11"
+    )]
     pub fn new(count: usize, participants: usize) -> TournamentSelector {
         TournamentSelector {
             count: count,

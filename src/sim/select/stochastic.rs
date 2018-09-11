@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use pheno::{Fitness, Phenotype};
 use super::*;
+use pheno::{Fitness, Phenotype};
 use rand::Rng;
 
 /// Selects phenotypes at random, starting from a random index and taking equidistant jumps.

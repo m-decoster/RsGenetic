@@ -22,16 +22,16 @@
 //! number of selected parents.
 
 mod max;
-mod tournament;
 mod stochastic;
+mod tournament;
 
 use pheno::{Fitness, Phenotype};
 use std::fmt::Debug;
 
 #[allow(deprecated)]
 pub use self::max::MaximizeSelector;
-pub use self::tournament::TournamentSelector;
 pub use self::stochastic::StochasticSelector;
+pub use self::tournament::TournamentSelector;
 
 /// `Parents` come in a `Vec` of two `T`'s.
 pub type Parents<T> = Vec<(T, T)>;

@@ -18,9 +18,8 @@
 // several tests across the library.
 
 use pheno::*;
+use stats::{NoStats, StatsCollector};
 use std::cmp;
-use stats::{StatsCollector, NoStats};
-
 
 #[derive(Clone, Copy, Debug, PartialOrd, Ord, PartialEq, Eq)]
 pub struct MyFitness {
@@ -38,8 +37,6 @@ impl Fitness for MyFitness {
         }
     }
 }
-
-
 
 #[derive(Clone, Copy)]
 pub struct Test {

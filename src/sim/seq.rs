@@ -20,29 +20,28 @@
 //! To use a `Simulator`, you need a `SimulatorBuilder`, which you can
 //! obtain by calling `Simulator::builder()`.
 
-use pheno::Phenotype;
 use pheno::Fitness;
+use pheno::Phenotype;
 use stats::StatsCollector;
 
+use super::earlystopper::*;
+use super::iterlimit::*;
+use super::select::*;
+use super::*;
+use rand::prng::XorShiftRng;
 use rand::Rng;
 use rand::SeedableRng;
-use rand::prng::XorShiftRng;
-use super::*;
-use super::select::*;
-use super::iterlimit::*;
-use super::earlystopper::*;
 use std::boxed::Box;
 use std::marker::PhantomData;
 
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
-#[cfg(not(target_arch="wasm32"))]
+#[cfg(not(target_arch = "wasm32"))]
 type RandomGenerator = OsRng;
 
-#[cfg(target_arch="wasm32")]
+#[cfg(target_arch = "wasm32")]
 type RandomGenerator = XorShiftRng;
-
 
 /// A sequential implementation of `::sim::Simulation`.
 /// The genetic algorithm is run in a single thread.
@@ -63,8 +62,6 @@ where
     rng: Rc<RefCell<RandomGenerator>>,
 }
 
-
-
 impl<'a, T, F, S> Simulation<'a, T, F, S> for Simulator<'a, T, F, S>
 where
     T: Phenotype<F>,
@@ -72,9 +69,9 @@ where
     S: StatsCollector<F>,
 {
     type B = SimulatorBuilder<'a, T, F, S>;
-    
+
     #[allow(deprecated)]
-    #[cfg(not(target_arch="wasm32"))]
+    #[cfg(not(target_arch = "wasm32"))]
     fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
         SimulatorBuilder {
             sim: Simulator {
@@ -91,9 +88,11 @@ where
     }
 
     #[allow(deprecated)]
-    #[cfg(target_arch="wasm32")]
+    #[cfg(target_arch = "wasm32")]
     fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
-        let seed = [0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 1u8];
+        let seed = [
+            0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 1u8,
+        ];
         SimulatorBuilder {
             sim: Simulator {
                 population: population,
@@ -109,7 +108,6 @@ where
     }
 
     fn step(&mut self) -> StepResult {
-
         if self.population.is_empty() {
             self.error = Some(
                 "Tried to run a simulator without a population, or the \
@@ -130,7 +128,6 @@ where
         }
 
         if !should_stop {
-    
             let mut children: Vec<T>;
             {
                 // Perform selection
@@ -152,7 +149,8 @@ where
             self.population.append(&mut children);
 
             if let Some(ref mut stopper) = self.earlystopper {
-                let highest_fitness = self.population
+                let highest_fitness = self
+                    .population
                     .iter()
                     .max_by_key(|x| x.fitness())
                     .unwrap()
@@ -257,7 +255,7 @@ where
         self
     }
 
-        /// Set the maximum number of iterations of the resulting `Simulator`.
+    /// Set the maximum number of iterations of the resulting `Simulator`.
     ///
     /// The `Simulator` will stop running after this number of iterations.
     ///
@@ -277,7 +275,7 @@ where
         self
     }
 
-        /// Set the maximum number of iterations of the resulting `Simulator`.
+    /// Set the maximum number of iterations of the resulting `Simulator`.
     ///
     /// The `Simulator` will stop running after this number of iterations.
     ///
@@ -286,7 +284,6 @@ where
         self.sim.rng = rng;
         self
     }
-
 
     /// Set early stopping. If for `n_iters` iterations, the change in the highest fitness
     /// is smaller than `delta`, the simulator will stop running.
@@ -312,24 +309,23 @@ where
 #[cfg(test)]
 #[allow(deprecated)]
 mod tests {
-    use sim::*;
     use sim::select::*;
-    use test::Test;
-    use test::MyFitness;
+    use sim::*;
     use stats::NoStats;
-
+    use test::MyFitness;
+    use test::Test;
 
     #[test]
     fn test_kill_off_count() {
         let selector = MaximizeSelector::new(2);
         let mut population: Vec<Test> = (0..100).map(|i| Test { f: i }).collect();
-        let mut s: seq::Simulator<Test, MyFitness, NoStats> = seq::Simulator::builder(&mut population)
-            .set_selector(Box::new(selector))
+        let mut s: seq::Simulator<Test, MyFitness, NoStats> = seq::Simulator::builder(
+            &mut population,
+        ).set_selector(Box::new(selector))
             .build();
         s.kill_off(10);
         assert_eq!(s.population.len(), 90);
     }
-
 
     #[test]
     fn test_stats_collector() {

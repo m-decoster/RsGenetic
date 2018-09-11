@@ -16,14 +16,16 @@
 
 #![allow(deprecated)]
 
-use pheno::{Fitness, Phenotype};
 use super::*;
+use pheno::{Fitness, Phenotype};
 
 /// Selects best performing phenotypes from the population.
 #[derive(Clone, Copy, Debug)]
-#[deprecated(note="The `MaximizeSelector` has bad performance due to sorting. For better performance with potentially different results, \
+#[deprecated(
+    note = "The `MaximizeSelector` has bad performance due to sorting. For better performance with potentially different results, \
                    use the `UnstableMaximizeSelector`.",
-                 since="1.7.7")]
+    since = "1.7.7"
+)]
 pub struct MaximizeSelector {
     count: usize,
 }
@@ -68,8 +70,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use sim::select::*;
     use pheno::*;
+    use sim::select::*;
     use test::Test;
 
     #[test]
