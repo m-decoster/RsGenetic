@@ -16,8 +16,6 @@
 
 use pheno::{Fitness, Phenotype};
 use stats::StatsCollector;
-use std::cell::RefCell;
-use std::rc::Rc;
 
 pub mod seq;
 pub mod select;
@@ -69,15 +67,6 @@ where
 {
     /// A `Builder` is used to create instances of a `Simulation`.
     type B: Builder<Self>;
-
-
-    /// Create a `Builder` to create an instance.
-    ///
-    /// `population` is a required parameter of any `Simulation`, which
-    /// is why it is a parameter of this function.
-    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> Self::B
-    where
-        Self: Sized;
 
     /// Create a `Builder` to create an instance.
     ///

@@ -24,9 +24,6 @@ use pheno::Phenotype;
 use pheno::Fitness;
 use stats::StatsCollector;
 
-use rand::prelude::*;
-use rand::rngs::*;
-use stats::NoStats;
 use rand::Rng;
 use rand::SeedableRng;
 use rand::prng::XorShiftRng;
@@ -78,7 +75,7 @@ where
     
     #[allow(deprecated)]
     #[cfg(not(target_arch="wasm32"))]
-    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S> {
+    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
         SimulatorBuilder {
             sim: Simulator {
                 population: population,
@@ -93,8 +90,9 @@ where
         }
     }
 
+    #[allow(deprecated)]
     #[cfg(target_arch="wasm32")]
-    fn builder_with_stats(population: &'a mut Vec<T>, sc: Option<Rc<RefCell<S>>>) -> SimulatorBuilder<'a, T, F, S> {
+    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
         let seed = [0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 1u8];
         SimulatorBuilder {
             sim: Simulator {
@@ -104,16 +102,10 @@ where
                 earlystopper: None,
                 error: None,
                 phantom: PhantomData::default(),
-                stats: sc,
+                stats: None,
                 rng: Rc::new(RefCell::new(XorShiftRng::from_seed(seed))),
             },
         }
-    }
-
-    /// Create builder.
-    #[allow(deprecated)]
-    fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F, S> {
-        Self::builder_with_stats(population, None)
     }
 
     fn step(&mut self) -> StepResult {
@@ -281,7 +273,6 @@ where
     ///
     /// Returns itself for chaining purposes.
     pub fn set_stats_collector(mut self, sc: Option<Rc<RefCell<S>>>) -> Self {
-
         self.sim.stats = sc;
         self
     }
