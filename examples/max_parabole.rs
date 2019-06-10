@@ -19,11 +19,11 @@
 extern crate rand;
 extern crate rsgenetic;
 
-use rsgenetic::sim::*;
-use rsgenetic::sim::seq::Simulator;
-use rsgenetic::sim::select::*;
-use rsgenetic::pheno::*;
 use rand::distributions::{IndependentSample, Range};
+use rsgenetic::pheno::*;
+use rsgenetic::sim::select::*;
+use rsgenetic::sim::seq::Simulator;
+use rsgenetic::sim::*;
 use std::cmp::Ordering;
 
 struct MyFitness {
@@ -105,8 +105,9 @@ impl Clone for MyData {
 fn main() {
     let mut population = (-300..300).map(|i| MyData { x: f64::from(i) }).collect();
     let mut builder = Simulator::builder(&mut population);
-    builder.with_selector(Box::new(StochasticSelector::new(10)))
-           .with_max_iters(50);
+    builder
+        .with_selector(Box::new(StochasticSelector::new(10)))
+        .with_max_iters(50);
     let mut s = builder.build();
     s.run();
     let result = s.get().unwrap();

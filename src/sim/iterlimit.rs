@@ -26,7 +26,7 @@ pub struct IterLimit {
 impl IterLimit {
     /// Create a new iteration limiter.
     pub fn new(max: u64) -> IterLimit {
-        IterLimit { max: max, cur: 0 }
+        IterLimit { max, cur: 0 }
     }
 
     /// Increment the number of iterations.

@@ -59,7 +59,7 @@ where
     fn builder(population: &'a mut Vec<T>) -> SimulatorBuilder<'a, T, F> {
         SimulatorBuilder {
             sim: Simulator {
-                population: population,
+                population,
                 iter_limit: IterLimit::new(100),
                 selector: Box::new(MaximizeSelector::new(3)),
                 earlystopper: None,

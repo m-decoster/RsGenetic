@@ -24,11 +24,11 @@
 extern crate rand;
 extern crate rsgenetic;
 
-use rsgenetic::sim::*;
-use rsgenetic::sim::seq::Simulator;
-use rsgenetic::sim::select::*;
-use rsgenetic::pheno::*;
 use rand::Rng;
+use rsgenetic::pheno::*;
+use rsgenetic::sim::select::*;
+use rsgenetic::sim::seq::Simulator;
+use rsgenetic::sim::*;
 
 type TruckIndex = usize;
 type PackageSize = i32;
@@ -98,7 +98,8 @@ impl Phenotype<SchemeFitness> for LoadingScheme {
         // Put some stuff on other trucks
         let mut rng = ::rand::thread_rng();
         LoadingScheme {
-            scheme: self.scheme
+            scheme: self
+                .scheme
                 .iter()
                 .map(|&(_, size)| (rng.gen::<usize>() % NUM_TRUCKS, size))
                 .collect(),
@@ -127,8 +128,9 @@ fn main() {
     }
     #[allow(deprecated)]
     let mut builder = Simulator::builder(&mut population);
-    builder.with_selector(Box::new(UnstableMaximizeSelector::new(10)))
-           .with_max_iters(100);
+    builder
+        .with_selector(Box::new(UnstableMaximizeSelector::new(10)))
+        .with_max_iters(100);
     let mut s = builder.build();
     s.run();
     let result = s.get().unwrap();

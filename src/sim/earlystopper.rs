@@ -32,7 +32,7 @@ impl<F: Fitness> EarlyStopper<F> {
     /// Create a new `EarlyStopper`.
     pub fn new(delta: F, n_iters: u64) -> EarlyStopper<F> {
         EarlyStopper {
-            delta: delta,
+            delta,
             previous: F::zero(),
             iter_limit: IterLimit::new(n_iters),
         }
@@ -61,7 +61,7 @@ mod tests {
 
     impl MyFitness {
         fn new(f: i64) -> MyFitness {
-            MyFitness { f: f }
+            MyFitness { f }
         }
     }
 

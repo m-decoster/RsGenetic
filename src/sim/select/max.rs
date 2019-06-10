@@ -38,7 +38,7 @@ impl MaximizeSelector {
     ///
     /// * `count`: must be larger than zero, a multiple of two and less than the population size.
     pub fn new(count: usize) -> MaximizeSelector {
-        MaximizeSelector { count: count }
+        MaximizeSelector { count }
     }
 }
 

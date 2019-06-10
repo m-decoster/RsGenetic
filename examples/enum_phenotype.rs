@@ -16,14 +16,14 @@
 
 //! This example shows how to provide several crossover or mutation implementations
 //! for a single `Phenotype`.
-//! 
+//!
 //! This example was created in reference to [issue 30](https://github.com/m-decoster/RsGenetic/issues/30).
 extern crate rsgenetic;
 
-use rsgenetic::sim::*;
-use rsgenetic::sim::seq::Simulator;
-use rsgenetic::sim::select::*;
 use rsgenetic::pheno::*;
+use rsgenetic::sim::select::*;
+use rsgenetic::sim::seq::Simulator;
+use rsgenetic::sim::*;
 
 #[derive(Clone, Copy, Debug)]
 struct MyPhenotype {
@@ -34,7 +34,7 @@ struct MyPhenotype {
 #[derive(Clone, Copy, Debug)]
 enum MyVariant {
     Variant1,
-    Variant2
+    Variant2,
 }
 
 impl Phenotype<i32> for MyPhenotype {
@@ -46,12 +46,12 @@ impl Phenotype<i32> for MyPhenotype {
         match self.variant {
             MyVariant::Variant1 => MyPhenotype {
                 variant: self.variant,
-                value: self.value + other.value
+                value: self.value + other.value,
             },
             MyVariant::Variant2 => MyPhenotype {
                 variant: self.variant,
-                value: self.value - other.value
-            }
+                value: self.value - other.value,
+            },
         }
     }
 
@@ -59,12 +59,12 @@ impl Phenotype<i32> for MyPhenotype {
         match self.variant {
             MyVariant::Variant1 => MyPhenotype {
                 variant: self.variant,
-                value: self.value / 2
+                value: self.value / 2,
             },
             MyVariant::Variant2 => MyPhenotype {
                 variant: self.variant,
-                value: self.value * 2
-            }
+                value: self.value * 2,
+            },
         }
     }
 }
@@ -72,21 +72,24 @@ impl Phenotype<i32> for MyPhenotype {
 fn main() {
     let mut population: Vec<MyPhenotype> = Vec::with_capacity(300);
     for i in 0..150 {
-        population.push(MyPhenotype { variant: MyVariant::Variant1, value: i });
-        population.push(MyPhenotype { variant: MyVariant::Variant2, value: i })
+        population.push(MyPhenotype {
+            variant: MyVariant::Variant1,
+            value: i,
+        });
+        population.push(MyPhenotype {
+            variant: MyVariant::Variant2,
+            value: i,
+        })
     }
     #[allow(deprecated)]
     let mut builder = Simulator::builder(&mut population);
-    builder.with_selector(Box::new(UnstableMaximizeSelector::new(10)))
-           .with_max_iters(100);
+    builder
+        .with_selector(Box::new(UnstableMaximizeSelector::new(10)))
+        .with_max_iters(100);
     let mut s = builder.build();
     s.run();
     let result = s.get().unwrap();
     let time = s.time();
     println!("Execution time: {} ns.", time.unwrap());
-    println!(
-        "Result: {:?} | Fitness: {}.",
-        result,
-        result.fitness()
-    );
+    println!("Result: {:?} | Fitness: {}.", result, result.fitness());
 }

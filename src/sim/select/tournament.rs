@@ -41,8 +41,8 @@ impl TournamentSelector {
     )]
     pub fn new(count: usize, participants: usize) -> TournamentSelector {
         TournamentSelector {
-            count: count,
-            participants: participants,
+            count,
+            participants,
         }
     }
 
@@ -61,8 +61,8 @@ impl TournamentSelector {
             ))
         } else {
             Ok(TournamentSelector {
-                count: count,
-                participants: participants,
+                count,
+                participants,
             })
         }
     }

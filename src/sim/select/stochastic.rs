@@ -35,7 +35,7 @@ impl StochasticSelector {
     ///
     /// * `count`: must be larger than zero, a multiple of 2 and less than the population size.
     pub fn new(count: usize) -> StochasticSelector {
-        StochasticSelector { count: count }
+        StochasticSelector { count }
     }
 }
 
