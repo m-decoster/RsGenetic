@@ -89,12 +89,41 @@ impl Phenotype<i32> for MyPheno {
 ### Creating and running a `Simulator`
 
 ```rust
+use rsgenetic::pheno::*;
 use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
 
-// (Assuming the above definition of `MyPheno` is in scope)
-// [ ... ]
+#const TARGET: i32 = 100;
+#
+##[derive(Copy, Clone)]
+#struct MyPheno {
+#    x: i32,
+#    y: i32,
+#}
+#
+#impl Phenotype<i32> for MyPheno {
+#    // How fit is this individual?
+#    fn fitness(&self) -> i32 {
+#        TARGET - (self.x + self.y)
+#    }
+#
+#    // Have two individuals create a new individual
+#    fn crossover(&self, other: &MyPheno) -> MyPheno {
+#        MyPheno {
+#            x: self.x,
+#            y: other.y,
+#        }
+#    }
+#
+#    // Mutate an individual, changing its state
+#    fn mutate(&self) -> MyPheno {
+#        MyPheno {
+#            x: self.x + 1,
+#            y: self.y - 1,
+#        }
+#    }
+#}
 
 fn main() {
     let mut population = (0..100).map(|i| MyPheno { x: i, y: 100 - i }).collect();
