@@ -40,7 +40,7 @@ where
 {
     population: &'a mut Vec<T>,
     iter_limit: IterLimit,
-    selector: Box<Selector<T, F>>,
+    selector: Box<dyn Selector<T, F>>,
     earlystopper: Option<EarlyStopper<F>>,
     duration: Option<NanoSecond>,
     error: Option<String>,
@@ -218,7 +218,7 @@ where
                        Use the functions that start with `with_` instead.",
         since = "1.8.0"
     )]
-    pub fn set_selector(mut self, sel: Box<Selector<T, F>>) -> Self {
+    pub fn set_selector(mut self, sel: Box<dyn Selector<T, F>>) -> Self {
         self.sim.selector = sel;
         self
     }
@@ -227,7 +227,7 @@ where
     ///
     /// Returns a mutable reference to itself for chaining purposes.
     /// Does not consume the builder.
-    pub fn with_selector(&mut self, sel: Box<Selector<T, F>>) -> &mut Self {
+    pub fn with_selector(&mut self, sel: Box<dyn Selector<T, F>>) -> &mut Self {
         self.sim.selector = sel;
         self
     }
