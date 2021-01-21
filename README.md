@@ -1,4 +1,5 @@
 # RsGenetic
+[![Rust Report Card](https://rust-reportcard.xuri.me/badge/github.com/m-decoster/RsGenetic)](https://rust-reportcard.xuri.me/report/github.com/m-decoster/RsGenetic)
 [![Build Status](https://travis-ci.org/m-decoster/RsGenetic.svg?branch=master)](https://travis-ci.org/m-decoster/RsGenetic)
 [![Crates Version](https://img.shields.io/crates/v/rsgenetic.svg)](https://crates.io/crates/rsgenetic/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
@@ -94,36 +95,36 @@ use rsgenetic::sim::*;
 use rsgenetic::sim::seq::Simulator;
 use rsgenetic::sim::select::*;
 
-#const TARGET: i32 = 100;
-#
-##[derive(Copy, Clone)]
-#struct MyPheno {
-#    x: i32,
-#    y: i32,
-#}
-#
-#impl Phenotype<i32> for MyPheno {
-#    // How fit is this individual?
-#    fn fitness(&self) -> i32 {
-#        TARGET - (self.x + self.y)
-#    }
-#
-#    // Have two individuals create a new individual
-#    fn crossover(&self, other: &MyPheno) -> MyPheno {
-#        MyPheno {
-#            x: self.x,
-#            y: other.y,
-#        }
-#    }
-#
-#    // Mutate an individual, changing its state
-#    fn mutate(&self) -> MyPheno {
-#        MyPheno {
-#            x: self.x + 1,
-#            y: self.y - 1,
-#        }
-#    }
-#}
+const TARGET: i32 = 100;
+
+#[derive(Copy, Clone)]
+struct MyPheno {
+    x: i32,
+    y: i32,
+}
+
+impl Phenotype<i32> for MyPheno {
+    // How fit is this individual?
+    fn fitness(&self) -> i32 {
+        TARGET - (self.x + self.y)
+    }
+
+    // Have two individuals create a new individual
+    fn crossover(&self, other: &MyPheno) -> MyPheno {
+        MyPheno {
+            x: self.x,
+            y: other.y,
+        }
+    }
+
+    // Mutate an individual, changing its state
+    fn mutate(&self) -> MyPheno {
+        MyPheno {
+            x: self.x + 1,
+            y: self.y - 1,
+        }
+    }
+}
 
 fn main() {
     let mut population = (0..100).map(|i| MyPheno { x: i, y: 100 - i }).collect();
