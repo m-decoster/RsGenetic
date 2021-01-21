@@ -1,4 +1,5 @@
 # RsGenetic
+[![Rust Report Card](https://rust-reportcard.xuri.me/badge/github.com/m-decoster/RsGenetic)](https://rust-reportcard.xuri.me/report/github.com/m-decoster/RsGenetic)
 [![Build Status](https://travis-ci.org/m-decoster/RsGenetic.svg?branch=master)](https://travis-ci.org/m-decoster/RsGenetic)
 [![Crates Version](https://img.shields.io/crates/v/rsgenetic.svg)](https://crates.io/crates/rsgenetic/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
